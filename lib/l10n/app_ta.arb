@@ -1,0 +1,18 @@
+{
+  "projects": "திட்டங்கள்",
+  "createNewProject": "புதிய திட்டம் உருவாக்க",
+  "projectName": "திட்டத்தின் பெயர்",
+  "description": "விளக்கம்",
+  "projectOwner": "திட்ட உரிமையாளர்",
+  "workHours": "வேலை நேரம்",
+  "teamMembers": "குழு உறுப்பினர்கள்",
+  "numberoftasks": "பணிகளின் எண்ணிக்கை",
+  "taskName": "பணி பெயர்",
+  "taskDescription": "பணி விளக்கம்",
+  "searchTeamMembers": "குழு உறுப்பினர்கள் தேட",
+  "submit": "சமர்ப்பிக்க",
+  "about": "பற்றி",
+  "settings": "அமைப்புகள்",
+  "logout": "வெளியேறு",
+  "yourProjects": "உங்கள் திட்டங்கள்"
+}

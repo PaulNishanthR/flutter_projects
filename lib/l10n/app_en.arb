@@ -1,0 +1,18 @@
+{
+  "projects": "projects",
+  "createNewProject": "Create New Project",
+  "projectName": "Project Name",
+  "description": "Description",
+  "projectOwner": "Project Owner",
+  "workHours": "Work Hours",
+  "teamMembers": "Team Members",
+  "numberoftasks": "Number of tasks",
+  "taskName": "Task Name",
+  "taskDescription": "Task Description",
+  "searchTeamMembers": "Search Team Members",
+  "submit": "Submit",
+  "about": "About",
+  "settings": "Settings",
+  "logout": "Logout",
+  "yourProjects": "Your projects"
+}

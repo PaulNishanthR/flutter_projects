@@ -1,0 +1,18 @@
+{
+  "projects": "परियोजनाएं",
+  "createNewProject": "नई परियोजना बनाएं",
+  "projectName": "परियोजना का नाम",
+  "description": "विवरण",
+  "projectOwner": "परियोजना मालिक",
+  "workHours": "काम का समय",
+  "teamMembers": "टीम सदस्य",
+  "numberoftasks": "कार्यों की संख्या",
+  "taskName": "कार्य का नाम",
+  "taskDescription": "कार्य का विवरण",
+  "searchTeamMembers": "टीम सदस्य खोजें",
+  "submit": "प्रस्तुत",
+  "about": "के बारे में",
+  "settings": "सेटिंग्स",
+  "logout": "लॉग आउट",
+  "yourProjects": "आपकी परियोजनाएं"
+}
