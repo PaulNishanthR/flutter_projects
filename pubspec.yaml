@@ -48,6 +48,7 @@ dependencies:
   dio: ^5.4.1
   # animated_login: ^1.7.2
   flutter_localization: ^0.2.0
+  flutter_launcher_icons: ^0.13.1
 
 dev_dependencies:
   flutter_test:
@@ -79,6 +80,7 @@ flutter:
     - assets/login.png
     - assets/image1.png
     - lib/config/images/login.png
+    - assets/playstore.png
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

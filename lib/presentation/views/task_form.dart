@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_projects/domain/model/project.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_projects/domain/model/task.dart';
 
 class TaskFields {
   static List<Widget> buildTaskFields(
@@ -8,8 +8,7 @@ class TaskFields {
     int numberOfTasks,
     List<String> teamMembers,
     Function setState,
-    // ignore: no_leading_underscores_for_local_identifiers
-    Function _filterTeamMembers,
+    Function filterTeamMembers,
     BuildContext context,
   ) {
     List<Widget> taskFields = [];
@@ -122,7 +121,7 @@ class TaskFields {
             const SizedBox(height: 12),
             TextField(
               onChanged: (value) {
-                _filterTeamMembers(value);
+                filterTeamMembers(value);
               },
               decoration: InputDecoration(
                 labelText: AppLocalizations.of(context)!.searchTeamMembers,

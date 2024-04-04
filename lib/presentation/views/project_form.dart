@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_projects/domain/model/project.dart';
+import 'package:flutter_projects/domain/model/task.dart';
 import 'package:flutter_projects/presentation/providers/project_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lottie/lottie.dart';
 import 'task_form.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-// final projectDemoProvider = StateNotifierProvider<ProjectDemo, Project>((ref) {
-//   return ProjectDemo();
-// });
 
 class ProjectForm extends ConsumerStatefulWidget {
   final void Function(Project) addProject;
@@ -40,8 +37,7 @@ class _ProjectFormState extends ConsumerState<ProjectForm> {
   List<Task> tasks = [];
 
   late TextEditingController _textEditingController;
-  // ignore: unused_field
-  List<String> _filteredTeamMembers = [];
+  List<String> filteredTeamMembers = [];
 
   bool isSubmitting = false;
   bool showSuccessAnimation = false;
@@ -76,7 +72,7 @@ class _ProjectFormState extends ConsumerState<ProjectForm> {
 
   void _filterTeamMembers(String query) {
     setState(() {
-      _filteredTeamMembers = widget.teamMembers
+      filteredTeamMembers = widget.teamMembers
           .where((member) => member.toLowerCase().contains(query.toLowerCase()))
           .toList();
     });
@@ -350,11 +346,11 @@ class _ProjectFormState extends ConsumerState<ProjectForm> {
               Center(
                 child: ElevatedButton(
                   onPressed: () async {
-                    // print('submitting?');
+                    // print('submitting...?');
                     if (_formKey.currentState!.validate()) {
                       setState(() {
                         isSubmitting = true;
-                        // print('set  state');
+                        // print('set state');
                         showSuccessAnimation = true;
                       });
                       Project newProject = Project(
@@ -380,15 +376,18 @@ class _ProjectFormState extends ConsumerState<ProjectForm> {
                     }
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue,
+                    backgroundColor: Colors.white,
                     padding: const EdgeInsets.symmetric(
                         horizontal: 32, vertical: 16),
-                    textStyle: const TextStyle(fontSize: 16),
+                    side: BorderSide(color: Colors.blue[900]!),
                   ),
                   child: isSubmitting
-                      // ? Lottie.asset('assets/success.json')
                       ? const CircularProgressIndicator()
-                      : Text(AppLocalizations.of(context)!.submit),
+                      : Text(
+                          AppLocalizations.of(context)!.submit,
+                          style: const TextStyle(
+                              fontSize: 16, color: Colors.black),
+                        ),
                 ),
               ),
             ],
@@ -406,21 +405,6 @@ class _ProjectFormState extends ConsumerState<ProjectForm> {
       setState,
       _filterTeamMembers,
       context,
-    );
-  }
-
-  // ignore: unused_element
-  void _showSuccessDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          content: SizedBox(
-            height: MediaQuery.of(context).size.height * 0.7,
-            child: Lottie.asset('assets/success.json'),
-          ),
-        );
-      },
     );
   }
 }

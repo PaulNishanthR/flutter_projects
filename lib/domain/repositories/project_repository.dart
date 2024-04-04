@@ -8,4 +8,5 @@ abstract class ProjectRepository {
   Future<void> editProject(int projectId, Project editedProject);
   Future<void> deleteProject(int projectId);
   Future<List<Project>> getUserProjects(int userId);
+  Future<List<Project>> getAllProjects();
 }

@@ -48,8 +48,7 @@ class Navbar extends ConsumerWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    // ignore: unnecessary_string_interpolations
-                    '$userNamePrefix',
+                    userNamePrefix,
                     style: const TextStyle(
                       color: Colors.black,
                       fontSize: 28,

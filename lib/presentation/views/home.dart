@@ -7,9 +7,6 @@ import 'package:flutter_projects/presentation/views/create_project.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-// final projectDemoProvider = StateNotifierProvider<ProjectDemo, Project>((ref) {
-//   return ProjectDemo();
-// });
 
 class MyHomePage extends ConsumerStatefulWidget {
   final String title;
@@ -33,13 +30,11 @@ class _MyHomePageState extends ConsumerState<MyHomePage> {
 
   Future<void> loadProjects() async {
     await ref.read(projectsProvider.notifier).getProjects(widget.userId);
-    final fetchedProjects = ref.watch(projectsProvider);
-    setState(() {
-      projects = fetchedProjects;
-    });
-
-    // print(
-    //     'updated projects fetched from database--->${projectsProvider.notifier} ');
+    // final fetchedProjects = ref.watch(projectsProvider);
+    // setState(() {
+    //   projects = fetchedProjects;
+    // });
+    // print('updated projects fetched from database--->${projectsProvider.notifier} ');
   }
 
   List<Project> projects = [];
@@ -126,7 +121,7 @@ class _MyHomePageState extends ConsumerState<MyHomePage> {
           );
         },
         child: Padding(
-          padding:const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(16.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -218,10 +213,5 @@ class _MyHomePageState extends ConsumerState<MyHomePage> {
         ),
       ),
     );
-  }
-
-  // ignore: unused_element
-  void _addProject(BuildContext context, Project project, int userId) {
-    ref.read(projectsProvider.notifier).addProject(project, userId);
   }
 }

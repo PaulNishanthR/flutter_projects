@@ -2,22 +2,8 @@ import 'package:flutter_projects/data/datasources/project_datasource.dart';
 import 'package:flutter_projects/domain/model/project.dart';
 import 'package:flutter_projects/data/repositories/database_project_impl.dart';
 import 'package:flutter_projects/domain/repositories/project_repository.dart';
+import 'package:flutter_projects/utils/constants/custom_exception.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-// class ProjectDemo extends StateNotifier<Project> {
-//   ProjectDemo()
-//       : super(Project(
-//           projectName: '',
-//           description: '',
-//           owner: '',
-//           startDate: DateTime.now(),
-//           endDate: DateTime.now(),
-//           workHours: '',
-//           teamMembers: '',
-//           tasks: [],
-//           userId: 0,
-//         ));
-// }
 
 final projectsProvider =
     StateNotifierProvider<ProjectsNotifier, List<Project>>((ref) {
@@ -29,7 +15,7 @@ final projectRepositoryProvider = Provider<ProjectRepository>((ref) {
 });
 
 final databaseHelperProvider = Provider<ProjectDataSource>((ref) {
-  return ProjectDataSource();
+  return ProjectDataSource.instance;
 });
 
 class ProjectsNotifier extends StateNotifier<List<Project>> {
@@ -60,6 +46,7 @@ class ProjectsNotifier extends StateNotifier<List<Project>> {
       return true;
     } catch (e) {
       return false;
+      // CustomException("Unable to Edit Project");
     }
   }
 
@@ -68,7 +55,7 @@ class ProjectsNotifier extends StateNotifier<List<Project>> {
       await _repository.deleteProject(projectId);
       state = state.where((project) => project.id != projectId).toList();
     } catch (e) {
-      // Handle error
+      CustomException("Unable to Delete Project");
     }
   }
 
@@ -77,7 +64,7 @@ class ProjectsNotifier extends StateNotifier<List<Project>> {
       List<Project> userProjects = await _repository.getUserProjects(userId);
       state = userProjects;
     } catch (e) {
-      // Handle error
+      CustomException("Unable to get the projects");
     }
   }
 }

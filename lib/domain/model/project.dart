@@ -1,67 +1,6 @@
 import 'dart:convert';
-
-class Task {
-  int? id;
-  String taskName;
-  String description;
-  DateTime dueDate;
-  bool status;
-  List<String>? teamMembers;
-  List<String>? assignedMembers;
-
-  Task(
-      {required this.taskName,
-      required this.description,
-      required this.dueDate,
-      required this.status,
-      this.teamMembers,
-      this.assignedMembers});
-
-  Map<String, dynamic> toJson() {
-    return {
-      'name': taskName,
-      'description': description,
-      'dueDate': dueDate.toIso8601String(),
-      'status': status,
-      'teamMembers': teamMembers,
-      'assignedMembers': assignedMembers,
-    };
-  }
-
-  factory Task.fromJson(Map<String, dynamic> json) {
-    // ignore: unnecessary_null_comparison
-    if (json == null) {
-      throw ArgumentError('Invalid JSON data for Task');
-    }
-    return Task(
-      taskName: json['taskName'] ?? '',
-      description: json['description'] ?? '',
-      dueDate: json['dueDate'] != null
-          ? DateTime.parse(json['dueDate'])
-          : DateTime.now(),
-      status: json['status'] ?? false,
-    );
-  }
-
-  factory Task.fromMap(Map<String, dynamic> map) {
-    // ignore: unnecessary_null_comparison
-    if (map == null) {
-      throw ArgumentError('Invalid map data for Task');
-    }
-    return Task(
-      taskName: map['taskName'] ?? '',
-      description: map['description'] ?? '',
-      dueDate: DateTime.parse(map['dueDate'] ?? ''),
-      status: map['status'] ?? false,
-      teamMembers: map['teamMembers'] != null
-          ? List<String>.from(map['teamMembers'])
-          : null,
-      assignedMembers: map['assignedMembers'] != null
-          ? List<String>.from(map['assignedMembers'])
-          : null,
-    );
-  }
-}
+import 'package:flutter_projects/domain/model/task.dart';
+import 'package:intl/intl.dart';
 
 class Project {
   final int? id;
@@ -140,6 +79,28 @@ class Project {
     );
   }
 
+  factory Project.fromJson(Map<String, dynamic> json) {
+    List<Task> tasks = _parseTasks(json['tasks']);
+    return Project(
+      id: json['id'] != null ? int.tryParse(json['id'].toString()) : null,
+      userId: json['userId'] != null
+          ? int.tryParse(json['userId'].toString()) ?? 0
+          : 0,
+      projectName: json['projectName'] ?? '',
+      description: json['description'] ?? '',
+      owner: json['owner'] != null ? json['owner'].toString() : '',
+      startDate: json['startDate'] != null
+          ? _parseDateTime(json['startDate'])
+          : DateTime.now(),
+      endDate: json['endDate'] != null
+          ? _parseDateTime(json['endDate'])
+          : DateTime.now(),
+      workHours: json['workHours']?.toString() ?? '',
+      teamMembers: _parseTeamMembers(json['teamMembers']),
+      tasks: tasks,
+    );
+  }
+
   factory Project.fromMap(Map<String, dynamic> map) {
     List<Task> tasks = [];
     if (map['tasks'] != null) {
@@ -159,5 +120,66 @@ class Project {
       teamMembers: map['teamMembers'].toString(),
       tasks: tasks,
     );
+  }
+
+  factory Project.parseProject(Map<String, dynamic> json) {
+    List<Task> tasks = _parseTasks(json['tasks']);
+    return Project(
+      id: json['id'] != null ? int.tryParse(json['id'].toString()) : null,
+      userId: json['userId'] != null
+          ? int.tryParse(json['userId'].toString()) ?? 0
+          : 0,
+      projectName: json['projectName'] ?? '',
+      description: json['description'] ?? '',
+      owner: json['owner'] != null ? json['owner'].toString() : '',
+      startDate: json['startdate'] != null
+          ? _parseDateTime(json['startdate'])
+          : DateTime.now(),
+      endDate: json['endDate'] != null
+          ? _parseDateTime(json['endDate'])
+          : DateTime.now(),
+      workHours: json['workHours']?.toString() ?? '',
+      teamMembers: _parseTeamMembers(json['teamMembers']),
+      tasks: tasks,
+    );
+  }
+
+  static DateTime _parseDateTime(dynamic dateString) {
+    if (dateString is String) {
+      if (RegExp(r'\d{1,2}/\d{1,2}/\d{4}').hasMatch(dateString)) {
+        return DateFormat('MM/dd/yyyy').parse(dateString);
+      } else if (RegExp(r'\d{4}-\d{2}-\d{2}').hasMatch(dateString)) {
+        return DateFormat('yyyy-MM-dd').parse(dateString);
+      }
+    }
+    return DateTime.now();
+  }
+
+  static String _parseTeamMembers(dynamic teamMembers) {
+    if (teamMembers == null) {
+      return '';
+    } else if (teamMembers is int) {
+      return teamMembers.toString();
+    } else if (teamMembers is String) {
+      return teamMembers;
+    } else {
+      return '';
+    }
+  }
+
+  static List<Task> _parseTasks(dynamic tasks) {
+    if (tasks == null || tasks is String) {
+      return [];
+    }
+    return (tasks as List<dynamic>).map((taskJson) {
+      return Task(
+        taskName: taskJson['taskName'] ?? '',
+        description: taskJson['description'] ?? '',
+        dueDate: taskJson['dueDate'] != null
+            ? DateTime.parse(taskJson['dueDate'])
+            : DateTime.now(),
+        status: taskJson['status'] ?? false,
+      );
+    }).toList();
   }
 }

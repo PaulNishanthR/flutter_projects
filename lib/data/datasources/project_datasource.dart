@@ -1,39 +1,58 @@
-// ignore_for_file: override_on_non_overriding_member
 import 'dart:convert';
 import 'package:flutter_projects/domain/model/project.dart';
+import 'package:flutter_projects/domain/model/task.dart';
 import 'package:flutter_projects/domain/repositories/project_repository.dart';
+import 'package:flutter_projects/utils/constants/custom_exception.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
 class ProjectDataSource implements ProjectRepository {
-  final String databaseName = "proj.db";
+  ProjectDataSource._();
 
-  String users =
+  static final ProjectDataSource _instance = ProjectDataSource._();
+
+  static ProjectDataSource get instance => _instance;
+
+  bool _isDbInitialized = false;
+
+  late Database _database;
+
+  final String _databaseName = "proj.db";
+
+  final String _users =
       "create table users (userId INTEGER PRIMARY KEY AUTOINCREMENT, userName TEXT UNIQUE, userPassword TEXT)";
 
-  String projectsD =
+  final String _projectsD =
       "create table projectsD (projectId INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, description TEXT NOT NULL, owner TEXT NOT NULL, workHours INTEGER NOT NULL, startDate TEXT, endDate TEXT, teamMembers INTEGER NOT NULL, tasks TEXT, userId INTEGER NOT NULL, FOREIGN KEY (userId) REFERENCES users (userId))";
 
-  Future<Database> initDB() async {
+  Future<void> _initDB() async {
     final String databasePath = await getDatabasesPath();
-    final String path = join(databasePath, databaseName);
+    final String path = join(databasePath, _databaseName);
 
-    return openDatabase(path, version: 1, onCreate: (db, version) async {
-      await db.execute(users);
-      await db.execute(projectsD);
+    _database =
+        await openDatabase(path, version: 1, onCreate: (db, version) async {
+      await db.execute(_users);
+      await db.execute(_projectsD);
     });
+
+    _isDbInitialized = true;
+  }
+
+  Future<void> _checkAndInitDB() async {
+    if (!_isDbInitialized) {
+      await _initDB();
+    }
   }
 
   @override
   Future<int?> getUserId(String email) async {
-    final Database db = await initDB();
-    final List<Map<String, dynamic>> result = await db.query(
+    await _checkAndInitDB();
+    final List<Map<String, dynamic>> result = await _database.query(
       'users',
       columns: ['userId'],
       where: 'userName = ?',
       whereArgs: [email],
     );
-    // print(result);
     if (result.isNotEmpty) {
       return result.first['userId'] as int?;
     } else {
@@ -43,9 +62,8 @@ class ProjectDataSource implements ProjectRepository {
 
   @override
   Future<bool> login(String userName, String userPassword) async {
-    final Database db = await initDB();
-
-    final List<Map<String, dynamic>> result = await db.query(
+    await _checkAndInitDB();
+    final List<Map<String, dynamic>> result = await _database.query(
       'users',
       where: 'userName = ? AND userPassword = ?',
       whereArgs: [userName, userPassword],
@@ -56,26 +74,23 @@ class ProjectDataSource implements ProjectRepository {
 
   @override
   Future<void> signup(String userName, String userPassword) async {
-    final Database db = await initDB();
-
+    await _checkAndInitDB();
     try {
-      await db.insert(
+      await _database.insert(
         'users',
         {'userName': userName, 'userPassword': userPassword},
         conflictAlgorithm: ConflictAlgorithm.replace,
       );
     } catch (e) {
-      // print("Signup error: $e");
-    } finally {
-      await db.close();
+      CustomException("Error! didn't Sign Up");
     }
   }
 
   @override
   Future<int> createProject(Project project, int userId) async {
-    final Database db = await initDB();
+    await _checkAndInitDB();
     try {
-      int projectId = await db.insert(
+      int projectId = await _database.insert(
         'projectsD',
         {
           ...project.toMap(),
@@ -84,18 +99,17 @@ class ProjectDataSource implements ProjectRepository {
         },
         conflictAlgorithm: ConflictAlgorithm.replace,
       );
-      // print('task added ${project.projectName} $projectId ');
       return projectId;
     } catch (e) {
-      // print("Creation error: $e");
+      CustomException("Error creating new project");
       return -1;
     }
   }
 
   @override
   Future<List<Project>> getAllProjects() async {
-    final Database db = await initDB();
-    final List<Map<String, dynamic>> maps = await db.query('projectsD');
+    await _checkAndInitDB();
+    final List<Map<String, dynamic>> maps = await _database.query('projectsD');
     return List.generate(maps.length, (i) {
       List<Task> tasks = [];
       if (maps[i]['tasks'] != null) {
@@ -120,40 +134,38 @@ class ProjectDataSource implements ProjectRepository {
 
   @override
   Future<void> editProject(int projectId, Project editedProject) async {
-    final Database db = await initDB();
+    await _checkAndInitDB();
     try {
-      await db.update(
+      await _database.update(
         'projectsD',
         editedProject.toMap(),
         where: 'projectId = ?',
         whereArgs: [editedProject.id],
         conflictAlgorithm: ConflictAlgorithm.replace,
       );
-      // print('Project updated: ${editedProject.projectName}');
     } catch (e) {
-      // print("Edit error: $e");
+      CustomException("Can't edit the project right now");
     }
   }
 
   @override
   Future<void> deleteProject(int projectId) async {
-    final Database db = await initDB();
+    await _checkAndInitDB();
     try {
-      await db.delete(
+      await _database.delete(
         'projectsD',
         where: 'projectId = ?',
         whereArgs: [projectId],
       );
-      // print('Project deleted with ID: $projectId');
     } catch (e) {
-      // print("Delete error: $e");
+      CustomException("Can't delete the project");
     }
   }
 
   @override
   Future<List<Project>> getUserProjects(int userId) async {
-    final Database db = await initDB();
-    final List<Map<String, dynamic>> maps = await db.query(
+    await _checkAndInitDB();
+    final List<Map<String, dynamic>> maps = await _database.query(
       'projectsD',
       where: 'userId = ?',
       whereArgs: [userId],

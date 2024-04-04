@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_projects/data/datasources/project_datasource.dart';
 import 'package:flutter_projects/presentation/providers/auth_provider.dart';
 import 'package:flutter_projects/presentation/views/login.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -17,7 +16,6 @@ class _SignUpState extends ConsumerState<SignUp> {
   final confirmPasswordController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  final ProjectDataSource projectDataSource = ProjectDataSource();
   bool isVisible = false;
 
   void signUp() async {
@@ -30,7 +28,7 @@ class _SignUpState extends ConsumerState<SignUp> {
         context: context,
         builder: (_) => AlertDialog(
           title: const Text('Error'),
-          content: const Text('Passwords do not match'),
+          content: const Text("Passwords didn't match"),
           actions: <Widget>[
             TextButton(
               onPressed: () {
@@ -47,33 +45,12 @@ class _SignUpState extends ConsumerState<SignUp> {
     final authNotifier = ref.read(authProvider.notifier);
 
     await authNotifier.signup(username, password);
-
-    // if (success) {
-    // print('SignUp successful');
-    // ignore: use_build_context_synchronously
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (_) => const LoginScreen()),
-    );
-    // } else {
-    //   // print('SignUp failed');
-    //   // ignore: use_build_context_synchronously
-    //   showDialog(
-    //     context: context,
-    //     builder: (_) => AlertDialog(
-    //       title: const Text('Error'),
-    //       content: const Text('Failed to sign up. Please try again.'),
-    //       actions: <Widget>[
-    //         TextButton(
-    //           onPressed: () {
-    //             Navigator.of(context).pop();
-    //           },
-    //           child: const Text('OK'),
-    //         ),
-    //       ],
-    //     ),
-    //   );
-    // }
+    if (context.mounted) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => const LoginScreen()),
+      );
+    }
   }
 
   @override
@@ -88,13 +65,19 @@ class _SignUpState extends ConsumerState<SignUp> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const ListTile(
-                    title: Text(
-                      "Register New Account",
-                      style:
-                          TextStyle(fontSize: 50, fontWeight: FontWeight.bold),
-                    ),
+                  // const ListTile(
+                  // title: Text(
+                  //   "Register New Account",
+                  //   style:
+                  //       TextStyle(fontSize: 50, fontWeight: FontWeight.bold),
+                  // ),
+                  // ),
+                  Image.asset(
+                    "assets/image1.png",
+                    width: 175,
+                    height: 175,
                   ),
+                  const SizedBox(height: 20),
                   Container(
                     margin: const EdgeInsets.all(8),
                     padding:
@@ -236,8 +219,8 @@ class _SignUpState extends ConsumerState<SignUp> {
   );
 
   static final RegExp passwordRegex = RegExp(
-    r'^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$',
-  );
+    r'^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$',
+  ); 
 
   static bool isValidEmail(String email) {
     return emailRegex.hasMatch(email);

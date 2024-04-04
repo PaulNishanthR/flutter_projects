@@ -11,8 +11,7 @@ class ProjectsTable extends ConsumerStatefulWidget {
   const ProjectsTable({Key? key, required this.userId}) : super(key: key);
 
   @override
-  // ignore: library_private_types_in_public_api
-  _ProjectsTableState createState() => _ProjectsTableState();
+  ConsumerState<ProjectsTable> createState() => _ProjectsTableState();
 }
 
 class _ProjectsTableState extends ConsumerState<ProjectsTable> {
@@ -27,7 +26,7 @@ class _ProjectsTableState extends ConsumerState<ProjectsTable> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title:  Text(AppLocalizations.of(context)!.yourProjects),
+        title: Text(AppLocalizations.of(context)!.yourProjects),
         backgroundColor: Colors.lightBlue,
       ),
       body: projectsExist
@@ -93,8 +92,9 @@ class _ProjectsTableState extends ConsumerState<ProjectsTable> {
                 await ref
                     .read(projectsProvider.notifier)
                     .deleteProject(project.id!);
-                // ignore: use_build_context_synchronously
-                Navigator.pop(context);
+                if (context.mounted) {
+                  Navigator.pop(context);
+                }
               },
               child: const Text('Delete'),
             ),
@@ -185,13 +185,15 @@ class _ProjectsTableState extends ConsumerState<ProjectsTable> {
                       .editProject(project.id!, updatedProject);
 
                   if (success) {
-                    // ignore: use_build_context_synchronously
-                    Navigator.pop(context);
+                    if (context.mounted) {
+                      Navigator.pop(context);
+                    }
                   } else {
-                    // ignore: use_build_context_synchronously
-                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                      content: Text('Failed to update project.'),
-                    ));
+                    if (context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        content: Text('Failed to update project.'),
+                      ));
+                    }
                   }
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(

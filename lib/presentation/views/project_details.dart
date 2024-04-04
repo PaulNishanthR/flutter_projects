@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_projects/domain/model/project.dart';
+import 'package:flutter_projects/domain/model/task.dart';
 
 class ProjectDetailsPage extends StatelessWidget {
   final Project project;

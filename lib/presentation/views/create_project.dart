@@ -15,7 +15,6 @@ class CreateProjectPage extends StatelessWidget {
     'member7',
     'member8',
     'member9',
-    'member10',
   ];
   final int userId;
   CreateProjectPage(

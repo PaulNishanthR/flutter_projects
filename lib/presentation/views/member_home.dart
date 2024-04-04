@@ -1,43 +1,33 @@
-// ignore_for_file: library_private_types_in_public_api
 import 'package:flutter/material.dart';
-import 'package:flutter_projects/data/datasources/projects_from_api.dart';
+import 'package:flutter_projects/presentation/providers/api_provider.dart';
 import 'package:flutter_projects/presentation/views/login.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_projects/domain/model/project.dart';
 import 'package:flutter_projects/presentation/views/member_project_details.dart';
 
-class MemberHomeScreen extends StatefulWidget {
+class MemberHomeScreen extends ConsumerStatefulWidget {
   const MemberHomeScreen({Key? key}) : super(key: key);
 
   @override
-  _MemberHomeScreenState createState() => _MemberHomeScreenState();
+  ConsumerState createState() => _MemberHomeScreenState();
 }
 
-class _MemberHomeScreenState extends State<MemberHomeScreen> {
+class _MemberHomeScreenState extends ConsumerState<MemberHomeScreen> {
   List<Project> projects = [];
 
   @override
   void initState() {
     super.initState();
-    fetchProjectsFromApi();
-  }
-
-  void fetchProjectsFromApi() async {
-    try {
-      final List<Project> fetchedProjects = await APiFetch().getHttp();
-      setState(() {
-        projects = fetchedProjects;
-      });
-    } catch (e) {
-      // print('Error fetching projects: $e');
-    }
+    projects = ref.read(apiProvider);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Member Home'),
+        automaticallyImplyLeading: false,
+        title: const Text("kumaran's Projects"),
         backgroundColor: Colors.blue,
         actions: [
           IconButton(

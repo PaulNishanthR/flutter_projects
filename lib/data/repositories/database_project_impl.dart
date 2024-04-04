@@ -41,4 +41,9 @@ class DatabaseProjectRepository implements ProjectRepository {
   Future<List<Project>> getUserProjects(int userId) async {
     return await _dataSource.getUserProjects(userId);
   }
+
+  @override
+  Future<List<Project>> getAllProjects() async {
+    return await _dataSource.getAllProjects();
+  }
 }

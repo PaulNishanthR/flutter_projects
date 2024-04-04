@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_projects/data/datasources/project_datasource.dart';
 import 'package:flutter_projects/presentation/providers/auth_provider.dart';
+import 'package:flutter_projects/presentation/providers/userId_provider.dart';
 import 'package:flutter_projects/presentation/views/member_home.dart';
 import 'package:flutter_projects/presentation/views/register.dart';
 import 'package:flutter_projects/presentation/views/home.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
-  // ignore: use_key_in_widget_constructors
   const LoginScreen({
-    Key? key,
+    super.key,
   });
 
   @override
@@ -19,12 +18,9 @@ class LoginScreen extends ConsumerStatefulWidget {
 class _LoginScreenState extends ConsumerState<LoginScreen> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  // final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   bool isVisible = false;
   bool isLoginTrue = false;
-
-  final ProjectDataSource db = ProjectDataSource();
 
   Future<void> login() async {
     final String username = _usernameController.text;
@@ -59,48 +55,49 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     }
 
     if (isAuthenticated) {
-      // ignore: unnecessary_nullable_for_final_variable_declarations
-      final int? userId = await db.getUserId(username) ?? 0;
+      final int? userId =
+          await ref.read(userIdProvider.notifier).getUserId(username);
       if (username.contains('member')) {
-        // ignore: use_build_context_synchronously
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (_) => const MemberHomeScreen(
-                // projects: [],
-                ),
-          ),
-        );
-      } else {
-        // ignore: use_build_context_synchronously
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (_) => MyHomePage(
-              title: "Kumaran's Projects",
-              username: username,
-              userId: userId ?? 0,
+        if (context.mounted) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (_) => const MemberHomeScreen(),
             ),
+          );
+        }
+      } else {
+        if (context.mounted) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (_) => MyHomePage(
+                title: "Kumaran's Projects",
+                username: username,
+                userId: userId,
+              ),
+            ),
+          );
+        }
+      }
+    } else {
+      if (context.mounted) {
+        showDialog(
+          context: context,
+          builder: (_) => AlertDialog(
+            title: const Text('Error'),
+            content: const Text('Invalid credentials'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text('OK'),
+              ),
+            ],
           ),
         );
       }
-    } else {
-      // ignore: use_build_context_synchronously
-      showDialog(
-        context: context,
-        builder: (_) => AlertDialog(
-          title: const Text('Error'),
-          content: const Text('Invalid username or password'),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text('OK'),
-            ),
-          ],
-        ),
-      );
     }
   }
 
@@ -228,16 +225,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     r'^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$',
   );
 
-  static final RegExp passwordRegex = RegExp(
-    r'^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$',
-  );
-
   static bool isValidEmail(String email) {
     return emailRegex.hasMatch(email);
-  }
-
-  // ignore: unused_element
-  static bool isValidPassword(String password) {
-    return passwordRegex.hasMatch(password);
   }
 }

@@ -16,7 +16,7 @@ class _SplashScreenState extends State<SplashScreen>
     super.initState();
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
 
-    Future.delayed(const Duration(seconds: 3), () {
+    Future.delayed(const Duration(seconds: 5), () {
       Navigator.of(context).pushReplacement(MaterialPageRoute(
         builder: (_) => const LoginScreen(),
       ));
@@ -42,17 +42,22 @@ class _SplashScreenState extends State<SplashScreen>
             end: Alignment.centerRight,
           ),
         ),
-        child: const Column(
+        child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Icons.catching_pokemon,
-              size: 80,
-              color: Colors.black,
+            // Icon(
+            //   Icons.catching_pokemon,
+            //   size: 80,
+            //   color: Colors.black,
+            // ),
+            Image.asset(
+              "assets/playstore.png",
+              width: 80,
+              height: 80,
             ),
-            SizedBox(height: 20),
-            Text(
-              "Kumaran's Projects",
+            const SizedBox(height: 20),
+            const Text(
+              "ProjectHub",
               style: TextStyle(
                 fontStyle: FontStyle.italic,
                 color: Colors.black,

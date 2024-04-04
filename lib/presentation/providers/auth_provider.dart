@@ -1,18 +1,9 @@
-import 'package:flutter_projects/data/datasources/project_datasource.dart';
-import 'package:flutter_projects/data/repositories/database_project_impl.dart';
 import 'package:flutter_projects/domain/repositories/project_repository.dart';
+import 'package:flutter_projects/presentation/providers/project_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final authProvider = StateNotifierProvider<AuthNotifier, bool>((ref) {
   return AuthNotifier(ref.read(projectRepositoryProvider));
-});
-
-final projectRepositoryProvider = Provider<ProjectRepository>((ref) {
-  return DatabaseProjectRepository(ref.read(databaseHelperProvider));
-});
-
-final databaseHelperProvider = Provider<ProjectDataSource>((ref) {
-  return ProjectDataSource();
 });
 
 class AuthNotifier extends StateNotifier<bool> {
