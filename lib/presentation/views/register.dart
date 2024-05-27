@@ -1,7 +1,11 @@
+import 'dart:convert';
+
+import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_projects/presentation/providers/auth_provider.dart';
 import 'package:flutter_projects/presentation/views/login.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter/services.dart';
 
 class SignUp extends ConsumerStatefulWidget {
   const SignUp({Key? key}) : super(key: key);
@@ -15,8 +19,16 @@ class _SignUpState extends ConsumerState<SignUp> {
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  bool _passObscured = true;
+  bool _confirmPassObscured = true;
 
   bool isVisible = false;
+
+  String encryptPassword(String password) {
+    final bytes = utf8.encode(password);
+    final hash = sha256.convert(bytes);
+    return hash.toString();
+  }
 
   void signUp() async {
     final String username = usernameController.text;
@@ -42,9 +54,13 @@ class _SignUpState extends ConsumerState<SignUp> {
       return;
     }
 
+    final encryptedPassword = encryptPassword(password);
+    // print("encryption while sign up--->$encryptedPassword");
+
     final authNotifier = ref.read(authProvider.notifier);
 
-    await authNotifier.signup(username, password);
+    await authNotifier.signup(username, encryptedPassword);
+
     if (context.mounted) {
       Navigator.push(
         context,
@@ -65,13 +81,6 @@ class _SignUpState extends ConsumerState<SignUp> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  // const ListTile(
-                  // title: Text(
-                  //   "Register New Account",
-                  //   style:
-                  //       TextStyle(fontSize: 50, fontWeight: FontWeight.bold),
-                  // ),
-                  // ),
                   Image.asset(
                     "assets/image1.png",
                     width: 175,
@@ -87,19 +96,24 @@ class _SignUpState extends ConsumerState<SignUp> {
                         color: Colors.lightBlue.withOpacity(.2)),
                     child: TextFormField(
                       controller: usernameController,
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      inputFormatters: [LengthLimitingTextInputFormatter(20)],
                       validator: (value) {
                         if (value!.isEmpty) {
-                          return "Username is required";
+                          return "Email is required";
                         }
                         if (!isValidEmail(value)) {
-                          return "Invalid email";
+                          return "Invalid email. Must be @kumaran.com";
+                        }
+                        if (!value.endsWith('@kumaran.com')) {
+                          return 'Only emails ending with @kumaran.com are allowed'; 
                         }
                         return null;
                       },
                       decoration: const InputDecoration(
                         icon: Icon(Icons.person),
                         border: InputBorder.none,
-                        hintText: "Username",
+                        hintText: "User Email",
                       ),
                     ),
                   ),
@@ -112,16 +126,18 @@ class _SignUpState extends ConsumerState<SignUp> {
                         color: Colors.lightBlue.withOpacity(.2)),
                     child: TextFormField(
                       controller: passwordController,
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      inputFormatters: [LengthLimitingTextInputFormatter(15)],
                       validator: (value) {
                         if (value!.isEmpty) {
                           return "Password is required";
                         }
                         if (!isValidPassword(value)) {
-                          return "Password must contain at least 8 characters, including one uppercase letter, one lowercase letter, and one number";
+                          return "Password must contain at least 8 characters,\n including one uppercase letter,\n one lowercase letter,\n and one number";
                         }
                         return null;
                       },
-                      obscureText: !isVisible,
+                      obscureText: _passObscured,
                       decoration: InputDecoration(
                           icon: const Icon(Icons.lock),
                           border: InputBorder.none,
@@ -129,12 +145,12 @@ class _SignUpState extends ConsumerState<SignUp> {
                           suffixIcon: IconButton(
                               onPressed: () {
                                 setState(() {
-                                  isVisible = !isVisible;
+                                  _passObscured = !_passObscured;
                                 });
                               },
-                              icon: Icon(isVisible
-                                  ? Icons.visibility
-                                  : Icons.visibility_off))),
+                              icon: Icon(_passObscured
+                                  ? Icons.visibility_off
+                                  : Icons.visibility))),
                     ),
                   ),
                   Container(
@@ -146,16 +162,18 @@ class _SignUpState extends ConsumerState<SignUp> {
                         color: Colors.lightBlue.withOpacity(.2)),
                     child: TextFormField(
                       controller: confirmPasswordController,
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      inputFormatters: [LengthLimitingTextInputFormatter(15)],
                       validator: (value) {
                         if (value!.isEmpty) {
                           return "Confirm password is required";
                         }
                         if (passwordController.text != value) {
-                          return "Passwords do not match";
+                          return "Passwords did not match";
                         }
                         return null;
                       },
-                      obscureText: !isVisible,
+                      obscureText: _confirmPassObscured,
                       decoration: InputDecoration(
                           icon: const Icon(Icons.lock),
                           border: InputBorder.none,
@@ -163,12 +181,12 @@ class _SignUpState extends ConsumerState<SignUp> {
                           suffixIcon: IconButton(
                               onPressed: () {
                                 setState(() {
-                                  isVisible = !isVisible;
+                                  _confirmPassObscured = !_confirmPassObscured;
                                 });
                               },
-                              icon: Icon(isVisible
-                                  ? Icons.visibility
-                                  : Icons.visibility_off))),
+                              icon: Icon(_confirmPassObscured
+                                  ? Icons.visibility_off
+                                  : Icons.visibility))),
                     ),
                   ),
                   const SizedBox(height: 10),
@@ -215,12 +233,12 @@ class _SignUpState extends ConsumerState<SignUp> {
   }
 
   static final RegExp emailRegex = RegExp(
-    r'^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$',
+    r'^[a-zA-Z0-9._-]+@kumaran\.com$',
   );
 
   static final RegExp passwordRegex = RegExp(
     r'^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$',
-  ); 
+  );
 
   static bool isValidEmail(String email) {
     return emailRegex.hasMatch(email);

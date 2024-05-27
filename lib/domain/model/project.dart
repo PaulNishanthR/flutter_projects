@@ -13,6 +13,7 @@ class Project {
   final String workHours;
   final String teamMembers;
   final List<Task> tasks;
+  bool completed;
 
   Project({
     this.id,
@@ -25,6 +26,7 @@ class Project {
     required this.workHours,
     required this.teamMembers,
     required this.tasks,
+    this.completed = false,
   });
 
   Map<String, dynamic> toMap() {
@@ -48,7 +50,7 @@ class Project {
     DateTime? startDate,
     DateTime? endDate,
     String? workHours,
-    String? teamMembers,
+    String? teamMembers, required bool completed,
   }) {
     return Project(
       id: id ?? this.id,

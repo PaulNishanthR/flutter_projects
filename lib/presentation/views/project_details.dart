@@ -11,7 +11,6 @@ class ProjectDetailsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: false,
         title: Text(project.projectName),
         backgroundColor: Colors.lightBlue,
         elevation: 0,

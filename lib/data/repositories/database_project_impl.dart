@@ -23,6 +23,11 @@ class DatabaseProjectRepository implements ProjectRepository {
   }
 
   @override
+  Future<bool> checkUserExists(String userName) async {
+    return await _dataSource.checkUserExists(userName);
+  }
+
+  @override
   Future<int> createProject(Project project, int userId) async {
     return await _dataSource.createProject(project, userId);
   }
@@ -45,5 +50,11 @@ class DatabaseProjectRepository implements ProjectRepository {
   @override
   Future<List<Project>> getAllProjects() async {
     return await _dataSource.getAllProjects();
+  }
+
+  @override
+  Future<void> markProjectAsCompleted(int projectId) async {
+    // throw UnimplementedError();
+    return await _dataSource.markProjectAsCompleted(projectId);
   }
 }

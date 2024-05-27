@@ -57,7 +57,7 @@ class _SplashScreenState extends State<SplashScreen>
             ),
             const SizedBox(height: 20),
             const Text(
-              "ProjectHub",
+              "KS ProjectHub",
               style: TextStyle(
                 fontStyle: FontStyle.italic,
                 color: Colors.black,

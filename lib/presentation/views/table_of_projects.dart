@@ -15,68 +15,105 @@ class ProjectsTable extends ConsumerStatefulWidget {
 }
 
 class _ProjectsTableState extends ConsumerState<ProjectsTable> {
-  bool projectsExist = false;
+  List<int> _selectedProjectIds = [];
 
   @override
   Widget build(BuildContext context) {
     final projects = ref.watch(projectsProvider);
 
-    projectsExist = projects.isNotEmpty;
-
     return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        title: Text(AppLocalizations.of(context)!.yourProjects),
-        backgroundColor: Colors.lightBlue,
-      ),
-      body: projectsExist
-          ? Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: ListView.builder(
-                itemCount: projects.length,
-                itemBuilder: (context, index) {
-                  final project = projects[index];
-                  return Card(
-                    color: Colors.blue[200],
-                    child: ListTile(
-                      title: Text(
-                        project.projectName,
-                        style: const TextStyle(fontSize: 16),
-                      ),
-                      trailing: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          IconButton(
-                            icon: Icon(
-                              Icons.edit,
-                              size: 20,
-                              color: Colors.green[800],
+        appBar: AppBar(
+          title: Text(AppLocalizations.of(context)!.yourProjects),
+          backgroundColor: Colors.lightBlue,
+        ),
+        body: projects.isNotEmpty
+            ? Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: ListView.builder(
+                  itemCount: projects.length,
+                  itemBuilder: (context, index) {
+                    final project = projects[index];
+                    final isChecked = _selectedProjectIds.contains(project.id);
+
+                    return Card(
+                      color: project.completed
+                          ? Colors.green
+                          : isChecked
+                              ? Colors.green
+                              : Colors.blue[200],
+                      child: ListTile(
+                        title: Row(
+                          children: [
+                            Checkbox(
+                              value: isChecked,
+                              onChanged: (value) {
+                                setState(() {
+                                  if (value != null && value) {
+                                    _selectedProjectIds.add(project.id!);
+                                  } else {
+                                    _selectedProjectIds.remove(project.id);
+                                  }
+                                });
+                              },
                             ),
-                            onPressed: () {
-                              _editProject(context, project);
-                            },
-                          ),
-                          IconButton(
-                            icon: const Icon(
-                              Icons.delete,
-                              size: 20,
-                              color: Colors.red,
+                            Text(
+                              project.projectName,
+                              style: const TextStyle(fontSize: 16),
                             ),
-                            onPressed: () {
-                              _deleteProject(context, project);
-                            },
-                          ),
-                        ],
+                          ],
+                        ),
+                        trailing: project.completed
+                            ? null
+                            : Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  IconButton(
+                                    icon: Icon(
+                                      Icons.edit,
+                                      size: 20,
+                                      color: Colors.green[800],
+                                    ),
+                                    onPressed: () {
+                                      _editProject(context, project);
+                                    },
+                                  ),
+                                  IconButton(
+                                    icon: const Icon(
+                                      Icons.delete,
+                                      size: 20,
+                                      color: Colors.red,
+                                    ),
+                                    onPressed: () {
+                                      _deleteProject(context, project);
+                                    },
+                                  ),
+                                ],
+                              ),
                       ),
+                    );
+                  },
+                ),
+              )
+            : Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Lottie.asset('assets/empty_projects.json'),
+                    const SizedBox(height: 20),
+                    const Text(
+                      'No projects available.',
+                      style:
+                          TextStyle(fontSize: 16, fontStyle: FontStyle.italic),
+                      textAlign: TextAlign.center,
                     ),
-                  );
-                },
-              ),
-            )
-          : Center(
-              child: Lottie.asset('assets/empty_projects.json'),
-            ),
-    );
+                  ],
+                ),
+              ));
+  }
+
+  void _markProjectAsCompleted(int projectId) async {
+    await ref.read(projectsProvider.notifier).markProjectAsCompleted(projectId);
+    await ref.read(projectsProvider.notifier).fetchProjects();
   }
 
   void _deleteProject(BuildContext context, Project project) {
@@ -123,8 +160,6 @@ class _ProjectsTableState extends ConsumerState<ProjectsTable> {
         TextEditingController(text: _formatDate(project.endDate));
     TextEditingController workHoursController =
         TextEditingController(text: project.workHours);
-    TextEditingController teamMembersController =
-        TextEditingController(text: project.teamMembers);
 
     showDialog(
       context: context,
@@ -147,15 +182,11 @@ class _ProjectsTableState extends ConsumerState<ProjectsTable> {
                   controller: ownerController,
                   decoration: const InputDecoration(labelText: 'Owner'),
                 ),
-                _buildDateField("Start Date", startDateController),
+                // _buildDateField("Start Date", startDateController),
                 _buildDateField("End Date", endDateController),
                 TextFormField(
                   controller: workHoursController,
                   decoration: const InputDecoration(labelText: 'Work Hours'),
-                ),
-                TextFormField(
-                  controller: teamMembersController,
-                  decoration: const InputDecoration(labelText: 'Team Members'),
                 ),
               ],
             ),
@@ -176,7 +207,7 @@ class _ProjectsTableState extends ConsumerState<ProjectsTable> {
                     startDate: startDate,
                     endDate: endDate,
                     workHours: workHoursController.text,
-                    teamMembers: teamMembersController.text,
+                    teamMembers: project.teamMembers,
                     tasks: project.tasks,
                   );
 
@@ -221,12 +252,21 @@ class _ProjectsTableState extends ConsumerState<ProjectsTable> {
   }
 
   Widget _buildDateField(String label, TextEditingController controller) {
+    DateTime initialDate = DateTime.now();
+
+    if (controller.text.isNotEmpty) {
+      DateTime parsedDate = _parseDateTime(controller.text)!;
+      if (parsedDate.isAfter(initialDate)) {
+        initialDate = parsedDate;
+      }
+    }
+
     return GestureDetector(
       onTap: () async {
         DateTime? selectedDate = await showDatePicker(
           context: context,
-          initialDate: DateTime.now(),
-          firstDate: DateTime(2000),
+          initialDate: initialDate,
+          firstDate: DateTime.now(),
           lastDate: DateTime(2100),
         );
         if (selectedDate != null) {

@@ -14,14 +14,6 @@ class MemberHomeScreen extends ConsumerStatefulWidget {
 }
 
 class _MemberHomeScreenState extends ConsumerState<MemberHomeScreen> {
-  List<Project> projects = [];
-
-  @override
-  void initState() {
-    super.initState();
-    projects = ref.read(apiProvider);
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,22 +23,48 @@ class _MemberHomeScreenState extends ConsumerState<MemberHomeScreen> {
         backgroundColor: Colors.blue,
         actions: [
           IconButton(
-              icon: const Icon(Icons.exit_to_app),
-              onPressed: () {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => const LoginScreen()),
-                );
-              }),
+            icon: const Icon(Icons.exit_to_app),
+            onPressed: () {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => const LoginScreen()),
+              );
+            },
+          ),
         ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: ListView.builder(
-          itemCount: projects.length,
-          itemBuilder: (context, index) {
-            final project = projects[index];
-            return _buildProjectCard(context, project);
+        child: Consumer(
+          builder: (context, watch, _) {
+            final projects = ref.watch(apiProvider);
+            return ListView.builder(
+              itemCount: projects.length,
+              itemBuilder: (context, index) {
+                final project = projects[index];
+                return GestureDetector(
+                  onTap: () {
+                    if (project.tasks.isNotEmpty) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => MemberProjectDetailsPage(
+                            tasks: project.tasks,
+                          ),
+                        ),
+                      );
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('No tasks available for this project'),
+                        ),
+                      );
+                    }
+                  },
+                  child: _buildProjectCard(context, project),
+                );
+              },
+            );
           },
         ),
       ),
@@ -59,23 +77,6 @@ class _MemberHomeScreenState extends ConsumerState<MemberHomeScreen> {
       margin: const EdgeInsets.symmetric(vertical: 8),
       color: Colors.blue,
       child: ListTile(
-        onTap: () {
-          if (project.tasks.isNotEmpty) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (_) =>
-                    MemberProjectDetailsPage(tasks: project.tasks.first),
-              ),
-            );
-          } else {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('No tasks available for this project'),
-              ),
-            );
-          }
-        },
         title: Text(project.projectName),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

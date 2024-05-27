@@ -49,6 +49,9 @@ dependencies:
   # animated_login: ^1.7.2
   flutter_localization: ^0.2.0
   flutter_launcher_icons: ^0.13.1
+  crypto: ^3.0.3
+  animated_snack_bar: ^0.4.0
+  # pointycastle: ^3.9.0
 
 dev_dependencies:
   flutter_test:
@@ -79,7 +82,7 @@ flutter:
     - assets/empty_projects.json
     - assets/login.png
     - assets/image1.png
-    - lib/config/images/login.png
+    # - lib/config/images/login.png
     - assets/playstore.png
   #   - images/a_dot_ham.jpeg
 

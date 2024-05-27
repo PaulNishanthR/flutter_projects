@@ -21,7 +21,20 @@ final databaseHelperProvider = Provider<ProjectDataSource>((ref) {
 class ProjectsNotifier extends StateNotifier<List<Project>> {
   final ProjectRepository _repository;
 
-  ProjectsNotifier(this._repository) : super([]);
+  ProjectsNotifier(this._repository) : super([]) {
+    fetchProjects();
+  }
+
+  Future<void> fetchProjects() async {
+    try {
+      // Fetch projects from the repository
+      List<Project> projects = await _repository.getAllProjects();
+      state = projects;
+    } catch (e) {
+      // Handle errors
+      CustomException("Unable to fetch projects");
+    }
+  }
 
   Future<bool> addProject(Project project, int userId) async {
     try {
@@ -65,6 +78,22 @@ class ProjectsNotifier extends StateNotifier<List<Project>> {
       state = userProjects;
     } catch (e) {
       CustomException("Unable to get the projects");
+    }
+  }
+
+  Future<bool> markProjectAsCompleted(int projectId) async {
+    try {
+      await _repository.markProjectAsCompleted(projectId);
+      state = state.map((project) {
+        if (project.id == projectId) {
+          return project.copyWith(completed: true);
+        }
+        return project;
+      }).toList();
+      return true;
+    } catch (e) {
+      return false;
+      // CustomException("Unable to Mark Project as Completed");
     }
   }
 }

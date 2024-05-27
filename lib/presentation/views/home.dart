@@ -7,6 +7,7 @@ import 'package:flutter_projects/presentation/views/create_project.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:lottie/lottie.dart';
 
 class MyHomePage extends ConsumerStatefulWidget {
   final String title;
@@ -30,11 +31,6 @@ class _MyHomePageState extends ConsumerState<MyHomePage> {
 
   Future<void> loadProjects() async {
     await ref.read(projectsProvider.notifier).getProjects(widget.userId);
-    // final fetchedProjects = ref.watch(projectsProvider);
-    // setState(() {
-    //   projects = fetchedProjects;
-    // });
-    // print('updated projects fetched from database--->${projectsProvider.notifier} ');
   }
 
   List<Project> projects = [];
@@ -57,16 +53,6 @@ class _MyHomePageState extends ConsumerState<MyHomePage> {
       appBar: AppBar(
         title: Text(widget.title),
         backgroundColor: Colors.lightBlue,
-        // actions: [
-        //   IconButton(
-        //       icon: const Icon(Icons.exit_to_app),
-        //       onPressed: () {
-        //         Navigator.pushReplacement(
-        //           context,
-        //           MaterialPageRoute(builder: (context) => const LoginScreen()),
-        //         );
-        //       }),
-        // ],
       ),
       drawer: Navbar(
         projects: projects,
@@ -76,17 +62,47 @@ class _MyHomePageState extends ConsumerState<MyHomePage> {
       ),
       body: Padding(
         padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0),
-        child: ListView.builder(
-          itemCount: projects.length + 1,
-          itemBuilder: (context, index) {
-            // print('Projects list length: ${projects.length}');
-            if (index == 0) {
-              return _buildCreateNewProjectCard(context);
-            } else {
-              final projectIndex = index - 1;
-              return _buildProjectCard(projects[projectIndex]);
-            }
-          },
+        // child: ListView.builder(
+        //   itemCount: projects.length + 1,
+        //   itemBuilder: (context, index) {
+        //     // print('Projects list length: ${projects.length}');
+        //     if (index == 0) {
+        //       Lottie.asset('assets/empty_projects.json');
+        //       return _buildCreateNewProjectCard(context);
+        //     } else {
+        //       final projectIndex = index - 1;
+        //       return _buildProjectCard(projects[projectIndex]);
+        //     }
+        //   },
+        // ),
+        child: Column(
+          children: [
+            _buildCreateNewProjectCard(context),
+            Expanded(
+              child: projects.isEmpty
+                  ? Center(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Lottie.asset('assets/empty_projects.json'),
+                          const SizedBox(height: 20),
+                          const Text(
+                            'No projects available.',
+                            style: TextStyle(
+                                fontSize: 16, fontStyle: FontStyle.italic),
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
+                      ),
+                    )
+                  : ListView.builder(
+                      itemCount: projects.length,
+                      itemBuilder: (context, index) {
+                        return _buildProjectCard(projects[index]);
+                      },
+                    ),
+            ),
+          ],
         ),
       ),
     );

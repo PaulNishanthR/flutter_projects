@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_projects/domain/model/project.dart';
 import 'package:flutter_projects/domain/model/task.dart';
 import 'package:flutter_projects/presentation/providers/project_provider.dart';
@@ -9,12 +10,14 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 class ProjectForm extends ConsumerStatefulWidget {
   final void Function(Project) addProject;
   final List<String> teamMembers;
+  final List<String> managers;
   final int userId;
 
   const ProjectForm({
     Key? key,
     required this.addProject,
     required this.teamMembers,
+    required this.managers,
     required this.userId,
   }) : super(key: key);
 
@@ -33,11 +36,13 @@ class _ProjectFormState extends ConsumerState<ProjectForm> {
 
   late DateTime startDate = DateTime.now();
   late DateTime endDate = DateTime.now();
+  // late DateTime projectEndDate;
   late int numberOfTasks = 0;
   List<Task> tasks = [];
 
   late TextEditingController _textEditingController;
   List<String> filteredTeamMembers = [];
+  List<String> filteredManagers = [];
 
   bool isSubmitting = false;
   bool showSuccessAnimation = false;
@@ -48,6 +53,7 @@ class _ProjectFormState extends ConsumerState<ProjectForm> {
     projectNameController = TextEditingController();
     descriptionController = TextEditingController();
     ownerController = TextEditingController();
+    filteredManagers = widget.managers;
     workHoursController = TextEditingController();
     teamMembersController = TextEditingController();
     _textEditingController = TextEditingController();
@@ -78,16 +84,28 @@ class _ProjectFormState extends ConsumerState<ProjectForm> {
     });
   }
 
+  void _filterManagers(String query) {
+    setState(() {
+      filteredManagers = widget.managers
+          .where(
+              (manager) => manager.toLowerCase().contains(query.toLowerCase()))
+          .toList();
+    });
+  }
+
   Future<void> _selectStartDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: startDate,
-      firstDate: DateTime(2022),
+      firstDate: DateTime.now(),
       lastDate: DateTime(2025),
     );
     if (picked != null && picked != startDate) {
       setState(() {
         startDate = picked;
+        if (endDate.isBefore(startDate)) {
+          endDate = startDate.add(const Duration(days: 1));
+        }
       });
     }
   }
@@ -96,12 +114,31 @@ class _ProjectFormState extends ConsumerState<ProjectForm> {
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: endDate,
-      firstDate: DateTime(2024),
+      firstDate: startDate,
       lastDate: DateTime(2025),
     );
     if (picked != null && picked != endDate) {
       setState(() {
         endDate = picked;
+      });
+    }
+  }
+
+  void _addTeamMember(String member) {
+    setState(() {
+      for (int i = 0; i < tasks.length; i++) {
+        if (!tasks[i].teamMembers!.contains(member)) {
+          tasks[i].teamMembers!.add(member);
+        }
+      }
+      _textEditingController.clear();
+    });
+  }
+
+  void _addManager(String? manager) {
+    if (manager != null) {
+      setState(() {
+        ownerController.text = manager;
       });
     }
   }
@@ -118,6 +155,8 @@ class _ProjectFormState extends ConsumerState<ProjectForm> {
             children: [
               TextFormField(
                 controller: projectNameController,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                inputFormatters: [LengthLimitingTextInputFormatter(25)],
                 decoration: InputDecoration(
                   labelText: AppLocalizations.of(context)!.projectName,
                   labelStyle: const TextStyle(color: Colors.black),
@@ -140,7 +179,10 @@ class _ProjectFormState extends ConsumerState<ProjectForm> {
                 style: const TextStyle(fontSize: 14),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter project name';
+                    return 'Please enter project name.';
+                  }
+                  if (value.length > 25) {
+                    return 'Only 25 characters are allowed.';
                   }
                   return null;
                 },
@@ -148,6 +190,8 @@ class _ProjectFormState extends ConsumerState<ProjectForm> {
               const SizedBox(height: 12),
               TextFormField(
                 controller: descriptionController,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                inputFormatters: [LengthLimitingTextInputFormatter(30)],
                 decoration: InputDecoration(
                   labelText: AppLocalizations.of(context)!.description,
                   labelStyle: const TextStyle(color: Colors.black),
@@ -170,37 +214,10 @@ class _ProjectFormState extends ConsumerState<ProjectForm> {
                 style: const TextStyle(fontSize: 14),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter project description';
+                    return 'Please enter project description.';
                   }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 12),
-              TextFormField(
-                controller: ownerController,
-                decoration: InputDecoration(
-                  labelText: AppLocalizations.of(context)!.projectOwner,
-                  labelStyle: const TextStyle(color: Colors.black),
-                  border: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.blue[900]!),
-                    borderRadius: BorderRadius.circular(8.0),
-                    gapPadding: 8.0,
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.blue[900]!),
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.blue[900]!),
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-                  filled: true,
-                  fillColor: Colors.blueGrey[50],
-                ),
-                style: const TextStyle(fontSize: 14),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter project owner name';
+                  if (value.length > 30) {
+                    return 'Only 30 characters are allowed.';
                   }
                   return null;
                 },
@@ -248,6 +265,8 @@ class _ProjectFormState extends ConsumerState<ProjectForm> {
               const SizedBox(height: 12),
               TextFormField(
                 controller: workHoursController,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                inputFormatters: [LengthLimitingTextInputFormatter(3)],
                 decoration: InputDecoration(
                   labelText: AppLocalizations.of(context)!.workHours,
                   labelStyle: const TextStyle(color: Colors.black),
@@ -270,14 +289,64 @@ class _ProjectFormState extends ConsumerState<ProjectForm> {
                 style: const TextStyle(fontSize: 14),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter working hours';
+                    return 'Please enter working hours.';
+                  }
+                  if (value.length > 3) {
+                    return 'Only 2 digits are allowed here.';
                   }
                   return null;
                 },
               ),
               const SizedBox(height: 12),
+              Row(
+                children: [
+                  Expanded(
+                    child: TextFormField(
+                      controller: ownerController,
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      decoration: InputDecoration(
+                        labelText: AppLocalizations.of(context)!.projectOwner,
+                        labelStyle: const TextStyle(color: Colors.black),
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.blue[900]!),
+                          borderRadius: BorderRadius.circular(8.0),
+                          gapPadding: 8.0,
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.blue[900]!),
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.blue[900]!),
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                        filled: true,
+                        fillColor: Colors.blueGrey[50],
+                        suffixIcon: DropdownButton<String>(
+                          icon: const Icon(Icons.arrow_drop_down),
+                          iconSize: 24,
+                          elevation: 16,
+                          onChanged: _addManager,
+                          items: filteredManagers
+                              .map<DropdownMenuItem<String>>((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(value),
+                            );
+                          }).toList(),
+                        ),
+                      ),
+                      style: const TextStyle(fontSize: 14),
+                      onChanged: _filterManagers,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
               TextFormField(
                 controller: teamMembersController,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                inputFormatters: [LengthLimitingTextInputFormatter(3)],
                 decoration: InputDecoration(
                   labelText: AppLocalizations.of(context)!.teamMembers,
                   labelStyle: const TextStyle(color: Colors.black),
@@ -302,11 +371,16 @@ class _ProjectFormState extends ConsumerState<ProjectForm> {
                   if (value == null || value.isEmpty) {
                     return 'Please enter team members for the project';
                   }
+                  if (value.length > 100) {
+                    return 'Only 3 digits are allowed';
+                  }
                   return null;
                 },
               ),
               const SizedBox(height: 12),
               TextFormField(
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                inputFormatters: [LengthLimitingTextInputFormatter(2)],
                 decoration: InputDecoration(
                   labelText: AppLocalizations.of(context)!.numberoftasks,
                   labelStyle: const TextStyle(color: Colors.black),
@@ -332,6 +406,9 @@ class _ProjectFormState extends ConsumerState<ProjectForm> {
                   if (value == null || value.isEmpty) {
                     return 'Please enter the number of tasks';
                   }
+                  if (value.length > 2) {
+                    return 'Only 2 digits are allowed';
+                  }
                   return null;
                 },
                 onChanged: (value) {
@@ -341,16 +418,15 @@ class _ProjectFormState extends ConsumerState<ProjectForm> {
                   });
                 },
               ),
-              if (numberOfTasks > 0) ..._buildTaskFields(),
+              if (numberOfTasks > 0)
+                ..._buildTaskFields(endDate, _addTeamMember),
               const SizedBox(height: 16),
               Center(
                 child: ElevatedButton(
                   onPressed: () async {
-                    // print('submitting...?');
                     if (_formKey.currentState!.validate()) {
                       setState(() {
                         isSubmitting = true;
-                        // print('set state');
                         showSuccessAnimation = true;
                       });
                       Project newProject = Project(
@@ -367,8 +443,6 @@ class _ProjectFormState extends ConsumerState<ProjectForm> {
                       ref
                           .watch(projectsProvider.notifier)
                           .addProject(newProject, widget.userId);
-                      // print('created----$projectsProvider');
-                      // print('new project------$newProject');
                       setState(() {
                         isSubmitting = false;
                       });
@@ -397,13 +471,16 @@ class _ProjectFormState extends ConsumerState<ProjectForm> {
     );
   }
 
-  List<Widget> _buildTaskFields() {
+  List<Widget> _buildTaskFields(
+      DateTime projectEndDate, Function addTeamMember) {
     return TaskFields.buildTaskFields(
       tasks,
       numberOfTasks,
       widget.teamMembers,
       setState,
+      projectEndDate,
       _filterTeamMembers,
+      addTeamMember,
       context,
     );
   }

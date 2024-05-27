@@ -4,10 +4,10 @@ import 'package:dio/dio.dart';
 
 class ApiCall extends StateNotifier<List<Project>> {
   ApiCall() : super([]) {
-    _fetchProjects();
+    fetchProjects();
   }
 
-  Future<void> _fetchProjects() async {
+  Future<void> fetchProjects() async {
     try {
       final response =
           await Dio().get('https://api-generator.retool.com/JOlVrH/dataas');
@@ -17,6 +17,7 @@ class ApiCall extends StateNotifier<List<Project>> {
             .map((projectJson) => Project.fromJson(projectJson))
             .toList();
         state = projects;
+        print("projects from api:$projects");
       } else {
         state = [];
       }

@@ -22,8 +22,11 @@ class ProjectDataSource implements ProjectRepository {
   final String _users =
       "create table users (userId INTEGER PRIMARY KEY AUTOINCREMENT, userName TEXT UNIQUE, userPassword TEXT)";
 
-  final String _projectsD =
-      "create table projectsD (projectId INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, description TEXT NOT NULL, owner TEXT NOT NULL, workHours INTEGER NOT NULL, startDate TEXT, endDate TEXT, teamMembers INTEGER NOT NULL, tasks TEXT, userId INTEGER NOT NULL, FOREIGN KEY (userId) REFERENCES users (userId))";
+  // final String _projectsDd =
+  //     "create table projectsDd (projectId INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, description TEXT NOT NULL, owner TEXT NOT NULL, workHours INTEGER NOT NULL, startDate TEXT, endDate TEXT, teamMembers INTEGER NOT NULL, tasks TEXT, userId INTEGER NOT NULL, FOREIGN KEY (userId) REFERENCES users (userId))";
+
+  final String _projectsDd =
+      "create table projectsDd (projectId INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, description TEXT NOT NULL, owner TEXT NOT NULL, workHours INTEGER NOT NULL, startDate TEXT, endDate TEXT, teamMembers INTEGER NOT NULL, tasks TEXT, userId INTEGER NOT NULL, completed INTEGER DEFAULT 0, FOREIGN KEY (userId) REFERENCES users (userId))";
 
   Future<void> _initDB() async {
     final String databasePath = await getDatabasesPath();
@@ -32,7 +35,7 @@ class ProjectDataSource implements ProjectRepository {
     _database =
         await openDatabase(path, version: 1, onCreate: (db, version) async {
       await db.execute(_users);
-      await db.execute(_projectsD);
+      await db.execute(_projectsDd);
     });
 
     _isDbInitialized = true;
@@ -87,11 +90,23 @@ class ProjectDataSource implements ProjectRepository {
   }
 
   @override
+  Future<bool> checkUserExists(String userName) async {
+    await _checkAndInitDB();
+
+    final List<Map<String, dynamic>> result = await _database.query(
+      'users',
+      where: 'userName = ?',
+      whereArgs: [userName],
+    );
+    return result.isNotEmpty;
+  }
+
+  @override
   Future<int> createProject(Project project, int userId) async {
     await _checkAndInitDB();
     try {
       int projectId = await _database.insert(
-        'projectsD',
+        'projectsDd',
         {
           ...project.toMap(),
           'tasks': jsonEncode(project.tasks),
@@ -109,7 +124,7 @@ class ProjectDataSource implements ProjectRepository {
   @override
   Future<List<Project>> getAllProjects() async {
     await _checkAndInitDB();
-    final List<Map<String, dynamic>> maps = await _database.query('projectsD');
+    final List<Map<String, dynamic>> maps = await _database.query('projectsDd');
     return List.generate(maps.length, (i) {
       List<Task> tasks = [];
       if (maps[i]['tasks'] != null) {
@@ -137,7 +152,7 @@ class ProjectDataSource implements ProjectRepository {
     await _checkAndInitDB();
     try {
       await _database.update(
-        'projectsD',
+        'projectsDd',
         editedProject.toMap(),
         where: 'projectId = ?',
         whereArgs: [editedProject.id],
@@ -153,7 +168,7 @@ class ProjectDataSource implements ProjectRepository {
     await _checkAndInitDB();
     try {
       await _database.delete(
-        'projectsD',
+        'projectsDd',
         where: 'projectId = ?',
         whereArgs: [projectId],
       );
@@ -166,7 +181,7 @@ class ProjectDataSource implements ProjectRepository {
   Future<List<Project>> getUserProjects(int userId) async {
     await _checkAndInitDB();
     final List<Map<String, dynamic>> maps = await _database.query(
-      'projectsD',
+      'projectsDd',
       where: 'userId = ?',
       whereArgs: [userId],
     );
@@ -190,5 +205,21 @@ class ProjectDataSource implements ProjectRepository {
         userId: maps[i]['userId'],
       );
     });
+  }
+
+  @override
+  Future<void> markProjectAsCompleted(int projectId) async {
+    await _checkAndInitDB();
+    try {
+      await _database.update(
+        'projectsDd',
+        {'completed': 1},
+        where: 'projectId = ?',
+        whereArgs: [projectId],
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
+    } catch (e) {
+      CustomException("Can't mark project as completed");
+    }
   }
 }

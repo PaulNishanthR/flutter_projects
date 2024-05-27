@@ -39,7 +39,7 @@ class Navbar extends ConsumerWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const Text(
-                    'Welcome Back,',
+                    'Welcome,',
                     style: TextStyle(
                       color: Colors.black,
                       fontSize: 33,

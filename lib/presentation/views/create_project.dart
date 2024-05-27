@@ -6,22 +6,25 @@ class CreateProjectPage extends StatelessWidget {
   final void Function(Project) addProject;
   final List<Project> projects;
   final List<String> teamMembers = [
-    'member1',
-    'member2',
-    'member3',
-    'member4',
-    'member5',
-    'member6',
-    'member7',
-    'member8',
-    'member9',
+    'Nishanth',
+    'Naren',
+    'Logesh',
+    'Jega',
+    'Jhaya',
+    'Selvin',
+    'Kumaran',
+    'Naresh',
+    'Siva',
   ];
+
+  final List<String> managers = ['Saravanakumar', 'Devika', 'Saravanan'];
   final int userId;
-  CreateProjectPage(
-      {super.key,
-      required this.projects,
-      required this.addProject,
-      required this.userId});
+  CreateProjectPage({
+    super.key,
+    required this.projects,
+    required this.addProject,
+    required this.userId,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -39,6 +42,7 @@ class CreateProjectPage extends StatelessWidget {
               child: ProjectForm(
                 addProject: addProject,
                 teamMembers: teamMembers,
+                managers: managers,
                 userId: userId,
               ),
             ),
@@ -48,3 +52,5 @@ class CreateProjectPage extends StatelessWidget {
     );
   }
 }
+
+// Amla, kohli, hazlewood, root, 
