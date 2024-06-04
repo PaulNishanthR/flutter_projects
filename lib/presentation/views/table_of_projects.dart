@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_projects/domain/model/completed_project.dart';
 import 'package:flutter_projects/domain/model/project.dart';
+import 'package:flutter_projects/presentation/providers/completed_provider.dart';
 import 'package:flutter_projects/presentation/providers/project_provider.dart';
+import 'package:flutter_projects/presentation/widgets/generate_pdf.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lottie/lottie.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ProjectsTable extends ConsumerStatefulWidget {
   final int userId;
+  // final CompletedProject project;
 
-  const ProjectsTable({Key? key, required this.userId}) : super(key: key);
+  const ProjectsTable({Key? key,  required this.userId})
+      : super(key: key);
 
   @override
   ConsumerState<ProjectsTable> createState() => _ProjectsTableState();
@@ -47,13 +52,14 @@ class _ProjectsTableState extends ConsumerState<ProjectsTable> {
                             Checkbox(
                               value: isChecked,
                               onChanged: (value) {
-                                setState(() {
-                                  if (value != null && value) {
-                                    _selectedProjectIds.add(project.id!);
-                                  } else {
-                                    _selectedProjectIds.remove(project.id);
-                                  }
-                                });
+                                // setState(() {
+                                //   if (value != null && value) {
+                                //     _selectedProjectIds.add(project.id!);
+                                //   } else {
+                                //     _selectedProjectIds.remove(project.id);
+                                //   }
+                                // });
+                                _markProjectAsCompleted(project.id!);
                               },
                             ),
                             Text(
@@ -89,6 +95,17 @@ class _ProjectsTableState extends ConsumerState<ProjectsTable> {
                                   ),
                                 ],
                               ),
+                        onTap: () {
+                          // showDialog(
+                          //   context : context,
+                          //   builder:(BuildContext context){
+
+                          //   }
+                          //   ){
+
+                          // }
+                          _showProjectDetails(context, project);
+                        },
                       ),
                     );
                   },
@@ -100,10 +117,10 @@ class _ProjectsTableState extends ConsumerState<ProjectsTable> {
                   children: [
                     Lottie.asset('assets/empty_projects.json'),
                     const SizedBox(height: 20),
-                    const Text(
-                      'No projects available.',
-                      style:
-                          TextStyle(fontSize: 16, fontStyle: FontStyle.italic),
+                    Text(
+                      AppLocalizations.of(context)!.noprojects,
+                      style: const TextStyle(
+                          fontSize: 16, fontStyle: FontStyle.italic),
                       textAlign: TextAlign.center,
                     ),
                   ],
@@ -113,7 +130,126 @@ class _ProjectsTableState extends ConsumerState<ProjectsTable> {
 
   void _markProjectAsCompleted(int projectId) async {
     await ref.read(projectsProvider.notifier).markProjectAsCompleted(projectId);
-    await ref.read(projectsProvider.notifier).fetchProjects();
+    // await ref.read(projectsProvider.notifier).fetchProjects();
+
+    final taskList =
+        await ref.read(projectsProvider.notifier).getTasks(projectId);
+
+    for (final task in taskList) {
+      task.status = true;
+    }
+    await ref
+        .read(projectsProvider.notifier)
+        .updateProjectTasks(projectId, taskList);
+
+    // await ref
+    //     .read(completedProvider.notifier)
+    //     .insertCompletedProject(widget.project, projectId);
+  }
+
+  // void _showProjectDetails(BuildContext context, Project project) {
+  //   showDialog(
+  //     context: context,
+  //     builder: (BuildContext context) {
+  //       return AlertDialog(
+  //         title: Text('Project Name: ${project.projectName}'),
+  //         content: SingleChildScrollView(
+  //           child: Column(
+  //             crossAxisAlignment: CrossAxisAlignment.start,
+  //             children: [
+  //               // Text('Project Name: ${project.projectName}'),
+  //               // const SizedBox(height: 8),
+  //               Text('Description: ${project.description}'),
+  //               const SizedBox(height: 8),
+  //               Text('Manager: ${project.owner}'),
+  //               const SizedBox(height: 8),
+  //               Text('Start Date: ${_formatDate(project.startDate)}'),
+  //               const SizedBox(height: 8),
+  //               Text('End Date: ${_formatDate(project.endDate)}'),
+  //               const SizedBox(height: 8),
+  //               Text('Work Hours: ${project.workHours}'),
+  //               const SizedBox(height: 8),
+  //               Text('Team Members: ${project.teamMembers}'),
+  //               const SizedBox(height: 8),
+  //               const Text('Tasks:'),
+  //               const SizedBox(height: 8),
+  //               Column(
+  //                 crossAxisAlignment: CrossAxisAlignment.start,
+  //                 children: project.tasks.map((task) {
+  //                   return Text('- ${task.taskName}');
+  //                 }).toList(),
+  //               ),
+  //             ],
+  //           ),
+  //         ),
+  //         actions: <Widget>[
+  //           TextButton(
+  //             onPressed: () {
+  //               Navigator.pop(context);
+  //             },
+  //             child: Text('Close'),
+  //           ),
+  //         ],
+  //       );
+  //     },
+  //   );
+  // }
+  void _showProjectDetails(BuildContext context, Project project) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text('Project: ${project.projectName}'),
+              IconButton(
+                icon: const Icon(Icons.picture_as_pdf),
+                onPressed: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => PDFGenerator()));
+                },
+              ),
+            ],
+          ),
+          content: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Description: ${project.description}'),
+                const SizedBox(height: 8),
+                Text('Manager: ${project.owner}'),
+                const SizedBox(height: 8),
+                Text('Start Date: ${_formatDate(project.startDate)}'),
+                const SizedBox(height: 8),
+                Text('End Date: ${_formatDate(project.endDate)}'),
+                const SizedBox(height: 8),
+                Text('Work Hours: ${project.workHours}'),
+                const SizedBox(height: 8),
+                Text('Team Members: ${project.teamMembers}'),
+                const SizedBox(height: 8),
+                const Text('Tasks:'),
+                const SizedBox(height: 8),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: project.tasks.map((task) {
+                    return Text('- ${task.taskName}');
+                  }).toList(),
+                ),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text('Close'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   void _deleteProject(BuildContext context, Project project) {

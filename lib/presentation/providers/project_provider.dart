@@ -1,6 +1,7 @@
 import 'package:flutter_projects/data/datasources/project_datasource.dart';
 import 'package:flutter_projects/domain/model/project.dart';
 import 'package:flutter_projects/data/repositories/database_project_impl.dart';
+import 'package:flutter_projects/domain/model/task.dart';
 import 'package:flutter_projects/domain/repositories/project_repository.dart';
 import 'package:flutter_projects/utils/constants/custom_exception.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -27,11 +28,9 @@ class ProjectsNotifier extends StateNotifier<List<Project>> {
 
   Future<void> fetchProjects() async {
     try {
-      // Fetch projects from the repository
       List<Project> projects = await _repository.getAllProjects();
       state = projects;
     } catch (e) {
-      // Handle errors
       CustomException("Unable to fetch projects");
     }
   }
@@ -59,7 +58,6 @@ class ProjectsNotifier extends StateNotifier<List<Project>> {
       return true;
     } catch (e) {
       return false;
-      // CustomException("Unable to Edit Project");
     }
   }
 
@@ -93,7 +91,42 @@ class ProjectsNotifier extends StateNotifier<List<Project>> {
       return true;
     } catch (e) {
       return false;
-      // CustomException("Unable to Mark Project as Completed");
+    }
+  }
+
+  Future<void> updateProjectTasks(int projectId, List<Task> tasks) async {
+    try {
+      await _repository.updateTasks(projectId, tasks);
+      print("tasks updated in database $projectId, $tasks");
+    } catch (e) {
+      throw CustomException("Unable to update tasks in dbbb");
+    }
+  }
+
+  Future<List<Task>> getTasks(int projectId) async {
+    try {
+      List<Task> userTasks = await _repository.getUserTasks(projectId);
+      return userTasks;
+    } catch (e) {
+      throw CustomException("Unable to get the projects");
+    }
+  }
+
+  Future<void> updateTask(int projectId, Task updatedTask) async {
+    try {
+      await _repository.updateTask(projectId, updatedTask);
+      state = state.map((project) {
+        if (project.id == projectId) {
+          List<Task> updatedTasks = project.tasks.map((task) {
+            return task.id == updatedTask.id ? updatedTask : task;
+          }).toList();
+          return project.copyWith(tasks: updatedTasks);
+        }
+        return project;
+      }).toList();
+      print("task updated in provider");
+    } catch (e) {
+      throw CustomException("Unable to update the task");
     }
   }
 }

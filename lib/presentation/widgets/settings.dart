@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_projects/presentation/providers/lang_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SettingsPage extends ConsumerStatefulWidget {
   const SettingsPage({Key? key}) : super(key: key);
@@ -20,7 +21,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
     _availableLanguages = [
       const Locale('en'),
       const Locale('ta'),
-      const Locale('hi'),
+      // const Locale('hi'),
     ];
   }
 
@@ -28,7 +29,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Settings'),
+        title: Text(AppLocalizations.of(context)!.settings),
         backgroundColor: Colors.blue,
       ),
       body: Padding(
@@ -37,9 +38,10 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Text(
-                'Select App Language:',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              Text(
+                AppLocalizations.of(context)!.selectlang,
+                style:
+                    const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 20),
               DropdownButton<Locale>(
@@ -73,9 +75,10 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
       return 'English';
     } else if (locale.languageCode == 'ta') {
       return 'தமிழ்';
-    } else if (locale.languageCode == 'hi') {
-      return 'हिंदी';
     }
+    // else if (locale.languageCode == 'hi') {
+    //   return 'हिंदी';
+    // }
     return '';
   }
 }

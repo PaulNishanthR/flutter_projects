@@ -273,7 +273,7 @@ import 'package:flutter_projects/presentation/providers/auth_provider.dart';
 import 'package:flutter_projects/presentation/providers/userId_provider.dart';
 import 'package:flutter_projects/presentation/views/home_for_manager.dart';
 import 'package:flutter_projects/presentation/views/home_for_member.dart';
-import 'package:flutter_projects/presentation/views/member_home.dart';
+// import 'package:flutter_projects/presentation/views/member_home.dart';
 import 'package:flutter_projects/presentation/views/register.dart';
 import 'package:flutter_projects/presentation/views/home.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -284,7 +284,7 @@ class LoginScreen extends ConsumerStatefulWidget {
   }) : super(key: key);
 
   @override
-  _LoginScreenState createState() => _LoginScreenState();
+  ConsumerState createState() => _LoginScreenState();
 }
 
 class _LoginScreenState extends ConsumerState<LoginScreen> {
@@ -292,6 +292,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   final TextEditingController _passwordController = TextEditingController();
 
   bool isVisible = false;
+  // final ProjectDataSource dataSource = ProjectDataSource();
   bool isLoginTrue = false;
 
   String encryptPassword(String password) {
@@ -303,7 +304,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   Future<void> login() async {
     final String username = _usernameController.text;
     final String password = _passwordController.text;
-
+    // print("email $username");
+    // print("password $password");
     if (username.isEmpty || password.isEmpty) {
       showDialog(
         context: context,
@@ -324,6 +326,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     }
 
     String encryptedPassword = encryptPassword(password);
+    // final bool isLogin =
+    //     await dataSource.loginMembers(username, encryptedPassword);
+    // print("isemail $username");
+    // print("ispassword $password");
 
     Map<String, String> managerCredentials = {
       'dravid@gmail.com': 'Dravid@12',
@@ -335,7 +341,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       'Nishanth@gmail.com': 'Member112',
       'Kohli@gmail.com': 'Member212',
       'Dhoni@gmail.com': 'Member312',
-      'Starc@gmail.com': 'Member312',
+      'starc@kumaran.com': 'Member@312',
       'Root@gmail.com': 'Member312',
       'Smith@gmail.com': 'Member312',
       'Hazlewood@gmail.com': 'Member312',
@@ -361,20 +367,22 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       final int? userId =
           await ref.read(userIdProvider.notifier).getUserId(username);
       if (managerCredentials.containsKey(username)) {
-        // Navigate to manager's home screen
         if (context.mounted) {
-          // Handle manager navigation
-          Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (_) => HomeForManager()));
+          Navigator.pushReplacement(context,
+              MaterialPageRoute(builder: (_) => const HomeForManager()));
         }
       } else if (memberCredentials.containsKey(username)) {
-        // Navigate to member's home screen
         if (context.mounted) {
-          // Handle member navigation
-          Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (_) => HomeForMember()));
+          Navigator.pushReplacement(context,
+              MaterialPageRoute(builder: (_) => const HomeForMember()));
         }
-      } else {
+      }
+      // else if (isLogin) {
+      //   print("isnside login....");
+      //   Navigator.pushReplacement(
+      //       context, MaterialPageRoute(builder: (_) => const HomeForMember()));
+      // }
+      else {
         // Navigate to default home screen
         if (context.mounted) {
           Navigator.pushReplacement(
@@ -389,7 +397,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           );
         }
       }
-    } else {
+    }
+    // else if (isLogin) {
+    //   print("isnside login....");
+    //   Navigator.pushReplacement(
+    //       context, MaterialPageRoute(builder: (_) => const HomeForMember()));
+    // }
+    else {
       if (context.mounted) {
         showDialog(
           context: context,

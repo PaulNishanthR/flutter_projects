@@ -7,16 +7,19 @@ class Task {
   List<String>? teamMembers;
   List<String>? assignedMembers;
 
-  Task(
-      {required this.taskName,
-      required this.description,
-      required this.dueDate,
-      required this.status,
-      this.teamMembers,
-      this.assignedMembers});
+  Task({
+    this.id,
+    required this.taskName,
+    required this.description,
+    required this.dueDate,
+    required this.status,
+    this.teamMembers,
+    this.assignedMembers,
+  });
 
   Map<String, dynamic> toJson() {
     return {
+      'taskId': id,
       'name': taskName,
       'description': description,
       'dueDate': dueDate.toIso8601String(),
@@ -31,11 +34,15 @@ class Task {
     //   throw ArgumentError('Invalid JSON data for Task');
     // }
     return Task(
-      taskName: json['taskName'] ?? '',
+      id: json['taskId'],
+      taskName: json['name'] ?? '',
       description: json['description'] ?? '',
       dueDate: json['dueDate'] != null
           ? DateTime.parse(json['dueDate'])
           : DateTime.now(),
+      teamMembers: json['teamMembers'] != null
+          ? List<String>.from(json['teamMembers'])
+          : null,
       status: json['status'] ?? false,
     );
   }
@@ -45,7 +52,8 @@ class Task {
     //   throw ArgumentError('Invalid map data for Task');
     // }
     return Task(
-      taskName: map['taskName'] ?? '',
+      id: map['taskId'],
+      taskName: map['name'] ?? '',
       description: map['description'] ?? '',
       dueDate: DateTime.parse(map['dueDate'] ?? ''),
       status: map['status'] ?? false,

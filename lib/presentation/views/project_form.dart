@@ -4,7 +4,6 @@ import 'package:flutter_projects/domain/model/project.dart';
 import 'package:flutter_projects/domain/model/task.dart';
 import 'package:flutter_projects/presentation/providers/project_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'task_form.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ProjectForm extends ConsumerStatefulWidget {
@@ -46,6 +45,10 @@ class _ProjectFormState extends ConsumerState<ProjectForm> {
 
   bool isSubmitting = false;
   bool showSuccessAnimation = false;
+
+  bool formSubmitted = false;
+  bool startDatePicked = false;
+  bool endDatePicked = false;
 
   @override
   void initState() {
@@ -97,14 +100,16 @@ class _ProjectFormState extends ConsumerState<ProjectForm> {
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: startDate,
-      firstDate: DateTime.now(),
+      firstDate: DateTime.now().subtract(const Duration(days: 15)),
       lastDate: DateTime(2025),
     );
     if (picked != null && picked != startDate) {
       setState(() {
         startDate = picked;
+        startDatePicked = true;
         if (endDate.isBefore(startDate)) {
           endDate = startDate.add(const Duration(days: 1));
+          endDatePicked = true;
         }
       });
     }
@@ -120,6 +125,7 @@ class _ProjectFormState extends ConsumerState<ProjectForm> {
     if (picked != null && picked != endDate) {
       setState(() {
         endDate = picked;
+        endDatePicked = true;
       });
     }
   }
@@ -141,6 +147,26 @@ class _ProjectFormState extends ConsumerState<ProjectForm> {
         ownerController.text = manager;
       });
     }
+  }
+
+  // String? _validateDates() {
+  //   if (!startDatePicked) {
+  //     // return AppLocalizations.of(context)!.selectStartDate;
+  //     return 'Select Start Date';
+  //   }
+  //   if (!endDatePicked) {
+  //     // return AppLocalizations.of(context)!.selectEndDate;
+  //     return 'Select End Date';
+  //   }
+  //   return null;
+  // }
+  String? _validateDates() {
+    if (!startDatePicked || !endDatePicked) {
+      if (formSubmitted) {
+        return 'Select dates';
+      }
+    }
+    return null;
   }
 
   @override
@@ -179,7 +205,7 @@ class _ProjectFormState extends ConsumerState<ProjectForm> {
                 style: const TextStyle(fontSize: 14),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter project name.';
+                    return AppLocalizations.of(context)!.enterprojectname;
                   }
                   if (value.length > 25) {
                     return 'Only 25 characters are allowed.';
@@ -214,7 +240,7 @@ class _ProjectFormState extends ConsumerState<ProjectForm> {
                 style: const TextStyle(fontSize: 14),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter project description.';
+                    return AppLocalizations.of(context)!.enterprojectdesc;
                   }
                   if (value.length > 30) {
                     return 'Only 30 characters are allowed.';
@@ -223,45 +249,81 @@ class _ProjectFormState extends ConsumerState<ProjectForm> {
                 },
               ),
               const SizedBox(height: 12),
-              Row(
-                children: [
-                  Expanded(
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8.0),
-                        border: Border.all(color: Colors.blue[900]!),
-                        color: Colors.blueGrey[50],
-                      ),
-                      child: ListTile(
-                        title: const Text("From"),
-                        subtitle: Text("${startDate.toLocal()}".split(' ')[0]),
-                        onTap: () async {
-                          await _selectStartDate(context);
-                        },
-                        trailing: const Icon(Icons.calendar_month),
-                      ),
+              //Date Field--->
+              // Row(
+              //   children: [
+              //     Expanded(
+              //       child: Container(
+              //         decoration: BoxDecoration(
+              //           borderRadius: BorderRadius.circular(8.0),
+              //           border: Border.all(color: Colors.blue[900]!),
+              //           color: Colors.blueGrey[50],
+              //         ),
+              //         child: ListTile(
+              //           title: Text(AppLocalizations.of(context)!.from),
+              //           subtitle: Text("${startDate.toLocal()}".split(' ')[0]),
+              //           onTap: () async {
+              //             await _selectStartDate(context);
+              //           },
+              //           trailing: const Icon(Icons.calendar_month),
+              //         ),
+              //       ),
+              //     ),
+              //     const SizedBox(width: 12),
+              //     Expanded(
+              //       child: Container(
+              //         decoration: BoxDecoration(
+              //           borderRadius: BorderRadius.circular(8.0),
+              //           border: Border.all(color: Colors.blue[900]!),
+              //           color: Colors.blueGrey[50],
+              //         ),
+              //         child: ListTile(
+              //           title: Text(AppLocalizations.of(context)!.to),
+              //           subtitle: Text("${endDate.toLocal()}".split(' ')[0]),
+              //           onTap: () async {
+              //             await _selectEndDate(context);
+              //           },
+              //           trailing: const Icon(Icons.calendar_month),
+              //         ),
+              //       ),
+              //     ),
+              //   ],
+              // ),
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8.0),
+                  border: Border.all(color: Colors.blue[900]!),
+                  color: Colors.blueGrey[50],
+                ),
+                child: Column(
+                  children: [
+                    ListTile(
+                      title: Text(AppLocalizations.of(context)!.from),
+                      subtitle: Text("${startDate.toLocal()}".split(' ')[0]),
+                      onTap: () async {
+                        await _selectStartDate(context);
+                      },
+                      trailing: const Icon(Icons.calendar_month),
                     ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8.0),
-                        border: Border.all(color: Colors.blue[900]!),
-                        color: Colors.blueGrey[50],
-                      ),
-                      child: ListTile(
-                        title: const Text("To"),
-                        subtitle: Text("${endDate.toLocal()}".split(' ')[0]),
-                        onTap: () async {
-                          await _selectEndDate(context);
-                        },
-                        trailing: const Icon(Icons.calendar_month),
-                      ),
+                    ListTile(
+                      title: Text(AppLocalizations.of(context)!.to),
+                      subtitle: Text("${endDate.toLocal()}".split(' ')[0]),
+                      onTap: () async {
+                        await _selectEndDate(context);
+                      },
+                      trailing: const Icon(Icons.calendar_month),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
+              if (_validateDates() != null)
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  child: Text(
+                    _validateDates()!,
+                    style: const TextStyle(color: Colors.red, fontSize: 12),
+                  ),
+                ),
               const SizedBox(height: 12),
               TextFormField(
                 controller: workHoursController,
@@ -289,7 +351,7 @@ class _ProjectFormState extends ConsumerState<ProjectForm> {
                 style: const TextStyle(fontSize: 14),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter working hours.';
+                    return AppLocalizations.of(context)!.enterprojecthours;
                   }
                   if (value.length > 3) {
                     return 'Only 2 digits are allowed here.';
@@ -369,7 +431,7 @@ class _ProjectFormState extends ConsumerState<ProjectForm> {
                 style: const TextStyle(fontSize: 14),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter team members for the project';
+                    return AppLocalizations.of(context)!.entermembers;
                   }
                   if (value.length > 100) {
                     return 'Only 3 digits are allowed';
@@ -377,49 +439,49 @@ class _ProjectFormState extends ConsumerState<ProjectForm> {
                   return null;
                 },
               ),
-              const SizedBox(height: 12),
-              TextFormField(
-                autovalidateMode: AutovalidateMode.onUserInteraction,
-                inputFormatters: [LengthLimitingTextInputFormatter(2)],
-                decoration: InputDecoration(
-                  labelText: AppLocalizations.of(context)!.numberoftasks,
-                  labelStyle: const TextStyle(color: Colors.black),
-                  border: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.blue[900]!),
-                    borderRadius: BorderRadius.circular(8.0),
-                    gapPadding: 8.0,
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.blue[900]!),
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.blue[900]!),
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-                  filled: true,
-                  fillColor: Colors.blueGrey[50],
-                ),
-                style: const TextStyle(fontSize: 14),
-                keyboardType: TextInputType.number,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter the number of tasks';
-                  }
-                  if (value.length > 2) {
-                    return 'Only 2 digits are allowed';
-                  }
-                  return null;
-                },
-                onChanged: (value) {
-                  setState(() {
-                    numberOfTasks = int.tryParse(value) ?? 0;
-                    tasks.clear();
-                  });
-                },
-              ),
-              if (numberOfTasks > 0)
-                ..._buildTaskFields(endDate, _addTeamMember),
+              // const SizedBox(height: 12),
+              // TextFormField(
+              //   autovalidateMode: AutovalidateMode.onUserInteraction,
+              //   inputFormatters: [LengthLimitingTextInputFormatter(2)],
+              //   decoration: InputDecoration(
+              //     labelText: AppLocalizations.of(context)!.numberoftasks,
+              //     labelStyle: const TextStyle(color: Colors.black),
+              //     border: OutlineInputBorder(
+              //       borderSide: BorderSide(color: Colors.blue[900]!),
+              //       borderRadius: BorderRadius.circular(8.0),
+              //       gapPadding: 8.0,
+              //     ),
+              //     enabledBorder: OutlineInputBorder(
+              //       borderSide: BorderSide(color: Colors.blue[900]!),
+              //       borderRadius: BorderRadius.circular(8.0),
+              //     ),
+              //     focusedBorder: OutlineInputBorder(
+              //       borderSide: BorderSide(color: Colors.blue[900]!),
+              //       borderRadius: BorderRadius.circular(8.0),
+              //     ),
+              //     filled: true,
+              //     fillColor: Colors.blueGrey[50],
+              //   ),
+              //   style: const TextStyle(fontSize: 14),
+              //   keyboardType: TextInputType.number,
+              //   validator: (value) {
+              //     if (value == null || value.isEmpty) {
+              //       return 'Please enter the number of tasks';
+              //     }
+              //     if (value.length > 2) {
+              //       return 'Only 2 digits are allowed';
+              //     }
+              //     return null;
+              //   },
+              //   onChanged: (value) {
+              //     setState(() {
+              //       numberOfTasks = int.tryParse(value) ?? 0;
+              //       tasks.clear();
+              //     });
+              //   },
+              // ),
+              // if (numberOfTasks > 0)
+              //   ..._buildTaskFields(endDate, _addTeamMember),
               const SizedBox(height: 16),
               Center(
                 child: ElevatedButton(
@@ -471,17 +533,17 @@ class _ProjectFormState extends ConsumerState<ProjectForm> {
     );
   }
 
-  List<Widget> _buildTaskFields(
-      DateTime projectEndDate, Function addTeamMember) {
-    return TaskFields.buildTaskFields(
-      tasks,
-      numberOfTasks,
-      widget.teamMembers,
-      setState,
-      projectEndDate,
-      _filterTeamMembers,
-      addTeamMember,
-      context,
-    );
-  }
+  // List<Widget> _buildTaskFields(
+  //     DateTime projectEndDate, Function addTeamMember) {
+  //   return TaskFields.buildTaskFields(
+  //     tasks,
+  //     numberOfTasks,
+  //     widget.teamMembers,
+  //     setState,
+  //     projectEndDate,
+  //     _filterTeamMembers,
+  //     addTeamMember,
+  //     context,
+  //   );
+  // }
 }

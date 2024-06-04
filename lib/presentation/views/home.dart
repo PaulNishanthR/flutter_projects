@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_projects/domain/model/completed_project.dart';
 import 'package:flutter_projects/domain/model/project.dart';
 import 'package:flutter_projects/presentation/providers/project_provider.dart';
 import 'package:flutter_projects/presentation/views/project_details.dart';
@@ -13,9 +14,14 @@ class MyHomePage extends ConsumerStatefulWidget {
   final String title;
   final String username;
   final dynamic userId;
+  final CompletedProject? project;
 
   const MyHomePage(
-      {Key? key, required this.title, required this.username, this.userId})
+      {Key? key,
+      this.project,
+      required this.title,
+      required this.username,
+      this.userId})
       : super(key: key);
 
   @override
@@ -59,6 +65,7 @@ class _MyHomePageState extends ConsumerState<MyHomePage> {
         addProject: addProject,
         username: widget.username,
         userId: widget.userId,
+        // project:widget.project!,
       ),
       body: Padding(
         padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0),
@@ -86,9 +93,9 @@ class _MyHomePageState extends ConsumerState<MyHomePage> {
                         children: [
                           Lottie.asset('assets/empty_projects.json'),
                           const SizedBox(height: 20),
-                          const Text(
-                            'No projects available.',
-                            style: TextStyle(
+                          Text(
+                            AppLocalizations.of(context)!.noprojects,
+                            style: const TextStyle(
                                 fontSize: 16, fontStyle: FontStyle.italic),
                             textAlign: TextAlign.center,
                           ),
@@ -178,7 +185,10 @@ class _MyHomePageState extends ConsumerState<MyHomePage> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => ProjectDetailsPage(project: project),
+              builder: (context) => ProjectDetailsPage(
+                project: project,
+                teamMembers: [],
+              ),
             ),
           );
         },
@@ -208,14 +218,14 @@ class _MyHomePageState extends ConsumerState<MyHomePage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Owner: ${project.owner}',
+                    '${AppLocalizations.of(context)!.manager}: ${project.owner}',
                     style: const TextStyle(
                       fontSize: 12,
                       color: Colors.black,
                     ),
                   ),
                   Text(
-                    'Due Date: ${DateFormat('dd-MM-yyyy').format(project.endDate)}',
+                    '${AppLocalizations.of(context)!.enddate}: ${DateFormat('dd-MM-yyyy').format(project.endDate)}',
                     style: TextStyle(
                       fontSize: 12,
                       fontStyle: FontStyle.italic,

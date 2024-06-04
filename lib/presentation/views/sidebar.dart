@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_projects/domain/model/completed_project.dart';
 import 'package:flutter_projects/domain/model/project.dart';
 import 'package:flutter_projects/presentation/widgets/about.dart';
 import 'package:flutter_projects/presentation/views/login.dart';
@@ -12,6 +13,7 @@ class Navbar extends ConsumerWidget {
   final void Function(Project) addProject;
   final String username;
   final int userId;
+  // final CompletedProject project;
 
   const Navbar({
     Key? key,
@@ -19,6 +21,7 @@ class Navbar extends ConsumerWidget {
     required this.addProject,
     required this.username,
     required this.userId,
+    // required this.project,
   }) : super(key: key);
 
   @override
@@ -38,9 +41,9 @@ class Navbar extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text(
-                    'Welcome,',
-                    style: TextStyle(
+                  Text(
+                    AppLocalizations.of(context)!.welcome,
+                    style: const TextStyle(
                       color: Colors.black,
                       fontSize: 33,
                       fontWeight: FontWeight.bold,
@@ -76,6 +79,7 @@ class Navbar extends ConsumerWidget {
                   MaterialPageRoute(
                     builder: (context) => ProjectsTable(
                       userId: userId,
+                      // project: project,
                     ),
                   ),
                 );

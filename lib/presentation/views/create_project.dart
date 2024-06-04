@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_projects/domain/model/project.dart';
 import 'package:flutter_projects/presentation/views/project_form.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CreateProjectPage extends StatelessWidget {
   final void Function(Project) addProject;
@@ -30,7 +31,7 @@ class CreateProjectPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Create New Project'),
+        title: Text(AppLocalizations.of(context)!.createNewProject),
         backgroundColor: Colors.lightBlue,
       ),
       body: Padding(
