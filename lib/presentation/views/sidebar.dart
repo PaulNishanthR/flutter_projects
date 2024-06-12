@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_projects/domain/model/completed_project.dart';
+// import 'package:flutter_projects/domain/model/completed_project.dart';
 import 'package:flutter_projects/domain/model/project.dart';
 import 'package:flutter_projects/presentation/widgets/about.dart';
 import 'package:flutter_projects/presentation/views/login.dart';

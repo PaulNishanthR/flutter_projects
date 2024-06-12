@@ -17,7 +17,7 @@ class ApiCall extends StateNotifier<List<Project>> {
             .map((projectJson) => Project.fromJson(projectJson))
             .toList();
         state = projects;
-        print("projects from api:$projects");
+        // print("projects from api:$projects");
       } else {
         state = [];
       }

@@ -39,5 +39,7 @@
   "members": "Members",
   "welcome": "Welcome,",
   "noprojects": "No projects available.",
-  "selectlang": "Select App Language:"
+  "selectlang": "Select App Language:",
+  "taskHours": "Task Work Hours",
+  "entertaskhours": "Please enter task hours."
 }

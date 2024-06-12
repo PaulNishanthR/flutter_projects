@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_projects/domain/model/completed_project.dart';
 import 'package:flutter_projects/domain/model/project.dart';
-import 'package:flutter_projects/presentation/providers/completed_provider.dart';
 import 'package:flutter_projects/presentation/providers/project_provider.dart';
+import 'package:flutter_projects/presentation/providers/userid_provider.dart';
 import 'package:flutter_projects/presentation/widgets/generate_pdf.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lottie/lottie.dart';
@@ -10,9 +10,9 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ProjectsTable extends ConsumerStatefulWidget {
   final int userId;
-  // final CompletedProject project;
+  final CompletedProject? completedProject;
 
-  const ProjectsTable({Key? key,  required this.userId})
+  const ProjectsTable({Key? key, this.completedProject, required this.userId})
       : super(key: key);
 
   @override
@@ -20,7 +20,7 @@ class ProjectsTable extends ConsumerStatefulWidget {
 }
 
 class _ProjectsTableState extends ConsumerState<ProjectsTable> {
-  List<int> _selectedProjectIds = [];
+  List<int> selectedProjectIds = [];
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +38,7 @@ class _ProjectsTableState extends ConsumerState<ProjectsTable> {
                   itemCount: projects.length,
                   itemBuilder: (context, index) {
                     final project = projects[index];
-                    final isChecked = _selectedProjectIds.contains(project.id);
+                    final isChecked = selectedProjectIds.contains(project.id);
 
                     return Card(
                       color: project.completed
@@ -52,13 +52,6 @@ class _ProjectsTableState extends ConsumerState<ProjectsTable> {
                             Checkbox(
                               value: isChecked,
                               onChanged: (value) {
-                                // setState(() {
-                                //   if (value != null && value) {
-                                //     _selectedProjectIds.add(project.id!);
-                                //   } else {
-                                //     _selectedProjectIds.remove(project.id);
-                                //   }
-                                // });
                                 _markProjectAsCompleted(project.id!);
                               },
                             ),
@@ -68,6 +61,17 @@ class _ProjectsTableState extends ConsumerState<ProjectsTable> {
                             ),
                           ],
                         ),
+                        // leading: IconButton(
+                        //   icon: Icon(
+                        //     Icons.rocket,
+                        //     size: 20,
+                        //     color: Colors.yellow[800],
+                        //   ),
+                        //   onPressed: () {
+                        //     // _completed(project.id!);
+                        //     _getCompleted(project);
+                        //   },
+                        // ),
                         trailing: project.completed
                             ? null
                             : Row(
@@ -96,14 +100,6 @@ class _ProjectsTableState extends ConsumerState<ProjectsTable> {
                                 ],
                               ),
                         onTap: () {
-                          // showDialog(
-                          //   context : context,
-                          //   builder:(BuildContext context){
-
-                          //   }
-                          //   ){
-
-                          // }
                           _showProjectDetails(context, project);
                         },
                       ),
@@ -128,37 +124,30 @@ class _ProjectsTableState extends ConsumerState<ProjectsTable> {
               ));
   }
 
-  void _markProjectAsCompleted(int projectId) async {
-    await ref.read(projectsProvider.notifier).markProjectAsCompleted(projectId);
-    // await ref.read(projectsProvider.notifier).fetchProjects();
-
-    final taskList =
-        await ref.read(projectsProvider.notifier).getTasks(projectId);
-
-    for (final task in taskList) {
-      task.status = true;
-    }
-    await ref
-        .read(projectsProvider.notifier)
-        .updateProjectTasks(projectId, taskList);
-
-    // await ref
-    //     .read(completedProvider.notifier)
-    //     .insertCompletedProject(widget.project, projectId);
-  }
-
-  // void _showProjectDetails(BuildContext context, Project project) {
+  // void _getCompleted(Project project) async {
+  //   await ref
+  //       .read(projectsProvider.notifier)
+  //       .getCompletedProjectsFromDB(widget.userId, project.id!, true);
   //   showDialog(
   //     context: context,
   //     builder: (BuildContext context) {
   //       return AlertDialog(
-  //         title: Text('Project Name: ${project.projectName}'),
+  //         title: Row(
+  //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //           children: [
+  //             Text(
+  //               'Project: ${project.projectName}',
+  //               style: const TextStyle(fontSize: 10),
+  //             ),
+  //             IconButton(
+  //                 icon: const Icon(Icons.picture_as_pdf),
+  //                 onPressed: navigateToPdfPage),
+  //           ],
+  //         ),
   //         content: SingleChildScrollView(
   //           child: Column(
   //             crossAxisAlignment: CrossAxisAlignment.start,
   //             children: [
-  //               // Text('Project Name: ${project.projectName}'),
-  //               // const SizedBox(height: 8),
   //               Text('Description: ${project.description}'),
   //               const SizedBox(height: 8),
   //               Text('Manager: ${project.owner}'),
@@ -187,14 +176,49 @@ class _ProjectsTableState extends ConsumerState<ProjectsTable> {
   //             onPressed: () {
   //               Navigator.pop(context);
   //             },
-  //             child: Text('Close'),
+  //             child: const Text('Close'),
   //           ),
   //         ],
   //       );
   //     },
   //   );
   // }
-  void _showProjectDetails(BuildContext context, Project project) {
+
+  void _markProjectAsCompleted(int projectId) async {
+    await ref.read(projectsProvider.notifier).markProjectAsCompleted(projectId);
+    // await ref.read(projectsProvider.notifier).fetchProjects();
+
+    final taskList =
+        await ref.read(projectsProvider.notifier).getTasks(projectId);
+
+    // final project =
+    ref.read(projectsProvider).firstWhere((p) => p.id == projectId);
+
+    for (final task in taskList) {
+      task.status = true;
+    }
+    await ref
+        .read(projectsProvider.notifier)
+        .updateProjectTasks(projectId, taskList);
+
+    // Create CompletedProject instance
+  }
+
+  // void _completed(int projectId) async {
+  //   final taskList =
+  //       await ref.read(projectsProvider.notifier).getTasks(projectId);
+
+  //   final project =
+  //       ref.read(projectsProvider).firstWhere((p) => p.id == projectId);
+  //   // print('taskList $taskList');
+  //   // Create CompletedProject instance
+  //   await ref.read(completedProvider.notifier).insertCompletedProject(project);
+  // }
+
+  void _showProjectDetails(
+    BuildContext context,
+    Project project,
+  ) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -202,14 +226,21 @@ class _ProjectsTableState extends ConsumerState<ProjectsTable> {
           title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('Project: ${project.projectName}'),
-              IconButton(
-                icon: const Icon(Icons.picture_as_pdf),
-                onPressed: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => PDFGenerator()));
-                },
+              Text(
+                'Project: ${project.projectName}',
+                style: const TextStyle(fontSize: 10),
               ),
+              IconButton(
+                  icon: const Icon(Icons.picture_as_pdf),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => PDFGenerator(
+                                project: project,
+                              )),
+                    );
+                  }),
             ],
           ),
           content: SingleChildScrollView(
@@ -244,12 +275,29 @@ class _ProjectsTableState extends ConsumerState<ProjectsTable> {
               onPressed: () {
                 Navigator.pop(context);
               },
-              child: Text('Close'),
+              child: const Text('Close'),
             ),
           ],
         );
       },
     );
+  }
+
+  void navigateToPdfPage() async {
+    int? userId = ref.read(userIdProvider);
+    if (userId != null) {
+      // List<CompletedProject> completedProjects = await ref
+      //     .read(completedProvider.notifier)
+      //     .fetchCompletedProjects(userId);
+      if (context.mounted) {
+        // Navigator.push(
+        //   context,
+        //   // MaterialPageRoute(
+        //     // builder: (context) => PDFGenerator(project: completedProjects),
+        //   // ),
+        // );
+      }
+    }
   }
 
   void _deleteProject(BuildContext context, Project project) {
@@ -296,6 +344,8 @@ class _ProjectsTableState extends ConsumerState<ProjectsTable> {
         TextEditingController(text: _formatDate(project.endDate));
     TextEditingController workHoursController =
         TextEditingController(text: project.workHours);
+    TextEditingController teamMembersController =
+        TextEditingController(text: project.teamMembers);
 
     showDialog(
       context: context,
@@ -318,12 +368,15 @@ class _ProjectsTableState extends ConsumerState<ProjectsTable> {
                   controller: ownerController,
                   decoration: const InputDecoration(labelText: 'Owner'),
                 ),
-                // _buildDateField("Start Date", startDateController),
                 _buildDateField("End Date", endDateController),
                 TextFormField(
                   controller: workHoursController,
                   decoration: const InputDecoration(labelText: 'Work Hours'),
                 ),
+                TextFormField(
+                  controller: teamMembersController,
+                  decoration: const InputDecoration(labelText: 'Team Members'),
+                )
               ],
             ),
           ),
@@ -343,7 +396,7 @@ class _ProjectsTableState extends ConsumerState<ProjectsTable> {
                     startDate: startDate,
                     endDate: endDate,
                     workHours: workHoursController.text,
-                    teamMembers: project.teamMembers,
+                    teamMembers: teamMembersController.text,
                     tasks: project.tasks,
                   );
 

@@ -46,7 +46,10 @@ class DatabaseProjectRepository implements ProjectRepository {
 
   @override
   Future<List<Project>> getUserProjects(int userId) async {
-    return await _dataSource.getUserProjects(userId);
+    // print('Implementaionnnn--->');
+    var impleProject = await _dataSource.getUserProjects(userId);
+    // print('Impleeeeee$impleProject');
+    return impleProject;
   }
 
   @override
@@ -56,12 +59,12 @@ class DatabaseProjectRepository implements ProjectRepository {
 
   @override
   Future<void> markProjectAsCompleted(int projectId) async {
-    // throw UnimplementedError();
     return await _dataSource.markProjectAsCompleted(projectId);
   }
 
   @override
   Future<void> updateTasks(int projectId, List<Task> tasks) async {
+    // print('Imple - ${tasks}');
     return await _dataSource.updateTasks(projectId, tasks);
   }
 
@@ -76,14 +79,25 @@ class DatabaseProjectRepository implements ProjectRepository {
   }
 
   @override
-  Future<List<CompletedProject>> getCompletedProjects() async {
-    return await _dataSource.getCompletedProjects();
+  Future<List<CompletedProject>> getCompletedProjects(int userId) async {
+    return await _dataSource.getCompletedProjects(userId);
   }
 
   @override
-  Future<int> insertCompletedProjects(
-      CompletedProject project, int projectId) async {
-    print('Imple - $project');
-    return await _dataSource.insertCompletedProjects(project, projectId);
+  Future<int> insertCompletedProjects(Project project) async {
+    // print('Imple - $project');
+    return await _dataSource.insertCompletedProjects(project);
+  }
+
+  @override
+  Future<bool> isTeamMemberAssigned(String teamMember) async {
+    return await _dataSource.isTeamMemberAssigned(teamMember);
+  }
+
+  @override
+  Future<Project> getCompletedProjectsFromTable(
+      int userId, int projectId, bool completed) async {
+    return await _dataSource.getCompletedProjectsFromTable(
+        userId, projectId, completed);
   }
 }

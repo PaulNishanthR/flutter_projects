@@ -6,6 +6,7 @@ class Task {
   bool status;
   List<String>? teamMembers;
   List<String>? assignedMembers;
+  String? hours;
 
   Task({
     this.id,
@@ -15,6 +16,7 @@ class Task {
     required this.status,
     this.teamMembers,
     this.assignedMembers,
+    this.hours,
   });
 
   Map<String, dynamic> toJson() {
@@ -26,7 +28,16 @@ class Task {
       'status': status,
       'teamMembers': teamMembers,
       'assignedMembers': assignedMembers,
+      'hours': hours,
     };
+  }
+
+  List<String> getTeamMembersList() {
+    return teamMembers!
+        .join(',')
+        .split(',')
+        .map((member) => member.trim())
+        .toList();
   }
 
   factory Task.fromJson(Map<String, dynamic> json) {
@@ -44,6 +55,7 @@ class Task {
           ? List<String>.from(json['teamMembers'])
           : null,
       status: json['status'] ?? false,
+      hours: json['hours'],
     );
   }
 
@@ -63,6 +75,7 @@ class Task {
       assignedMembers: map['assignedMembers'] != null
           ? List<String>.from(map['assignedMembers'])
           : null,
+      hours: map['hours'] ?? '',
     );
   }
 }

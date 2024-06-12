@@ -267,8 +267,10 @@
 
 import 'dart:convert';
 
+import 'package:animated_snack_bar/animated_snack_bar.dart';
 import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
+// import 'package:flutter_projects/domain/model/completed_project.dart';
 import 'package:flutter_projects/presentation/providers/auth_provider.dart';
 import 'package:flutter_projects/presentation/providers/userId_provider.dart';
 import 'package:flutter_projects/presentation/views/home_for_manager.dart';
@@ -279,7 +281,9 @@ import 'package:flutter_projects/presentation/views/home.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
+  // final CompletedProject project;
   const LoginScreen({
+    // required this.project,
     Key? key,
   }) : super(key: key);
 
@@ -405,21 +409,24 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     // }
     else {
       if (context.mounted) {
-        showDialog(
-          context: context,
-          builder: (_) => AlertDialog(
-            title: const Text('Error'),
-            content: const Text('Invalid credentials'),
-            actions: <Widget>[
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: const Text('OK'),
-              ),
-            ],
-          ),
-        );
+        // showDialog(
+        //   context: context,
+        //   builder: (_) => AlertDialog(
+        //     title: const Text('Error'),
+        //     content: const Text('Invalid credentials'),
+        //     actions: <Widget>[
+        //       TextButton(
+        //         onPressed: () {
+        //           Navigator.of(context).pop();
+        //         },
+        //         child: const Text('OK'),
+        //       ),
+        //     ],
+        //   ),
+        // );
+        AnimatedSnackBar.material('Invalid Credentials',
+                type: AnimatedSnackBarType.warning)
+            .show(context);
       }
     }
   }

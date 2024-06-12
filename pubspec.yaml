@@ -54,6 +54,7 @@ dependencies:
   # pointycastle: ^3.9.0
   pdf: ^3.10.8
   flutter_pdfview: ^1.2.7
+  # share_plus: ^8.0.2
 
 dev_dependencies:
   flutter_test:

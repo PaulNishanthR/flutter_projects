@@ -16,6 +16,9 @@ abstract class ProjectRepository {
   Future<void> updateTasks(int projectId, List<Task> tasks);
   Future<List<Task>> getUserTasks(int projectId);
   Future<void> updateTask(int projectId, Task updatedTask);
-  Future<List<CompletedProject>> getCompletedProjects();
-  Future<int> insertCompletedProjects(CompletedProject project, int projectId);
+  Future<List<CompletedProject>> getCompletedProjects(int userId);
+  Future<int> insertCompletedProjects(Project project);
+  Future<bool> isTeamMemberAssigned(String teamMember);
+  Future <Project> getCompletedProjectsFromTable(
+      int userId, int projectId, bool completed);
 }

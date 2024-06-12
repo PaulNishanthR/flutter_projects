@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_projects/domain/model/completed_project.dart';
+// import 'package:flutter_projects/domain/model/completed_project.dart';
 import 'package:flutter_projects/domain/model/project.dart';
 import 'package:flutter_projects/presentation/providers/project_provider.dart';
 import 'package:flutter_projects/presentation/views/project_details.dart';
@@ -14,11 +14,11 @@ class MyHomePage extends ConsumerStatefulWidget {
   final String title;
   final String username;
   final dynamic userId;
-  final CompletedProject? project;
+  // final CompletedProject? project;
 
   const MyHomePage(
       {Key? key,
-      this.project,
+      // this.project,
       required this.title,
       required this.username,
       this.userId})
@@ -36,6 +36,7 @@ class _MyHomePageState extends ConsumerState<MyHomePage> {
   }
 
   Future<void> loadProjects() async {
+    // print('Home Page--->$projects');
     await ref.read(projectsProvider.notifier).getProjects(widget.userId);
   }
 
@@ -54,6 +55,7 @@ class _MyHomePageState extends ConsumerState<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    // loadProjects();
     final projects = ref.watch(projectsProvider);
     return Scaffold(
       appBar: AppBar(
@@ -65,7 +67,7 @@ class _MyHomePageState extends ConsumerState<MyHomePage> {
         addProject: addProject,
         username: widget.username,
         userId: widget.userId,
-        // project:widget.project!,
+        // project: widget.project!,
       ),
       body: Padding(
         padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0),
@@ -187,7 +189,7 @@ class _MyHomePageState extends ConsumerState<MyHomePage> {
             MaterialPageRoute(
               builder: (context) => ProjectDetailsPage(
                 project: project,
-                teamMembers: [],
+                teamMembers: const [],
               ),
             ),
           );

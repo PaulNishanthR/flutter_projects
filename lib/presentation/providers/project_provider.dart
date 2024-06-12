@@ -71,9 +71,12 @@ class ProjectsNotifier extends StateNotifier<List<Project>> {
   }
 
   Future<void> getProjects(int userId) async {
+    // print('inside provider---');
     try {
+      // print('indide try block');
       List<Project> userProjects = await _repository.getUserProjects(userId);
       state = userProjects;
+      // print('State, userProjects--->$state');
     } catch (e) {
       CustomException("Unable to get the projects");
     }
@@ -84,7 +87,7 @@ class ProjectsNotifier extends StateNotifier<List<Project>> {
       await _repository.markProjectAsCompleted(projectId);
       state = state.map((project) {
         if (project.id == projectId) {
-          return project.copyWith(completed: true);
+          return project.copyWith(completed: true, teamMembers: '');
         }
         return project;
       }).toList();
@@ -94,14 +97,49 @@ class ProjectsNotifier extends StateNotifier<List<Project>> {
     }
   }
 
+  // Future<void> updateProjectTasks(int projectId, List<Task> tasks) async {
+  //   try {
+  //     await _repository.updateTasks(projectId, tasks);
+  //     print("tasks updated in database via provider---> $projectId, $tasks");
+  //   } catch (e) {
+  //     throw CustomException("Unable to update tasks in dbbb");
+  //   }
+  // }
   Future<void> updateProjectTasks(int projectId, List<Task> tasks) async {
     try {
+      // print("Updating tasks for project ID: $projectId with tasks: $tasks");
       await _repository.updateTasks(projectId, tasks);
-      print("tasks updated in database $projectId, $tasks");
+      // print("Repository update successful");
+      state = state.map((project) {
+        if (project.id == projectId) {
+          return project.copyWith(tasks: tasks);
+        }
+        return project;
+      }).toList();
+      // print("State updated successfully");
     } catch (e) {
+      // print("Error updating tasks: $e");
       throw CustomException("Unable to update tasks in dbbb");
     }
   }
+  // Future<void> updateProjectTasks(int projectId, List<Task> tasks) async {
+  //   try {
+  //     print('inside provider - ${tasks}');
+  //     print("Updating tasks for project ID: $projectId with tasks: $tasks");
+  //     await _repository.updateTasks(projectId, tasks);
+  //     print('outside provider - ${tasks[1].teamMembers}');
+  //     state = state.map((project) {
+  //       if (project.id == projectId) {
+  //         return project.copyWith(tasks: tasks);
+  //       }
+  //       return project;
+  //     }).toList();
+  //     print("Tasks updated successfully");
+  //   } catch (e) {
+  //     print("Error updating tasks: $e");
+  //     throw CustomException("Unable to update tasks in dbbb");
+  //   }
+  // }
 
   Future<List<Task>> getTasks(int projectId) async {
     try {
@@ -120,13 +158,35 @@ class ProjectsNotifier extends StateNotifier<List<Project>> {
           List<Task> updatedTasks = project.tasks.map((task) {
             return task.id == updatedTask.id ? updatedTask : task;
           }).toList();
-          return project.copyWith(tasks: updatedTasks);
+          return project.copyWith(tasks: updatedTasks, teamMembers: '');
         }
         return project;
       }).toList();
-      print("task updated in provider");
+      // print("task updated in provider");
     } catch (e) {
       throw CustomException("Unable to update the task");
+    }
+  }
+
+  Future<bool> isMemberAssignedToAnotherProject(String member) async {
+    try {
+      // Implement logic to check if member is assigned to another project
+      return await _repository.isTeamMemberAssigned(member);
+    } catch (e) {
+      // print("Error checking team member assignment: $e");
+      return false;
+    }
+  }
+
+  Future<void> getCompletedProjectsFromDB(
+      int userId, int projectId, bool completed) async {
+    try {
+      await _repository.getCompletedProjectsFromTable(userId, projectId, true);
+      // state = completedProjects as List<Project>;
+    } catch (e) {
+      // print("Error fetching completed projects providerrrr: $e");
+      throw CustomException(
+          "Unable to fetch completed projects in providerrrr");
     }
   }
 }
