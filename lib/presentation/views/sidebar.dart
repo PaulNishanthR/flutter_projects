@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 // import 'package:flutter_projects/domain/model/completed_project.dart';
 import 'package:flutter_projects/domain/model/project.dart';
+import 'package:flutter_projects/presentation/views/member_home.dart';
 import 'package:flutter_projects/presentation/widgets/about.dart';
 import 'package:flutter_projects/presentation/views/login.dart';
 import 'package:flutter_projects/presentation/views/table_of_projects.dart';
@@ -71,8 +72,8 @@ class Navbar extends ConsumerWidget {
               ),
             ),
             ListTile(
-              leading: const Icon(Icons.category),
-              title: Text(AppLocalizations.of(context)!.projects),
+              leading: const Icon(Icons.report),
+              title: Text(AppLocalizations.of(context)!.reports),
               onTap: () {
                 Navigator.push(
                   context,
@@ -81,6 +82,18 @@ class Navbar extends ConsumerWidget {
                       userId: userId,
                       // project: project,
                     ),
+                  ),
+                );
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.category),
+              title: Text(AppLocalizations.of(context)!.projects),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const MemberHomeScreen(),
                   ),
                 );
               },

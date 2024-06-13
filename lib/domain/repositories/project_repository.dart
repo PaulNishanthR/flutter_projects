@@ -1,4 +1,3 @@
-import 'package:flutter_projects/domain/model/completed_project.dart';
 import 'package:flutter_projects/domain/model/project.dart';
 import 'package:flutter_projects/domain/model/task.dart';
 
@@ -16,9 +15,6 @@ abstract class ProjectRepository {
   Future<void> updateTasks(int projectId, List<Task> tasks);
   Future<List<Task>> getUserTasks(int projectId);
   Future<void> updateTask(int projectId, Task updatedTask);
-  Future<List<CompletedProject>> getCompletedProjects(int userId);
-  Future<int> insertCompletedProjects(Project project);
   Future<bool> isTeamMemberAssigned(String teamMember);
-  Future <Project> getCompletedProjectsFromTable(
-      int userId, int projectId, bool completed);
+  Future<Project> getCompletedProjectsFromTable(int userId, int projectId, bool completed);
 }

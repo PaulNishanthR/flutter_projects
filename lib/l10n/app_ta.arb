@@ -41,5 +41,13 @@
   "noprojects": "எந்த திட்டங்களும் இல்லை.",
   "selectlang": "பயன்பாட்டு மொழியைத் தேர்ந்தெடுக்கவும்",
   "taskHours": "பணி நேரம்",
-  "entertaskhours": "பணி நேரத்தை உள்ளிடவும்."
+  "entertaskhours": "பணி நேரத்தை உள்ளிடவும்.",
+  "email": "மின்னஞ்சல்",
+  "password": "கடவுச்சொல்",
+  "confirmpassword": "கடவுச்சொல் மறுபதிவிடுக",
+  "login": "உள்நுழைக",
+  "donthaveaccount": "கணக்கு இல்லையா?",
+  "signup": "பதிவு செய்ய",
+  "alreadyhaveaccount": "கணக்கு உள்ளதா?",
+  "reports": "ஆவணங்கள்"
 }

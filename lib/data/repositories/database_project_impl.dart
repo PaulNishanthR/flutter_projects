@@ -1,4 +1,3 @@
-import 'package:flutter_projects/domain/model/completed_project.dart';
 import 'package:flutter_projects/domain/model/project.dart';
 import 'package:flutter_projects/data/datasources/project_datasource.dart';
 import 'package:flutter_projects/domain/model/task.dart';
@@ -76,17 +75,6 @@ class DatabaseProjectRepository implements ProjectRepository {
   @override
   Future<void> updateTask(int projectId, Task updatedTask) async {
     return await _dataSource.updateTask(projectId, updatedTask);
-  }
-
-  @override
-  Future<List<CompletedProject>> getCompletedProjects(int userId) async {
-    return await _dataSource.getCompletedProjects(userId);
-  }
-
-  @override
-  Future<int> insertCompletedProjects(Project project) async {
-    // print('Imple - $project');
-    return await _dataSource.insertCompletedProjects(project);
   }
 
   @override

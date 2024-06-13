@@ -1,11 +1,11 @@
 import 'dart:convert';
-
 import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_projects/presentation/providers/auth_provider.dart';
 import 'package:flutter_projects/presentation/views/login.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SignUp extends ConsumerStatefulWidget {
   const SignUp({Key? key}) : super(key: key);
@@ -106,14 +106,14 @@ class _SignUpState extends ConsumerState<SignUp> {
                           return "Invalid email. Must be @kumaran.com";
                         }
                         if (!value.endsWith('@kumaran.com')) {
-                          return 'Only emails ending with @kumaran.com are allowed'; 
+                          return 'Only emails ending with @kumaran.com are allowed';
                         }
                         return null;
                       },
-                      decoration: const InputDecoration(
-                        icon: Icon(Icons.person),
+                      decoration: InputDecoration(
+                        icon: const Icon(Icons.person),
                         border: InputBorder.none,
-                        hintText: "User Email",
+                        hintText: AppLocalizations.of(context)!.email,
                       ),
                     ),
                   ),
@@ -141,7 +141,7 @@ class _SignUpState extends ConsumerState<SignUp> {
                       decoration: InputDecoration(
                           icon: const Icon(Icons.lock),
                           border: InputBorder.none,
-                          hintText: "Password",
+                          hintText: AppLocalizations.of(context)!.password,
                           suffixIcon: IconButton(
                               onPressed: () {
                                 setState(() {
@@ -177,7 +177,8 @@ class _SignUpState extends ConsumerState<SignUp> {
                       decoration: InputDecoration(
                           icon: const Icon(Icons.lock),
                           border: InputBorder.none,
-                          hintText: "Confirm Password",
+                          hintText:
+                              AppLocalizations.of(context)!.confirmpassword,
                           suffixIcon: IconButton(
                               onPressed: () {
                                 setState(() {
@@ -203,15 +204,15 @@ class _SignUpState extends ConsumerState<SignUp> {
                             signUp();
                           }
                         },
-                        child: const Text(
-                          "SIGN UP",
-                          style: TextStyle(color: Colors.white),
+                        child: Text(
+                          AppLocalizations.of(context)!.signup,
+                          style: const TextStyle(color: Colors.white),
                         )),
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Text("Already have an account?"),
+                      Text(AppLocalizations.of(context)!.alreadyhaveaccount),
                       TextButton(
                         onPressed: () {
                           Navigator.push(
@@ -219,7 +220,7 @@ class _SignUpState extends ConsumerState<SignUp> {
                               MaterialPageRoute(
                                   builder: (context) => const LoginScreen()));
                         },
-                        child: const Text("Login"),
+                        child: Text(AppLocalizations.of(context)!.login),
                       )
                     ],
                   )

@@ -92,26 +92,12 @@ class _ProjectDetailsPageState extends ConsumerState<ProjectDetailsPage> {
             TextButton(
               onPressed: () async {
                 if (_formKey.currentState!.validate()) {
-                  // bool isValid =
-                  //     await validateTeamMembers(newTask.teamMembers!);
-                  // if (!isValid) {
-                  //   print(
-                  //       "Validation failed: Some team members are already assigned to another project");
-                  //   return;
-                  // }
-
                   try {
                     int totalHours = tasks.fold(
                         0, (sum, task) => sum + int.parse(task.hours!));
                     totalHours += int.parse(newTask.hours!);
 
                     if (totalHours > int.parse(widget.project.workHours)) {
-                      // ScaffoldMessenger.of(context).showSnackBar(
-                      //   const SnackBar(
-                      //     content: Text('totalHoursExceeded'),
-                      //     backgroundColor: Colors.red,
-                      //   ),
-                      // );
                       AnimatedSnackBar.material(
                         'total Hours Exceeded',
                         type: AnimatedSnackBarType.warning,
@@ -202,12 +188,6 @@ class _ProjectDetailsPageState extends ConsumerState<ProjectDetailsPage> {
                         0, (sum, task) => sum + int.parse(task.hours!));
 
                     if (totalHours > int.parse(widget.project.workHours)) {
-                      // ScaffoldMessenger.of(context).showSnackBar(
-                      //   const SnackBar(
-                      //     content: Text('totalHoursExceeded'),
-                      //     backgroundColor: Colors.red,
-                      //   ),
-                      // );
                       AnimatedSnackBar.material(
                         'total Hours Exceeded',
                         type: AnimatedSnackBarType.warning,
@@ -251,7 +231,6 @@ class _ProjectDetailsPageState extends ConsumerState<ProjectDetailsPage> {
 
   @override
   Widget build(BuildContext context) {
-    // final projectProvider =
     ref.watch(projectsProvider.notifier);
     return Scaffold(
       appBar: AppBar(

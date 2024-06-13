@@ -183,6 +183,7 @@ class ProjectsNotifier extends StateNotifier<List<Project>> {
     try {
       await _repository.getCompletedProjectsFromTable(userId, projectId, true);
       // state = completedProjects as List<Project>;
+      // print('Get Completed Tasks form dbbbb---->>>');
     } catch (e) {
       // print("Error fetching completed projects providerrrr: $e");
       throw CustomException(

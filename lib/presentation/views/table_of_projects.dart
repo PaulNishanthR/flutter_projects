@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_projects/domain/model/completed_project.dart';
 import 'package:flutter_projects/domain/model/project.dart';
 import 'package:flutter_projects/presentation/providers/project_provider.dart';
-import 'package:flutter_projects/presentation/providers/userid_provider.dart';
 import 'package:flutter_projects/presentation/widgets/generate_pdf.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lottie/lottie.dart';
@@ -10,10 +8,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ProjectsTable extends ConsumerStatefulWidget {
   final int userId;
-  final CompletedProject? completedProject;
 
-  const ProjectsTable({Key? key, this.completedProject, required this.userId})
-      : super(key: key);
+  const ProjectsTable({Key? key, required this.userId}) : super(key: key);
 
   @override
   ConsumerState<ProjectsTable> createState() => _ProjectsTableState();
@@ -61,17 +57,6 @@ class _ProjectsTableState extends ConsumerState<ProjectsTable> {
                             ),
                           ],
                         ),
-                        // leading: IconButton(
-                        //   icon: Icon(
-                        //     Icons.rocket,
-                        //     size: 20,
-                        //     color: Colors.yellow[800],
-                        //   ),
-                        //   onPressed: () {
-                        //     // _completed(project.id!);
-                        //     _getCompleted(project);
-                        //   },
-                        // ),
                         trailing: project.completed
                             ? null
                             : Row(
@@ -124,66 +109,6 @@ class _ProjectsTableState extends ConsumerState<ProjectsTable> {
               ));
   }
 
-  // void _getCompleted(Project project) async {
-  //   await ref
-  //       .read(projectsProvider.notifier)
-  //       .getCompletedProjectsFromDB(widget.userId, project.id!, true);
-  //   showDialog(
-  //     context: context,
-  //     builder: (BuildContext context) {
-  //       return AlertDialog(
-  //         title: Row(
-  //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //           children: [
-  //             Text(
-  //               'Project: ${project.projectName}',
-  //               style: const TextStyle(fontSize: 10),
-  //             ),
-  //             IconButton(
-  //                 icon: const Icon(Icons.picture_as_pdf),
-  //                 onPressed: navigateToPdfPage),
-  //           ],
-  //         ),
-  //         content: SingleChildScrollView(
-  //           child: Column(
-  //             crossAxisAlignment: CrossAxisAlignment.start,
-  //             children: [
-  //               Text('Description: ${project.description}'),
-  //               const SizedBox(height: 8),
-  //               Text('Manager: ${project.owner}'),
-  //               const SizedBox(height: 8),
-  //               Text('Start Date: ${_formatDate(project.startDate)}'),
-  //               const SizedBox(height: 8),
-  //               Text('End Date: ${_formatDate(project.endDate)}'),
-  //               const SizedBox(height: 8),
-  //               Text('Work Hours: ${project.workHours}'),
-  //               const SizedBox(height: 8),
-  //               Text('Team Members: ${project.teamMembers}'),
-  //               const SizedBox(height: 8),
-  //               const Text('Tasks:'),
-  //               const SizedBox(height: 8),
-  //               Column(
-  //                 crossAxisAlignment: CrossAxisAlignment.start,
-  //                 children: project.tasks.map((task) {
-  //                   return Text('- ${task.taskName}');
-  //                 }).toList(),
-  //               ),
-  //             ],
-  //           ),
-  //         ),
-  //         actions: <Widget>[
-  //           TextButton(
-  //             onPressed: () {
-  //               Navigator.pop(context);
-  //             },
-  //             child: const Text('Close'),
-  //           ),
-  //         ],
-  //       );
-  //     },
-  //   );
-  // }
-
   void _markProjectAsCompleted(int projectId) async {
     await ref.read(projectsProvider.notifier).markProjectAsCompleted(projectId);
     // await ref.read(projectsProvider.notifier).fetchProjects();
@@ -200,20 +125,7 @@ class _ProjectsTableState extends ConsumerState<ProjectsTable> {
     await ref
         .read(projectsProvider.notifier)
         .updateProjectTasks(projectId, taskList);
-
-    // Create CompletedProject instance
   }
-
-  // void _completed(int projectId) async {
-  //   final taskList =
-  //       await ref.read(projectsProvider.notifier).getTasks(projectId);
-
-  //   final project =
-  //       ref.read(projectsProvider).firstWhere((p) => p.id == projectId);
-  //   // print('taskList $taskList');
-  //   // Create CompletedProject instance
-  //   await ref.read(completedProvider.notifier).insertCompletedProject(project);
-  // }
 
   void _showProjectDetails(
     BuildContext context,
@@ -256,8 +168,8 @@ class _ProjectsTableState extends ConsumerState<ProjectsTable> {
                 Text('End Date: ${_formatDate(project.endDate)}'),
                 const SizedBox(height: 8),
                 Text('Work Hours: ${project.workHours}'),
-                const SizedBox(height: 8),
-                Text('Team Members: ${project.teamMembers}'),
+                // const SizedBox(height: 8),
+                // Text('Team Members: ${project.teamMembers}'),
                 const SizedBox(height: 8),
                 const Text('Tasks:'),
                 const SizedBox(height: 8),
@@ -281,23 +193,6 @@ class _ProjectsTableState extends ConsumerState<ProjectsTable> {
         );
       },
     );
-  }
-
-  void navigateToPdfPage() async {
-    int? userId = ref.read(userIdProvider);
-    if (userId != null) {
-      // List<CompletedProject> completedProjects = await ref
-      //     .read(completedProvider.notifier)
-      //     .fetchCompletedProjects(userId);
-      if (context.mounted) {
-        // Navigator.push(
-        //   context,
-        //   // MaterialPageRoute(
-        //     // builder: (context) => PDFGenerator(project: completedProjects),
-        //   // ),
-        // );
-      }
-    }
   }
 
   void _deleteProject(BuildContext context, Project project) {

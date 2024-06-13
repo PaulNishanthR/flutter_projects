@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_projects/presentation/providers/api_provider.dart';
-import 'package:flutter_projects/presentation/views/login.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_projects/domain/model/project.dart';
@@ -18,20 +17,20 @@ class _MemberHomeScreenState extends ConsumerState<MemberHomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: false,
+        // automaticallyImplyLeading: false,
         title: const Text("kumaran's Projects"),
         backgroundColor: Colors.blue,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.exit_to_app),
-            onPressed: () {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => const LoginScreen()),
-              );
-            },
-          ),
-        ],
+        // actions: [
+        // IconButton(
+        //   icon: const Icon(Icons.exit_to_app),
+        //   onPressed: () {
+        //     Navigator.pushReplacement(
+        //       context,
+        //       MaterialPageRoute(builder: (context) => const LoginScreen()),
+        //     );
+        //   },
+        // ),
+        // ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

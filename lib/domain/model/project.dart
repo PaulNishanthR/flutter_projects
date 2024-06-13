@@ -8,11 +8,11 @@ class Project {
   final String projectName;
   final String description;
   final String owner;
-   DateTime startDate;
-   DateTime endDate;
+  DateTime startDate;
+  DateTime endDate;
   final String workHours;
   final String teamMembers;
-   List<Task> tasks;
+  List<Task> tasks;
   bool completed;
   List<String>? assignedTeamMembers;
 

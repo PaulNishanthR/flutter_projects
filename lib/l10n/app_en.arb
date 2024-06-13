@@ -41,5 +41,13 @@
   "noprojects": "No projects available.",
   "selectlang": "Select App Language:",
   "taskHours": "Task Work Hours",
-  "entertaskhours": "Please enter task hours."
+  "entertaskhours": "Please enter task hours.",
+  "email": "Email",
+  "password": "Password",
+  "confirmpassword": "Confirm Password",
+  "login": "Login",
+  "donthaveaccount": "Don't have an account?",
+  "signup": "SIGN UP",
+  "alreadyhaveaccount": "Already have an account?",
+  "reports": "Reports"
 }
