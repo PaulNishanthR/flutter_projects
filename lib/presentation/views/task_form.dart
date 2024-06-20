@@ -6,6 +6,7 @@ import 'package:flutter_projects/domain/model/task.dart';
 import '../../domain/model/project.dart';
 
 List<String> allocatedTeamMembers = [];
+String? selectedTeamMember;
 
 class TaskFields {
   static List<Widget> buildTaskFields(
@@ -49,13 +50,17 @@ class TaskFields {
       'Sivaram',
       'Sudhakar',
       'Pooja',
-      'Sowmiya'
+      'Sowmiya',
+      'Nandhini',
+      'Roobini',
+      'Karthika',
+      'Revathy',
+      'Mohammed',
+      'Ajith',
+      'Rajini',
+      'Kamal'
     ];
 
-    // List<String> result = getUsersForProject(1, projects, teamMembers);
-    // print('yyyyyyyyyyy $result');
-
-    // List<int> selectedTeamMembersCount = List.filled(numberOfTasks, 0);
     List<Widget> taskFields = [];
     for (int i = 0; i < numberOfTasks; i++) {
       if (i >= tasks.length) {
@@ -162,7 +167,7 @@ class TaskFields {
             TextFormField(
               controller: hoursController ?? TextEditingController(),
               autovalidateMode: AutovalidateMode.onUserInteraction,
-              inputFormatters: [LengthLimitingTextInputFormatter(2)],
+              inputFormatters: [LengthLimitingTextInputFormatter(4)],
               decoration: InputDecoration(
                 labelText: AppLocalizations.of(context)!.taskHours,
                 labelStyle: const TextStyle(color: Colors.black),
@@ -187,43 +192,79 @@ class TaskFields {
                 if (value == null || value.isEmpty) {
                   return AppLocalizations.of(context)!.entertaskhours;
                 }
-                if (value.length > 2) {
-                  return 'Only 2 characters are allowed';
+                if (value.length > 4) {
+                  return 'Only 4 characters are allowed';
                 }
                 return null;
               },
               onChanged: (value) {
                 setState(() {
                   tasks[i].hours = value;
-
-                  // int totalWorkHours = tasks.fold<int>(
-                  //   0,
-                  //   (previousValue, task) =>
-                  //       previousValue + int.parse(task.hours ?? '0') ?? 0,
-                  // );
-                  // if (totalWorkHours > int.parse(project.workHours)) {
-                  //   ScaffoldMessenger.of(context).showSnackBar(
-                  //     const SnackBar(
-                  //       content: Text(
-                  //           'Total work hours exceed the maximum allowed for the project'),
-                  //       backgroundColor: Colors.red,
-                  //     ),
-                  //   );
-                  // }
                 });
               },
             ),
             const SizedBox(height: 12),
+            // Row(
+            //   children: [
+            //     Expanded(
+            //       child: DropdownButtonFormField(
+            //         autovalidateMode: AutovalidateMode.onUserInteraction,
+            //         onChanged: (value) {
+            //           filterTeamMembers(value);
+            //         },
+            //         decoration: InputDecoration(
+            //           labelText:
+            //               AppLocalizations.of(context)!.searchTeamMembers,
+            //           labelStyle: const TextStyle(color: Colors.black),
+            //           border: OutlineInputBorder(
+            //             borderSide: BorderSide(color: Colors.blue[900]!),
+            //             borderRadius: BorderRadius.circular(8.0),
+            //             gapPadding: 8.0,
+            //           ),
+            //           enabledBorder: OutlineInputBorder(
+            //             borderSide: BorderSide(color: Colors.blue[900]!),
+            //             borderRadius: BorderRadius.circular(8.0),
+            //           ),
+            //           focusedBorder: OutlineInputBorder(
+            //             borderSide: BorderSide(color: Colors.blue[900]!),
+            //             borderRadius: BorderRadius.circular(8.0),
+            //           ),
+            //           filled: true,
+            //           fillColor: Colors.blueGrey[50],
+            //           suffixIcon: DropdownButton<String>(
+            //             icon: const Icon(Icons.arrow_drop_down),
+            //             iconSize: 24,
+            //             elevation: 16,
+            //             onChanged: (String? newValue) {
+            //               if (newValue != null) {
+            //                 _addTeamMember(newValue, tasks[i], setState,
+            //                     allocatedTeamMembers, maxTeamMembers);
+            //                 // print(
+            //                 //     'Added member "$newValue" for task "${tasks[i].taskName}". Total members: ${tasks[i].teamMembers!.length}');
+            //               }
+            //             },
+            //             items: availableTeamMembers
+            //                 .map<DropdownMenuItem<String>>((String value) {
+            //               return DropdownMenuItem<String>(
+            //                 value: value,
+            //                 child: Text(value),
+            //               );
+            //             }).toList(),
+            //           ),
+            //         ),
+            //         style: const TextStyle(fontSize: 14),
+            //       ),
+            //     ),
+            //   ],
+            // ),
             Row(
               children: [
                 Expanded(
-                  child: TextFormField(
-                    onChanged: (value) {
-                      filterTeamMembers(value);
-                    },
+                  child: DropdownButtonFormField(
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    value: selectedTeamMember,
                     decoration: InputDecoration(
-                      labelText:
-                          AppLocalizations.of(context)!.searchTeamMembers,
+                      labelText: AppLocalizations.of(context)!.taskMembers,
                       labelStyle: const TextStyle(color: Colors.black),
                       border: OutlineInputBorder(
                         borderSide: BorderSide(color: Colors.blue[900]!),
@@ -240,38 +281,31 @@ class TaskFields {
                       ),
                       filled: true,
                       fillColor: Colors.blueGrey[50],
-                      suffixIcon: DropdownButton<String>(
-                        icon: const Icon(Icons.arrow_drop_down),
-                        iconSize: 24,
-                        elevation: 16,
-                        onChanged: (String? newValue) {
-                          if (newValue != null) {
-                            // print("length=== ${newValue.length}");
-                            // if (selectedTeamMembersCount[i] >= maxTeamMembers) {
-                            //   return;
-                            // }
-                            // selectedTeamMembersCount[i]++;
-                            // print("max team member $maxTeamMembers");
-                            _addTeamMember(newValue, tasks[i], setState,
-                                allocatedTeamMembers, maxTeamMembers);
-                            // print(
-                            //     'Added member "$newValue" for task "${tasks[i].taskName}". Total members: ${tasks[i].teamMembers!.length}');
-                          }
-                        },
-                        items: availableTeamMembers
-                            .map<DropdownMenuItem<String>>((String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(value),
-                          );
-                        }).toList(),
-                      ),
                     ),
-                    style: const TextStyle(fontSize: 14),
+                    style: const TextStyle(fontSize: 14, color: Colors.black),
+                    onChanged: (newValue) {
+                      setState(() {
+                        _addTeamMember(newValue as String, tasks[i], setState,
+                            allocatedTeamMembers, maxTeamMembers);
+                      });
+                    },
+                    items: availableTeamMembers
+                        .map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(value),
+                      );
+                    }).toList(),
+                    validator: (value) {
+                      if (value == null || value.toString().isEmpty) {
+                        return AppLocalizations.of(context)!.enterTaskMembers;
+                      }
+                    },
                   ),
                 ),
               ],
             ),
+
             SizedBox(
               height: 160,
               child: Wrap(
@@ -297,28 +331,6 @@ class TaskFields {
     return taskFields;
   }
 
-  // static void _addTeamMember(String newValue, Task task, Function setState,
-  //     List<String> allocatedTeamMembers) {
-  //   List<String> updatedAllocatedTeamMembers = allocatedTeamMembers;
-  //   if (!task.teamMembers!.contains(newValue)) {
-  //     task.teamMembers!.add(newValue);
-  //     updatedAllocatedTeamMembers.remove(newValue);
-  //   }
-  //   setState(() {
-  //     allocatedTeamMembers = updatedAllocatedTeamMembers;
-  //   });
-  // }
-  // static void _addTeamMember(String newValue, Task task, Function setState,
-  //     List<String> availableTeamMembers, int maxTeamMembers) {
-  //   if (task.teamMembers!.length < maxTeamMembers) {
-  //     if (!task.teamMembers!.contains(newValue)) {
-  //       task.teamMembers!.add(newValue);
-  //       availableTeamMembers.remove(newValue);
-  //       setState(() {});
-  //     }
-  //   }
-  // }
-  // working code
   static void _addTeamMember(
     String newValue,
     Task task,
@@ -326,18 +338,10 @@ class TaskFields {
     List<String> availableTeamMembers,
     int maxTeamMembers,
   ) {
-    // print('MAX : $maxTeamMembers');
     if (task.teamMembers!.length <= maxTeamMembers) {
-      // print('MAXx : $maxTeamMembers');
-      // Check if the new team member is not already added to the task
-      // if (task.teamMembers!.contains(newValue)) {
-      // Add the new team member to the task
       task.teamMembers!.add(newValue);
-      // Remove the new team member from the available team members list
       availableTeamMembers.remove(newValue);
-      // Update the UI
       setState(() {});
-      // }
     }
   }
 
@@ -368,6 +372,10 @@ class TaskFields {
     );
   }
 }
+
+// List<String> result = getUsersForProject(1, projects, teamMembers);
+    // print('yyyyyyyyyyy $result');
+    // List<int> selectedTeamMembersCount = List.filled(numberOfTasks, 0);
 
 // List<String> getUsersForProject(
 //   int projectId,

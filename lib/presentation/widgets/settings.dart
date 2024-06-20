@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_projects/presentation/providers/lang_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class SettingsPage extends ConsumerStatefulWidget {
   const SettingsPage({Key? key}) : super(key: key);
@@ -21,7 +22,6 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
     _availableLanguages = [
       const Locale('en'),
       const Locale('ta'),
-      // const Locale('hi'),
     ];
   }
 
@@ -51,6 +51,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                     _selectedLanguage = value!;
                   });
                   ref.read(languageProvider.notifier).changeLocale(value!);
+                  _showLanguageToast(value);
                 },
                 items: _availableLanguages
                     .map<DropdownMenuItem<Locale>>((Locale value) {
@@ -76,9 +77,27 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
     } else if (locale.languageCode == 'ta') {
       return 'தமிழ்';
     }
-    // else if (locale.languageCode == 'hi') {
-    //   return 'हिंदी';
-    // }
     return '';
+  }
+
+  void _showLanguageToast(Locale selectedLocale) {
+    String languageName = '';
+    switch (selectedLocale.languageCode) {
+      case 'en':
+        languageName = 'English';
+        break;
+      case 'ta':
+        languageName = 'தமிழ்';
+        break;
+      default:
+        languageName = 'Unknown';
+    }
+    Fluttertoast.showToast(
+      msg: 'You selected $languageName',
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.TOP_RIGHT,
+      backgroundColor: Colors.purple,
+      textColor: Colors.white,
+    );
   }
 }

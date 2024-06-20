@@ -54,7 +54,11 @@ dependencies:
   # pointycastle: ^3.9.0
   pdf: ^3.10.8
   flutter_pdfview: ^1.2.7
+  fluttertoast: ^8.2.5
+  share_plus: ^7.2.2
   # share_plus: ^8.0.2
+  # flutter_typeahead: ^5.2.0
+  # fluttertoast: ^8.2.6
 
 dev_dependencies:
   flutter_test:
@@ -85,9 +89,14 @@ flutter:
     - assets/empty_projects.json
     - assets/login.png
     - assets/image1.png
-    # - lib/config/images/login.png
+    - assets/welcome.json
     - assets/playstore.png
   #   - images/a_dot_ham.jpeg
+
+  fonts:
+    - family: Inter
+      fonts:
+        - asset: assets/fonts/Inter-Medium.ttf
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

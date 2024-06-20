@@ -99,29 +99,54 @@ class Project {
     );
   }
 
+  // factory Project.fromJson(Map<String, dynamic> json) {
+  //   List<Task> tasks = _parseTasks(json['tasks']);
+  //   return Project(
+  //     id: json['id'] ?? '',
+  //     userId: json['userId'] != null
+  //         ? int.tryParse(json['userId'].toString()) ?? 0
+  //         : 0,
+  //     projectName: json['projectName'] ?? '',
+  //     description: json['description'] ?? '',
+  //     owner: json['owner'] != null ? json['owner'].toString() : '',
+  //     startDate: json['startDate'] != null
+  //         ? _parseDateTime(json['startDate'])
+  //         : DateTime.now(),
+  //     endDate: json['endDate'] != null
+  //         ? _parseDateTime(json['endDate'])
+  //         : DateTime.now(),
+  //     workHours: json['workHours']?.toString() ?? '',
+  //     teamMembers: _parseTeamMembers(json['teamMembers']),
+  //     tasks: tasks,
+  //     completed: json['completed'] ?? false,
+  //     assignedTeamMembers: json['assignedTeamMembers'],
+  //   );
+  // }
+
   factory Project.fromJson(Map<String, dynamic> json) {
-    List<Task> tasks = _parseTasks(json['tasks']);
+    var tasksFromJson = json['tasks'] != null ? jsonDecode(json['tasks']) : [];
+    List<Task> tasksList =
+        tasksFromJson.map<Task>((taskJson) => Task.fromJson(taskJson)).toList();
+
+    var assignedMembersFromJson = json['assignedTeamMembers'] != null
+        ? jsonDecode(json['assignedTeamMembers'])
+        : [];
+    List<String> assignedMembersList =
+        List<String>.from(assignedMembersFromJson);
+
     return Project(
-      id: json['id'] ?? '',
-      userId: json['userId'] != null
-          ? int.tryParse(json['userId'].toString()) ?? 0
-          : 0,
-      projectName: json['projectName'] ?? '',
-      description: json['description'] ?? '',
-      owner: json['owner'] != null ? json['owner'].toString() : '',
-      startDate: json['startDate'] != null
-          ? _parseDateTime(json['startDate'])
-          : DateTime.now(),
-      endDate: json['endDate'] != null
-          ? _parseDateTime(json['endDate'])
-          : DateTime.now(),
-      workHours: json['workHours']?.toString() ?? '',
-      teamMembers: _parseTeamMembers(json['teamMembers']),
-      tasks: tasks,
-      completed: json['completed'] ?? false,
-      // allocatedTeamMembers:
-      //     _parseAllocatedTeamMembers(json['allocatedTeamMembers']),
-      assignedTeamMembers: json['assignedTeamMembers'],
+      id: json['projectId'],
+      projectName: json['name'],
+      description: json['description'],
+      owner: json['owner'],
+      startDate: DateTime.parse(json['startDate']),
+      endDate: DateTime.parse(json['endDate']),
+      workHours: json['workHours'].toString(),
+      teamMembers: json['teamMembers'].toString(),
+      tasks: tasksList,
+      userId: json['userId'],
+      assignedTeamMembers: assignedMembersList,
+      completed: json['completed'] == 1,
     );
   }
 
@@ -209,14 +234,4 @@ class Project {
       );
     }).toList();
   }
-
-  // static List<String> _parseAllocatedTeamMembers(dynamic allocatedTeamMembers) {
-  //   if (allocatedTeamMembers == null) {
-  //     return [];
-  //   } else if (allocatedTeamMembers is List<dynamic>) {
-  //     return allocatedTeamMembers.map((member) => member.toString()).toList();
-  //   } else {
-  //     return [];
-  //   }
-  // }
 }

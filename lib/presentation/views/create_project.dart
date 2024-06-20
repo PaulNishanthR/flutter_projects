@@ -6,19 +6,20 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 class CreateProjectPage extends StatelessWidget {
   final void Function(Project) addProject;
   final List<Project> projects;
-  final List<String> teamMembers = [
-    'Nishanth',
-    'Naren',
-    'Logesh',
-    'Jega',
-    'Jhaya',
-    'Selvin',
-    'Kumaran',
-    'Naresh',
-    'Siva',
-  ];
+  // final List<String> teamMembers = [
+  //   'Nishanth',
+  //   'Naren',
+  //   'Logesh',
+  //   'Jega',
+  //   'Jhaya',
+  //   'Selvin',
+  //   'Kumaran',
+  //   'Naresh',
+  //   'Siva',
+  // ];
+  final List<String> teamMembers = [];
 
-  final List<String> managers = ['Saravanakumar', 'Devika', 'Saravanan'];
+  final List<String> managers = ['Saravanakumar', 'Devika', 'Amit'];
   final int userId;
   CreateProjectPage({
     super.key,

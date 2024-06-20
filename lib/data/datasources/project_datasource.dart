@@ -20,7 +20,7 @@ class ProjectDataSource {
 
   late Database _database;
 
-  final String _databaseName = "projjii.db";
+  final String _databaseName = "projjiip.db";
 
   final String _users =
       "create table users (userId INTEGER PRIMARY KEY AUTOINCREMENT, userName TEXT UNIQUE, userPassword TEXT)";
@@ -247,7 +247,7 @@ class ProjectDataSource {
       where: 'projectId = ?',
       whereArgs: [projectId],
     );
-    // print("maps in tasksss $maps");
+    print("maps in tasksss $maps");
     if (maps.isNotEmpty) {
       List<Task> tasks = [];
       if (maps.first['tasks'] != null) {
@@ -440,119 +440,107 @@ class ProjectDataSource {
     }
   }
 
-// Future<void> insertMemberCredentials() async {
-  //   await _checkAndInitDB();
-  //   try {
-  //     for (var credential in memberCredentials) {
-  //       await _database.insert(
-  //         'preUsers',
-  //         {
-  //           'name': credential.elementAt(0),
-  //           'email': credential.elementAt(1),
-  //           'password': credential.elementAt(2),
-  //         },
-  //         conflictAlgorithm: ConflictAlgorithm.replace,
-  //       );
-  //     }
-  //     // print("stored-------->");
-  //   } catch (e) {
-  //     throw CustomException("Error inserting member credentials");
-  //   }
-  // }
-
-// Future<bool> loginMembers(String email, String pass) async {
-//   await _checkAndInitDB();
-//   final List<Map<String, dynamic>> result = await _database.query(
-//     'preUsers',
-//     where: 'email = ? AND password = ?',
-//     whereArgs: [email, pass],
-//   );
-//   // print("login by stored---->");
-//   return result.isNotEmpty;
-// }
-
-// Future<List<CompletedProject>> getCompletedProjects(int userID) async {
-  //   await _checkAndInitDB();
-  //   final List<Map<String, dynamic>> maps = await _database
-  //       .query('completedProjects', where: 'userId=?', whereArgs: [userID]);
-  //   // print('c maps $maps');
-  //   return List.generate(maps.length, (i) {
-  //     return CompletedProject(
-  //       project: Project(
-  //         id: maps[i]['projectId'],
-  //         projectName: maps[i]['name'],
-  //         description: maps[i]['description'],
-  //         owner: maps[i]['owner'],
-  //         startDate: DateTime.parse(maps[i]['startDate']),
-  //         endDate: DateTime.parse(maps[i]['endDate']),
-  //         workHours: maps[i]['workHours'].toString(),
-  //         teamMembers: maps[i]['teamMembers'].toString(),
-  //         tasks: maps[i]['tasks'],
-  //         userId: maps[i]['userId'],
-  //       ),
-  //       userId: maps[i]['userId'],
-  //     );
-  //   });
-  // }
-
-// Future<int> insertCompletedProjects(Project project) async {
-  //   await _checkAndInitDB();
-  //   try {
-  //     int id = await _database.insert('completedProjects', {
-  //       'name': project.projectName,
-  //       'description': project.description,
-  //       'owner': project.owner,
-  //       'startDate': project.startDate,
-  //       'endDate': project.description,
-  //       'workHours': project.description,
-  //       'teamMembers': project.teamMembers,
-  //       'tasks': project.tasks,
-  //       'userId': project.userId
-  //     });
-  //     // print('completed - ${project.projectName}');
-  //     return id;
-  //   } catch (e) {
-  //     throw CustomException("Error while inserting completed projects");
-  //   }
-  // }
-
-//Get User Projects Old Method--->
-  //
-  // Future<List<Project>> getUserProjects(int userId) async {
+  //Get Assigned Tasks and Projects for Members
+  // Future<List<Project>> getAssignedProjectsAndTasks(
+  //     String assignedTeamMembers) async {
   //   await _checkAndInitDB();
   //   final List<Map<String, dynamic>> maps = await _database.query(
   //     'projectsDdd',
-  //     where: 'userId = ?',
-  //     whereArgs: [userId],
+  //     where: 'assignedTeamMembers LIKE ?',
+  //     whereArgs: ['%"$assignedTeamMembers"%'],
   //   );
-  //   Set<String> assignedTeamMembers = {};
+
   //   return List.generate(maps.length, (i) {
+  //     final map = maps[i];
+  //     print('maps--->$map, $maps');
   //     List<Task> tasks = [];
-  //     if (maps[i]['tasks'] != null) {
-  //       var decodedTasks = jsonDecode(maps[i]['tasks']);
+  //     if (map['tasks'] != null) {
+  //       var decodedTasks = jsonDecode(map['tasks']);
   //       tasks = List<Task>.from(
   //           decodedTasks.map((taskJson) => Task.fromJson(taskJson)));
-  //       // Add team members to the assigned list
-  //       for (var task in tasks) {
-  //         assignedTeamMembers.addAll(task.teamMembers!);
-  //       }
   //     }
+  //     print('proj and task for memberrr in dbbb--->$map, $maps');
+  //     List<String> assignedTeamMembers = [];
+  //     if (map['assignedTeamMembers'] != null &&
+  //         map['assignedTeamMembers'].isNotEmpty) {
+  //       var decodedAssignedTeamMembers = jsonDecode(map['assignedTeamMembers']);
+  //       assignedTeamMembers = List<String>.from(decodedAssignedTeamMembers);
+  //     }
+  //     print('proj and task for member in dbbb--->$map, $maps');
   //     return Project(
-  //       id: maps[i]['projectId'],
-  //       projectName: maps[i]['name'],
-  //       description: maps[i]['description'],
-  //       owner: maps[i]['owner'],
-  //       startDate: DateTime.parse(maps[i]['startDate']),
-  //       endDate: DateTime.parse(maps[i]['endDate']),
-  //       workHours: maps[i]['workHours'].toString(),
-  //       teamMembers: maps[i]['teamMembers'].toString(),
+  //       id: map['projectId'],
+  //       projectName: map['name'],
+  //       description: map['description'],
+  //       owner: map['owner'],
+  //       startDate: DateTime.parse(map['startDate']),
+  //       endDate: DateTime.parse(map['endDate']),
+  //       workHours: map['workHours'].toString(),
+  //       teamMembers: map['teamMembers'].toString(),
   //       tasks: tasks,
-  //       userId: maps[i]['userId'],
+  //       userId: map['userId'],
+  //       assignedTeamMembers: assignedTeamMembers,
+  //       completed: map['completed'] == 1,
   //     );
   //   });
   // }
+  Future<List<Project>> getAssignedProjectsAndTasks(
+      String assignedTeamMember) async {
+    await _checkAndInitDB();
 
-// final String _preUsers =
-  //     "create table preUsers (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, email TEXT UNIQUE, password TEXT)";
-  // await db.execute(_preUsers);
+    // Print the assignedTeamMember for debugging
+    print('Assigned team member: $assignedTeamMember');
+
+    // Debug print before query
+    print('Running query...');
+
+    final List<Map<String, dynamic>> maps = await _database.query(
+      'projectsDdd',
+      where: 'assignedTeamMembers LIKE ?',
+      whereArgs: ['%"$assignedTeamMember"%'],
+    );
+
+    print('Query result: $maps');
+
+    return List.generate(maps.length, (i) {
+      final map = maps[i];
+
+      print('Map: $map');
+
+      List<Task> tasks = [];
+      if (map['tasks'] != null) {
+        var decodedTasks = jsonDecode(map['tasks']);
+        tasks = List<Task>.from(
+            decodedTasks.map((taskJson) => Task.fromJson(taskJson)));
+      }
+
+      List<String> assignedTeamMembers = [];
+      if (map['assignedTeamMembers'] != null &&
+          map['assignedTeamMembers'].isNotEmpty) {
+        var decodedAssignedTeamMembers = jsonDecode(map['assignedTeamMembers']);
+        assignedTeamMembers = List<String>.from(decodedAssignedTeamMembers);
+      }
+
+      return Project(
+        id: map['projectId'],
+        projectName: map['name'],
+        description: map['description'],
+        owner: map['owner'],
+        startDate: DateTime.parse(map['startDate']),
+        endDate: DateTime.parse(map['endDate']),
+        workHours: map['workHours'].toString(),
+        teamMembers: map['teamMembers'].toString(),
+        tasks: tasks,
+        userId: map['userId'],
+        assignedTeamMembers: assignedTeamMembers,
+        completed: map['completed'] == 1,
+      );
+    });
+  }
+
+  void _debugDatabase() async {
+    await _checkAndInitDB();
+    final List<Map<String, dynamic>> maps =
+        await _database.query('projectsDdd');
+    print('All projects: $maps');
+  }
 }
