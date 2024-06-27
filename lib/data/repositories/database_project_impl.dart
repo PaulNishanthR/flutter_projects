@@ -1,3 +1,4 @@
+import 'package:flutter_projects/domain/model/notification.dart';
 import 'package:flutter_projects/domain/model/project.dart';
 import 'package:flutter_projects/data/datasources/project_datasource.dart';
 import 'package:flutter_projects/domain/model/task.dart';
@@ -87,5 +88,23 @@ class DatabaseProjectRepository implements ProjectRepository {
       int userId, int projectId, bool completed) async {
     return await _dataSource.getCompletedProjectsFromTable(
         userId, projectId, completed);
+  }
+
+  @override
+  Future<List<Project>> getProjectsAndTasksForTeamMember(
+      String teamMember) async {
+    return await _dataSource.getProjectsAndTasksForTeamMember(teamMember);
+  }
+
+  @override
+  Future<void> updateTaskStatus(
+      int projectId, String taskName, String member, UserStatus status) async {
+    return await _dataSource.updateTaskStatus(
+        projectId, taskName, member, status);
+  }
+
+  @override
+  Future<void> create(NotificationModel notification) async {
+    await _dataSource.create(notification);
   }
 }

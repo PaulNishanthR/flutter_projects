@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter_projects/domain/model/notification.dart';
 import 'package:flutter_projects/domain/model/project.dart';
 import 'package:flutter_projects/domain/model/task.dart';
 import 'package:flutter_projects/utils/constants/custom_exception.dart';
@@ -28,6 +29,9 @@ class ProjectDataSource {
   final String _projectsDdd =
       "create table projectsDdd (projectId INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, description TEXT NOT NULL, owner TEXT NOT NULL, workHours INTEGER NOT NULL, startDate TEXT, endDate TEXT, teamMembers INTEGER NOT NULL, tasks TEXT, userId INTEGER NOT NULL, assignedTeamMembers TEXT, completed INTEGER DEFAULT 0, FOREIGN KEY (userId) REFERENCES users (userId))";
 
+  final String _notifications =
+      "CREATE TABLE notifications (id INTEGER PRIMARY KEY AUTOINCREMENT, projectId INTEGER, message TEXT, isRead INTEGER, FOREIGN KEY (projectId) REFERENCES projectsDdd (projectId))";
+
   Future<void> _initDB() async {
     final String databasePath = await getDatabasesPath();
     final String path = join(databasePath, _databaseName);
@@ -36,6 +40,7 @@ class ProjectDataSource {
         await openDatabase(path, version: 1, onCreate: (db, version) async {
       await db.execute(_users);
       await db.execute(_projectsDdd);
+      await db.execute(_notifications);
     });
 
     _isDbInitialized = true;
@@ -45,6 +50,62 @@ class ProjectDataSource {
     if (!_isDbInitialized) {
       await _initDB();
     }
+  }
+
+  Future<NotificationModel> create(NotificationModel notification) async {
+    await _checkAndInitDB();
+
+    final id = await _database.insert('notifications', notification.toMap());
+    final newNotification = notification.copyWith(id: id);
+
+    return newNotification;
+  }
+
+  Future<int> getCountOfUnreadNotifications() async {
+    await _checkAndInitDB();
+    final List<Map<String, dynamic>> unreadNotifications =
+        await _database.rawQuery(
+      'SELECT COUNT(*) FROM notifications WHERE isRead = 0',
+    );
+
+    return Sqflite.firstIntValue(unreadNotifications) ?? 0;
+  }
+
+  Future<List<NotificationModel>> getAllNotifications() async {
+    await _checkAndInitDB();
+    final List<Map<String, dynamic>> maps =
+        await _database.query('notifications');
+    print('NO MAPS - $maps');
+    return List.generate(maps.length, (i) {
+      return NotificationModel(
+        id: maps[i]['id'],
+        projectId: maps[i]['projectId'],
+        message: maps[i]['message'],
+        isRead: maps[i]['isRead'] == 1,
+      );
+    });
+  }
+
+  Future<int> update(NotificationModel notification) async {
+    await _checkAndInitDB();
+    print('notif updated ---- >>> $notification');
+    return _database.update(
+      'notifications',
+      notification.toMap(),
+      where: 'id = ?',
+      whereArgs: [notification.id],
+    );
+  }
+
+  Future<int> delete(int id) async {
+    await _checkAndInitDB();
+    print('notif deleted ---- >>> $id');
+
+    return await _database.delete(
+      'notifications',
+      where: 'id = ?',
+      whereArgs: [id],
+    );
   }
 
   //Method to get User ID from Table
@@ -449,7 +510,6 @@ class ProjectDataSource {
   //     where: 'assignedTeamMembers LIKE ?',
   //     whereArgs: ['%"$assignedTeamMembers"%'],
   //   );
-
   //   return List.generate(maps.length, (i) {
   //     final map = maps[i];
   //     print('maps--->$map, $maps');
@@ -483,64 +543,336 @@ class ProjectDataSource {
   //     );
   //   });
   // }
-  Future<List<Project>> getAssignedProjectsAndTasks(
-      String assignedTeamMember) async {
+
+  // Future<List<Project>> getAssignedProjectsAndTasks(
+  //     String assignedTeamMember) async {
+  //   await _checkAndInitDB();
+  //   print('Assigned team member: $assignedTeamMember');
+  //   print('Running query...');
+  //   final List<Map<String, dynamic>> maps = await _database.query(
+  //     'projectsDdd',
+  //     where: 'assignedTeamMembers LIKE ?',
+  //     whereArgs: ['%"$assignedTeamMember"%'],
+  //   );
+  //   print('Query result: $maps');
+  //   return List.generate(maps.length, (i) {
+  //     final map = maps[i];
+  //     print('Map: $map');
+  //     List<Task> tasks = [];
+  //     if (map['tasks'] != null) {
+  //       var decodedTasks = jsonDecode(map['tasks']);
+  //       tasks = List<Task>.from(
+  //           decodedTasks.map((taskJson) => Task.fromJson(taskJson)));
+  //     }
+  //     List<String> assignedTeamMembers = [];
+  //     if (map['assignedTeamMembers'] != null &&
+  //         map['assignedTeamMembers'].isNotEmpty) {
+  //       var decodedAssignedTeamMembers = jsonDecode(map['assignedTeamMembers']);
+  //       assignedTeamMembers = List<String>.from(decodedAssignedTeamMembers);
+  //     }
+  //     return Project(
+  //       id: map['projectId'],
+  //       projectName: map['name'],
+  //       description: map['description'],
+  //       owner: map['owner'],
+  //       startDate: DateTime.parse(map['startDate']),
+  //       endDate: DateTime.parse(map['endDate']),
+  //       workHours: map['workHours'].toString(),
+  //       teamMembers: map['teamMembers'].toString(),
+  //       tasks: tasks,
+  //       userId: map['userId'],
+  //       assignedTeamMembers: assignedTeamMembers,
+  //       completed: map['completed'] == 1,
+  //     );
+  //   });
+  // }
+
+  //Finalized method to get the tasks based on team member's login
+  Future<List<Project>> getProjectsAndTasksForTeamMember(
+      String teamMember) async {
     await _checkAndInitDB();
 
-    // Print the assignedTeamMember for debugging
-    print('Assigned team member: $assignedTeamMember');
-
-    // Debug print before query
+    print('Assigned team member: $teamMember');
     print('Running query...');
 
-    final List<Map<String, dynamic>> maps = await _database.query(
-      'projectsDdd',
-      where: 'assignedTeamMembers LIKE ?',
-      whereArgs: ['%"$assignedTeamMember"%'],
-    );
+    final List<Map<String, dynamic>> projectMaps =
+        await _database.query('projectsDdd');
+    final normalizedTeamMember = teamMember.trim().toLowerCase();
+    print('Normalized team member: $normalizedTeamMember');
 
-    print('Query result: $maps');
+    final List<Project> projectsWithTeamMember =
+        projectMaps.where((projectMap) {
+      final List<dynamic> tasksJson = jsonDecode(projectMap['tasks']);
+      final List<Task> tasks =
+          tasksJson.map((taskJson) => Task.fromJson(taskJson)).toList();
+      print('Tasks in project ${projectMap['projectId']}:');
+      tasks.forEach((task) {
+        final normalizedTeamMembers = task.teamMembers
+                ?.map((member) => member.trim().toLowerCase())
+                .toList() ??
+            [];
+        print('${task.taskName}: $normalizedTeamMembers');
+      });
 
-    return List.generate(maps.length, (i) {
-      final map = maps[i];
+      // return tasks
+      //     .any((task) => task.teamMembers?.contains(teamMember) ?? false);
+      final bool hasTeamMember = tasks.any((task) {
+        final normalizedTeamMembers = task.teamMembers
+                ?.map((member) => member.trim().toLowerCase())
+                .toList() ??
+            [];
+        final containsMember =
+            normalizedTeamMembers.contains(normalizedTeamMember);
+        if (containsMember) {
+          print(
+              'Task ${task.taskName} contains team member $normalizedTeamMember');
+        } else {
+          print(
+              'Task ${task.taskName} does NOT contain team member $normalizedTeamMember');
+        }
+        return containsMember;
+      });
 
-      print('Map: $map');
-
-      List<Task> tasks = [];
-      if (map['tasks'] != null) {
-        var decodedTasks = jsonDecode(map['tasks']);
-        tasks = List<Task>.from(
-            decodedTasks.map((taskJson) => Task.fromJson(taskJson)));
-      }
-
-      List<String> assignedTeamMembers = [];
-      if (map['assignedTeamMembers'] != null &&
-          map['assignedTeamMembers'].isNotEmpty) {
-        var decodedAssignedTeamMembers = jsonDecode(map['assignedTeamMembers']);
-        assignedTeamMembers = List<String>.from(decodedAssignedTeamMembers);
-      }
+      return hasTeamMember;
+    }).map((projectMap) {
+      // final List<dynamic> tasksJson = jsonDecode(projectMap['tasks']);
+      // final List<Task> tasks = tasksJson
+      //     .map((taskJson) => Task.fromJson(taskJson))
+      //     .where((task) => task.teamMembers?.contains(teamMember) ?? false)
+      //     .toList();
+      final List<dynamic> tasksJson = jsonDecode(projectMap['tasks']);
+      final List<Task> tasks =
+          tasksJson.map((taskJson) => Task.fromJson(taskJson)).where((task) {
+        final normalizedTeamMembers = task.teamMembers
+                ?.map((member) => member.trim().toLowerCase())
+                .toList() ??
+            [];
+        return normalizedTeamMembers.contains(normalizedTeamMember);
+      }).toList();
+      print('inside map dbb ---- $projectMap, $projectMaps');
+      print('Project with assigned tasks: ${projectMap['projectId']}');
+      final List<String> assignedTeamMembers =
+          projectMap['assignedTeamMembers'] != null &&
+                  projectMap['assignedTeamMembers'].isNotEmpty
+              ? List<String>.from(jsonDecode(projectMap['assignedTeamMembers']))
+              : [];
 
       return Project(
-        id: map['projectId'],
-        projectName: map['name'],
-        description: map['description'],
-        owner: map['owner'],
-        startDate: DateTime.parse(map['startDate']),
-        endDate: DateTime.parse(map['endDate']),
-        workHours: map['workHours'].toString(),
-        teamMembers: map['teamMembers'].toString(),
+        id: projectMap['projectId'],
+        projectName: projectMap['name'],
+        description: projectMap['description'],
+        owner: projectMap['owner'],
+        startDate: DateTime.parse(projectMap['startDate']),
+        endDate: DateTime.parse(projectMap['endDate']),
+        workHours: projectMap['workHours'].toString(),
+        teamMembers: projectMap['teamMembers'].toString(),
         tasks: tasks,
-        userId: map['userId'],
+        userId: projectMap['userId'],
         assignedTeamMembers: assignedTeamMembers,
-        completed: map['completed'] == 1,
+        completed: projectMap['completed'] == 1,
       );
-    });
+    }).toList();
+    print('Projects with team member ----> $projectsWithTeamMember');
+    return projectsWithTeamMember;
   }
 
-  void _debugDatabase() async {
+  // Future<List<Project>> getAssignedTasks(String teamMember) async {
+  //   await _checkAndInitDB();
+  //   print('Assigned team member: $teamMember');
+  //   print('Running query...');
+  //   // final List<Map<String, dynamic>> maps = await _database.query(
+  //   //   'projectsDdd',
+  //   //   where: 'teamMembers LIKE ?',
+  //   //   whereArgs: ['%"$teamMember"%'],
+  //   // );
+  //   // Ensure both the column and search value are in the same case
+  //   final List<Map<String, dynamic>> maps = await _database.rawQuery(
+  //     'SELECT * FROM projectsDdd WHERE LOWER(teamMembers) LIKE ?',
+  //     ['%"${teamMember.toLowerCase()}"%'],
+  //   );
+  //   print('Query result: $maps');
+  //   return List.generate(maps.length, (i) {
+  //     final map = maps[i];
+  //     print('Map: $map');
+  //     List<Task> tasks = [];
+  //     if (map['tasks'] != null) {
+  //       var decodedTasks = jsonDecode(map['tasks']);
+  //       // tasks = List<Task>.from(decodedTasks
+  //       //     .map((taskJson) => Task.fromJson(taskJson))
+  //       //     .where((task) => task.assignedTeamMembers.contains(teamMember)));
+  //       tasks = List<Task>.from(decodedTasks.map((taskJson) {
+  //         Task task = Task.fromJson(taskJson);
+  //         // Filter tasks to only include those assigned to the team member
+  //         if (task.teamMembers != null &&
+  //             task.teamMembers!.contains(teamMember)) {
+  //           return task;
+  //         }
+  //       }).where((task) => task != null));
+  //     }
+  //     List<String> assignedTeamMembers = [];
+  //     if (map['assignedTeamMembers'] != null &&
+  //         map['assignedTeamMembers'].isNotEmpty) {
+  //       var decodedAssignedTeamMembers = jsonDecode(map['assignedTeamMembers']);
+  //       assignedTeamMembers = List<String>.from(decodedAssignedTeamMembers);
+  //     }
+  //     return Project(
+  //       id: map['projectId'],
+  //       projectName: map['name'],
+  //       description: map['description'],
+  //       owner: map['owner'],
+  //       startDate: DateTime.parse(map['startDate']),
+  //       endDate: DateTime.parse(map['endDate']),
+  //       workHours: map['workHours'].toString(),
+  //       teamMembers: map['teamMembers'].toString(),
+  //       tasks: tasks,
+  //       userId: map['userId'],
+  //       assignedTeamMembers: assignedTeamMembers,
+  //       completed: map['completed'] == 1,
+  //     );
+  //   });
+  // }
+
+  // void _debugDatabase() async {
+  //   await _checkAndInitDB();
+  //   final List<Map<String, dynamic>> maps =
+  //       await _database.query('projectsDdd');
+  //   print('All projects: $maps');
+  // }
+
+  // Future<void> updateUserTaskStatus(
+  //     int projectId, Task taskToUpdate, UserStatus newStatus) async {
+  //   await _checkAndInitDB();
+  //   try {
+  //     final List<Map<String, dynamic>> projectMaps = await _database.query(
+  //       'projectsDdd',
+  //       where: 'projectId = ?',
+  //       whereArgs: [projectId],
+  //     );
+  //     if (projectMaps.isNotEmpty) {
+  //       final projectData = projectMaps.first;
+  //       if (projectData['tasks'] != null) {
+  //         var decodedTasks = jsonDecode(projectData['tasks']);
+  //         List<Task> tasks = List<Task>.from(
+  //             decodedTasks.map((taskJson) => Task.fromJson(taskJson)));
+  //         // Find the task with the same properties as taskToUpdate
+  //         Task? existingTask = tasks.firstWhere(
+  //           (task) =>
+  //               task.taskName == taskToUpdate.taskName &&
+  //               task.description == taskToUpdate.description,
+  //         );
+  //         existingTask.userStatus = newStatus;
+  //         final updatedTasksJson =
+  //             jsonEncode(tasks.map((task) => task.toJson()).toList());
+  //         await _database.update(
+  //           'projectsDdd',
+  //           {'tasks': updatedTasksJson},
+  //           where: 'projectId = ?',
+  //           whereArgs: [projectId],
+  //           conflictAlgorithm: ConflictAlgorithm.replace,
+  //         );
+  //       } else {
+  //         throw CustomException("Tasks not found in project");
+  //       }
+  //     } else {
+  //       throw CustomException("Project not found");
+  //     }
+  //   } catch (e) {
+  //     throw CustomException("Error updating user task status: $e");
+  //   }
+  // }
+
+  // Future<void> updateTaskStatus(
+  //     int projectId, String taskName, String member, UserStatus status) async {
+  //   await _checkAndInitDB();
+  //   try {
+  //     final List<Map<String, dynamic>> maps = await _database.query(
+  //       'projectsDdd',
+  //       where: 'projectId = ?',
+  //       whereArgs: [projectId],
+  //     );
+  //     if (maps.isNotEmpty) {
+  //       List<Task> tasks = [];
+  //       if (maps.first['tasks'] != null) {
+  //         var decodedTasks = jsonDecode(maps.first['tasks']);
+  //         tasks = List<Task>.from(
+  //             decodedTasks.map((taskJson) => Task.fromJson(taskJson)));
+  //       }
+  //       int taskIndex = tasks.indexWhere((task) => task.taskName == taskName);
+  //       if (taskIndex != -1) {
+  //         tasks[taskIndex].updateUserStatus(member, status);
+  //         final updatedTasksJson =
+  //             jsonEncode(tasks.map((task) => task.toJson()).toList());
+  //         await _database.update(
+  //           'projectsDdd',
+  //           {'tasks': updatedTasksJson},
+  //           where: 'projectId = ?',
+  //           whereArgs: [projectId],
+  //           conflictAlgorithm: ConflictAlgorithm.replace,
+  //         );
+  //       } else {
+  //         throw CustomException("Task not found in project");
+  //       }
+  //     } else {
+  //       throw CustomException("Project not found");
+  //     }
+  //   } catch (e) {
+  //     throw CustomException("Error updating task status: $e");
+  //   }
+  // }
+
+  //Method for updating Task Status
+  Future<void> updateTaskStatus(
+      int projectId, String taskName, String member, UserStatus status) async {
+    final normalizedMember = member.split('@').first.toLowerCase().trim();
     await _checkAndInitDB();
-    final List<Map<String, dynamic>> maps =
-        await _database.query('projectsDdd');
-    print('All projects: $maps');
+    try {
+      final List<Map<String, dynamic>> maps = await _database.query(
+        'projectsDdd',
+        where: 'projectId = ?',
+        whereArgs: [projectId],
+      );
+
+      if (maps.isNotEmpty) {
+        List<Task> tasks = [];
+        if (maps.first['tasks'] != null) {
+          var decodedTasks = jsonDecode(maps.first['tasks']);
+          tasks = List<Task>.from(
+              decodedTasks.map((taskJson) => Task.fromJson(taskJson)));
+        }
+
+        int taskIndex = tasks.indexWhere((task) => task.taskName == taskName);
+        if (taskIndex != -1) {
+          Task task = tasks[taskIndex];
+          List<String> normalizedTeamMembers = task.teamMembers!
+              .map((teamMember) =>
+                  teamMember.split('@').first.toLowerCase().trim())
+              .toList();
+          print("Normalized team members: $normalizedTeamMembers");
+          if (normalizedTeamMembers.contains(normalizedMember)) {
+            task.updateUserStatus(normalizedMember, status);
+
+            final updatedTasksJson =
+                jsonEncode(tasks.map((task) => task.toJson()).toList());
+            await _database.update(
+              'projectsDdd',
+              {'tasks': updatedTasksJson},
+              where: 'projectId = ?',
+              whereArgs: [projectId],
+              conflictAlgorithm: ConflictAlgorithm.replace,
+            );
+          } else {
+            throw CustomException(
+                "Member '$normalizedMember' not found in task team members");
+          }
+        } else {
+          throw CustomException("Task not found in project");
+        }
+      } else {
+        throw CustomException("Project not found");
+      }
+    } catch (e) {
+      print("Error updating task status: $e");
+      throw CustomException("Error updating task status: $e");
+    }
   }
 }

@@ -154,20 +154,20 @@ class _ProjectFormState extends ConsumerState<ProjectForm> {
                   labelText: AppLocalizations.of(context)!.projectName,
                   labelStyle: const TextStyle(color: Colors.black),
                   border: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.blue[900]!),
+                    borderSide: BorderSide(color: Colors.purple.shade300),
                     borderRadius: BorderRadius.circular(8.0),
                     gapPadding: 8.0,
                   ),
                   enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.blue[900]!),
+                    borderSide: BorderSide(color: Colors.purple.shade300),
                     borderRadius: BorderRadius.circular(8.0),
                   ),
                   focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.blue[900]!),
+                    borderSide: BorderSide(color: Colors.purple.shade300),
                     borderRadius: BorderRadius.circular(8.0),
                   ),
                   filled: true,
-                  fillColor: Colors.blueGrey[50],
+                  fillColor: const Color.fromARGB(255, 240, 234, 238),
                 ),
                 style: const TextStyle(fontSize: 14),
                 validator: (value) {
@@ -189,20 +189,20 @@ class _ProjectFormState extends ConsumerState<ProjectForm> {
                   labelText: AppLocalizations.of(context)!.description,
                   labelStyle: const TextStyle(color: Colors.black),
                   border: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.blue[900]!),
+                    borderSide: BorderSide(color: Colors.purple.shade300),
                     borderRadius: BorderRadius.circular(8.0),
                     gapPadding: 8.0,
                   ),
                   enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.blue[900]!),
+                    borderSide: BorderSide(color: Colors.purple.shade300),
                     borderRadius: BorderRadius.circular(8.0),
                   ),
                   focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.blue[900]!),
+                    borderSide: BorderSide(color: Colors.purple.shade300),
                     borderRadius: BorderRadius.circular(8.0),
                   ),
                   filled: true,
-                  fillColor: Colors.blueGrey[50],
+                  fillColor: const Color.fromARGB(255, 240, 234, 238),
                 ),
                 style: const TextStyle(fontSize: 14),
                 validator: (value) {
@@ -228,22 +228,25 @@ class _ProjectFormState extends ConsumerState<ProjectForm> {
                             : AppLocalizations.of(context)!.from,
                         labelStyle: const TextStyle(color: Colors.black),
                         border: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.blue[900]!),
+                          borderSide: BorderSide(color: Colors.purple.shade300),
                           borderRadius: BorderRadius.circular(8.0),
                           gapPadding: 8.0,
                         ),
                         enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.blue[900]!),
+                          borderSide: BorderSide(color: Colors.purple.shade300),
                           borderRadius: BorderRadius.circular(8.0),
                         ),
                         focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.blue[900]!),
+                          borderSide: BorderSide(color: Colors.purple.shade300),
                           borderRadius: BorderRadius.circular(8.0),
                         ),
                         filled: true,
-                        fillColor: Colors.blueGrey[50],
+                        fillColor: const Color.fromARGB(255, 240, 234, 238),
                         suffixIcon: IconButton(
-                          icon: const Icon(Icons.calendar_month),
+                          icon: const Icon(
+                            Icons.calendar_month,
+                            color: Colors.black,
+                          ),
                           onPressed: () => _selectStartDate(context),
                         ),
                       ),
@@ -271,22 +274,25 @@ class _ProjectFormState extends ConsumerState<ProjectForm> {
                             : AppLocalizations.of(context)!.to,
                         labelStyle: const TextStyle(color: Colors.black),
                         border: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.blue[900]!),
+                          borderSide: BorderSide(color: Colors.purple.shade300),
                           borderRadius: BorderRadius.circular(8.0),
                           gapPadding: 8.0,
                         ),
                         enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.blue[900]!),
+                          borderSide: BorderSide(color: Colors.purple.shade300),
                           borderRadius: BorderRadius.circular(8.0),
                         ),
                         focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.blue[900]!),
+                          borderSide: BorderSide(color: Colors.purple.shade300),
                           borderRadius: BorderRadius.circular(8.0),
                         ),
                         filled: true,
-                        fillColor: Colors.blueGrey[50],
+                        fillColor: const Color.fromARGB(255, 240, 234, 238),
                         suffixIcon: IconButton(
-                          icon: const Icon(Icons.calendar_month),
+                          icon: const Icon(
+                            Icons.calendar_month,
+                            color: Colors.black,
+                          ),
                           onPressed: () => _selectEndDate(context),
                         ),
                       ),
@@ -310,20 +316,20 @@ class _ProjectFormState extends ConsumerState<ProjectForm> {
                   labelText: AppLocalizations.of(context)!.workHours,
                   labelStyle: const TextStyle(color: Colors.black),
                   border: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.blue[900]!),
+                    borderSide: BorderSide(color: Colors.purple.shade300),
                     borderRadius: BorderRadius.circular(8.0),
                     gapPadding: 8.0,
                   ),
                   enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.blue[900]!),
+                    borderSide: BorderSide(color: Colors.purple.shade300),
                     borderRadius: BorderRadius.circular(8.0),
                   ),
                   focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.blue[900]!),
+                    borderSide: BorderSide(color: Colors.purple.shade300),
                     borderRadius: BorderRadius.circular(8.0),
                   ),
                   filled: true,
-                  fillColor: Colors.blueGrey[50],
+                  fillColor: const Color.fromARGB(255, 240, 234, 238),
                 ),
                 style: const TextStyle(fontSize: 14),
                 validator: (value) {
@@ -347,20 +353,20 @@ class _ProjectFormState extends ConsumerState<ProjectForm> {
                         labelText: AppLocalizations.of(context)!.projectOwner,
                         labelStyle: const TextStyle(color: Colors.black),
                         border: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.blue[900]!),
+                          borderSide: BorderSide(color: Colors.purple.shade300),
                           borderRadius: BorderRadius.circular(8.0),
                           gapPadding: 8.0,
                         ),
                         enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.blue[900]!),
+                          borderSide: BorderSide(color: Colors.purple.shade300),
                           borderRadius: BorderRadius.circular(8.0),
                         ),
                         focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.blue[900]!),
+                          borderSide: BorderSide(color: Colors.purple.shade300),
                           borderRadius: BorderRadius.circular(8.0),
                         ),
                         filled: true,
-                        fillColor: Colors.blueGrey[50],
+                        fillColor: const Color.fromARGB(255, 240, 234, 238),
                       ),
                       style: const TextStyle(fontSize: 14, color: Colors.black),
                       onChanged: (newValue) {
@@ -380,6 +386,7 @@ class _ProjectFormState extends ConsumerState<ProjectForm> {
                         if (value == null || value.isEmpty) {
                           return AppLocalizations.of(context)!.enterowner;
                         }
+                        return null;
                       },
                     ),
                   ),
@@ -394,20 +401,20 @@ class _ProjectFormState extends ConsumerState<ProjectForm> {
                   labelText: AppLocalizations.of(context)!.teamMembers,
                   labelStyle: const TextStyle(color: Colors.black),
                   border: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.blue[900]!),
+                    borderSide: BorderSide(color: Colors.purple.shade300),
                     borderRadius: BorderRadius.circular(8.0),
                     gapPadding: 8.0,
                   ),
                   enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.blue[900]!),
+                    borderSide: BorderSide(color: Colors.purple.shade300),
                     borderRadius: BorderRadius.circular(8.0),
                   ),
                   focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.blue[900]!),
+                    borderSide: BorderSide(color: Colors.purple.shade300),
                     borderRadius: BorderRadius.circular(8.0),
                   ),
                   filled: true,
-                  fillColor: Colors.blueGrey[50],
+                  fillColor: const Color.fromARGB(255, 240, 234, 238),
                 ),
                 style: const TextStyle(fontSize: 14),
                 validator: (value) {
@@ -420,49 +427,65 @@ class _ProjectFormState extends ConsumerState<ProjectForm> {
                   return null;
                 },
               ),
-              const SizedBox(height: 16),
-              Center(
-                child: ElevatedButton(
-                  onPressed: () async {
-                    if (_formKey.currentState!.validate()) {
-                      setState(() {
-                        isSubmitting = true;
-                        showSuccessAnimation = true;
-                      });
-                      Project newProject = Project(
-                        userId: widget.userId,
-                        projectName: projectNameController.text,
-                        description: descriptionController.text,
-                        owner: ownerController.text,
-                        startDate: startDate,
-                        endDate: endDate,
-                        workHours: workHoursController.text,
-                        teamMembers: teamMembersController.text,
-                        tasks: tasks,
-                      );
-                      ref
-                          .watch(projectsProvider.notifier)
-                          .addProject(newProject, widget.userId);
-                      setState(() {
-                        isSubmitting = false;
-                      });
+              const SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
                       Navigator.pop(context);
-                    }
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 32, vertical: 16),
-                    side: BorderSide(color: Colors.blue[900]!),
+                    },
+                    style: ElevatedButton.styleFrom(
+                        // backgroundColor: Colors.purple.shade300,
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 38, vertical: 16),
+                        side: BorderSide(color: Colors.purple.shade300)),
+                    child: Text(
+                      'Back',
+                      style: TextStyle(color: Colors.purple.shade300),
+                    ),
                   ),
-                  child: isSubmitting
-                      ? const CircularProgressIndicator()
-                      : Text(
-                          AppLocalizations.of(context)!.submit,
-                          style: const TextStyle(
-                              fontSize: 16, color: Colors.black),
-                        ),
-                ),
+                  ElevatedButton(
+                    onPressed: () async {
+                      if (_formKey.currentState!.validate()) {
+                        setState(() {
+                          isSubmitting = true;
+                          showSuccessAnimation = true;
+                        });
+                        Project newProject = Project(
+                          userId: widget.userId,
+                          projectName: projectNameController.text,
+                          description: descriptionController.text,
+                          owner: ownerController.text,
+                          startDate: startDate,
+                          endDate: endDate,
+                          workHours: workHoursController.text,
+                          teamMembers: teamMembersController.text,
+                          tasks: tasks,
+                        );
+                        ref
+                            .watch(projectsProvider.notifier)
+                            .addProject(newProject, widget.userId);
+                        setState(() {
+                          isSubmitting = false;
+                        });
+                        Navigator.pop(context);
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.purple.shade300,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 32, vertical: 16),
+                    ),
+                    child: isSubmitting
+                        ? const CircularProgressIndicator()
+                        : Text(
+                            AppLocalizations.of(context)!.submit,
+                            style: const TextStyle(
+                                fontSize: 16, color: Colors.white),
+                          ),
+                  ),
+                ],
               ),
             ],
           ),

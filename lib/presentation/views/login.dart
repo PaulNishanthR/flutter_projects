@@ -829,6 +829,7 @@ import 'package:flutter_projects/presentation/views/home_for_manager.dart';
 import 'package:flutter_projects/presentation/views/home_for_member.dart';
 import 'package:flutter_projects/presentation/views/register.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -881,9 +882,40 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     };
 
     Map<String, String> memberCredentials = {
-      'nishanth@kumaran.com': 'Password@1',
+      'nishanth@kumaran.com': 'Password@2',
       'kumaran@kumaran.com': 'Password@2',
-      'murugan@kumaran.com': 'Password@3',
+      'murugan@kumaran.com': 'Password@2',
+      'kohli@kumaran.com': 'Password@2',
+      'sachin@kumaran.com': 'Password@2',
+      'jaga@kumaran.com': 'Password@2',
+      'naren@kumaran.com': 'Password@2',
+      'jhaya@kumaran.com': 'Password@2',
+      'logesh@kumaran.com': 'Password@2',
+      'hari@kumaran.com': 'Password@2',
+      'selvin@kumaran.com': 'Password@2',
+      'saravanan@kumaran.com': 'Password@2',
+      'john@kumaran.com': 'Password@2',
+      'peter@kumaran.com': 'Password@2',
+      'yusuf@kumaran.com': 'Password@2',
+      'naresh@kumaran.com': 'Password@2',
+      'vallarasu@kumaran.com': 'Password@2',
+      'siva@kumaran.com': 'Password@2',
+      'arjun@kumaran.com': 'Password@2',
+      'sekar@kumaran.com': 'Password@2',
+      'poovan@kumaran.com': 'Password@2',
+      'naveen@kumaran.com': 'Password@2',
+      'sivaram@kumaran.com': 'Password@2',
+      'sudhakar@kumaran.com': 'Password@2',
+      'pooja@kumaran.com': 'Password@2',
+      'sowmiya@kumaran.com': 'Password@2',
+      'nandhini@kumaran.com': 'Password@2',
+      'roobini@kumaran.com': 'Password@2',
+      'karthika@kumaran.com': 'Password@2',
+      'revathy@kumaran.com': 'Password@2',
+      'mohammed@kumaran.com': 'Password@2',
+      'ajith@kumaran.com': 'Password@2',
+      'rajini@kumaran.com': 'Password@2',
+      'kamal@kumaran.com': 'Password@2',
     };
 
     bool isAuthenticated = false;
@@ -923,7 +955,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             context,
             MaterialPageRoute(
               builder: (_) => MyHomePage(
-                title: "Kumaran's Projects",
+                // title: AppLocalizations.of(context)!.ksProjectHub,
+                title: 'KS ProjectHub',
                 username: username,
                 userId: userId,
               ),
@@ -948,10 +981,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           Container(
             height: double.infinity,
             width: double.infinity,
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               gradient: LinearGradient(colors: [
                 Colors.white,
-                Colors.blue,
+                Colors.purple.shade300,
               ]),
             ),
             child: Padding(
@@ -975,7 +1008,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 child: IntrinsicHeight(
                   child: Container(
                     decoration: BoxDecoration(
-                      border: Border.all(color: Colors.blue, width: 0.5),
+                      border: Border.all(color: Colors.black, width: 0.5),
                       borderRadius: const BorderRadius.only(
                           topLeft: Radius.circular(40),
                           topRight: Radius.circular(40)),
@@ -1012,9 +1045,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                   //         : null,
                                   label: Text(
                                 AppLocalizations.of(context)!.email,
-                                style: const TextStyle(
+                                style: TextStyle(
                                   fontWeight: FontWeight.bold,
-                                  color: Colors.blue,
+                                  color: Colors.purple.shade300,
                                 ),
                               )),
                             ),
@@ -1046,9 +1079,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                 ),
                                 label: Text(
                                   AppLocalizations.of(context)!.password,
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     fontWeight: FontWeight.bold,
-                                    color: Colors.blue,
+                                    color: Colors.purple.shade300,
                                   ),
                                 ),
                               ),
@@ -1075,10 +1108,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                   },
                                   child: Text(
                                     AppLocalizations.of(context)!.login,
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 20,
-                                        color: Colors.black),
+                                        color: Colors.purple.shade300),
                                   ),
                                 ),
                               ),
@@ -1103,10 +1136,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                   },
                                   child: Text(
                                     AppLocalizations.of(context)!.signup,
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 15,
-                                        color: Colors.black),
+                                        color: Colors.purple.shade300),
                                   ),
                                 ),
                               ],

@@ -6,17 +6,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 class CreateProjectPage extends StatelessWidget {
   final void Function(Project) addProject;
   final List<Project> projects;
-  // final List<String> teamMembers = [
-  //   'Nishanth',
-  //   'Naren',
-  //   'Logesh',
-  //   'Jega',
-  //   'Jhaya',
-  //   'Selvin',
-  //   'Kumaran',
-  //   'Naresh',
-  //   'Siva',
-  // ];
+
   final List<String> teamMembers = [];
 
   final List<String> managers = ['Saravanakumar', 'Devika', 'Amit'];
@@ -33,7 +23,9 @@ class CreateProjectPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.createNewProject),
-        backgroundColor: Colors.lightBlue,
+        // backgroundColor: Colors.white,
+        centerTitle: true,
+        automaticallyImplyLeading: false,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -54,5 +46,3 @@ class CreateProjectPage extends StatelessWidget {
     );
   }
 }
-
-// Amla, kohli, hazlewood, root, 

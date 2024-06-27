@@ -1,29 +1,219 @@
+// // import 'package:flutter/material.dart';
+// // import 'package:flutter_projects/domain/model/project.dart';
+// // import 'package:flutter_projects/presentation/providers/notification_provider.dart';
+// // import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+// // class ProjectMessagesPage extends ConsumerStatefulWidget {
+// //   final Project project;
+
+// //   const ProjectMessagesPage({super.key, required this.project});
+
+// //   @override
+// //   ConsumerState<ProjectMessagesPage> createState() =>
+// //       _ProjectMessagesPageState();
+// // }
+
+// // class _ProjectMessagesPageState extends ConsumerState<ProjectMessagesPage> {
+// //   @override
+// //   Widget build(BuildContext context) {
+// //     final notifications =
+// //         ref.watch(notificationProvider)[widget.project.id] ?? [];
+// //     print('notifications $notifications');
+// //     return Scaffold(
+// //       appBar: AppBar(
+// //         title: Text('Messages for ${widget.project.projectName}'),
+// //         backgroundColor: Colors.lightBlue,
+// //         elevation: 0,
+// //       ),
+// //       body: notifications.isNotEmpty
+// //           ? ListView.builder(
+// //               itemCount: notifications.length,
+// //               itemBuilder: (context, index) {
+// //                 return ListTile(
+// //                   title: Text(notifications[index]),
+// //                 );
+// //               },
+// //             )
+// //           : Center(
+// //               child: Text(
+// //                 'No messages for ${widget.project.projectName}',
+// //                 style: const TextStyle(fontSize: 18),
+// //               ),
+// //             ),
+// //     );
+// //   }
+// // }
+
+// import 'package:flutter/material.dart';
+// import 'package:flutter_projects/domain/model/project.dart';
+// import 'package:flutter_projects/presentation/providers/notification_provider.dart';
+// import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+// class ProjectMessagesPage extends ConsumerStatefulWidget {
+//   final Project project;
+
+//   const ProjectMessagesPage({super.key, required this.project});
+
+//   @override
+//   ConsumerState<ProjectMessagesPage> createState() =>
+//       _ProjectMessagesPageState();
+// }
+
+// class _ProjectMessagesPageState extends ConsumerState<ProjectMessagesPage> {
+//   @override
+//   Widget build(BuildContext context) {
+//     final notifications =
+//         ref.watch(notificationProvider)[widget.project.id] ?? [];
+//     print('notifications $notifications');
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: const Text('Notifications'),
+//         elevation: 0,
+//       ),
+//       body: Padding(
+//         padding: const EdgeInsets.all(16.0),
+//         child: notifications.isNotEmpty
+//             ? ListView.builder(
+//                 itemCount: notifications.length,
+//                 itemBuilder: (context, index) {
+//                   return Card(
+//                     margin: const EdgeInsets.symmetric(vertical: 8.0),
+//                     elevation: 2,
+//                     shape: RoundedRectangleBorder(
+//                       borderRadius: BorderRadius.circular(15),
+//                     ),
+//                     child: ListTile(
+//                       leading: Icon(
+//                         Icons.notifications,
+//                         color: Colors.purple.shade300,
+//                       ),
+//                       title: Text(
+//                         notifications[index],
+//                         style: const TextStyle(
+//                           fontWeight: FontWeight.bold,
+//                         ),
+//                       ),
+//                     ),
+//                   );
+//                 },
+//               )
+//             : Center(
+//                 child: Column(
+//                   mainAxisAlignment: MainAxisAlignment.center,
+//                   children: [
+//                     const Icon(
+//                       Icons.notifications_off,
+//                       size: 80,
+//                       color: Colors.grey,
+//                     ),
+//                     const SizedBox(height: 20),
+//                     Text(
+//                       'No messages for ${widget.project.projectName}',
+//                       style: const TextStyle(fontSize: 18, color: Colors.grey),
+//                     ),
+//                   ],
+//                 ),
+//               ),
+//       ),
+//     );
+//   }
+// }
+
 import 'package:flutter/material.dart';
 import 'package:flutter_projects/domain/model/project.dart';
+import 'package:flutter_projects/presentation/providers/notification_provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class ProjectMessagesPage extends StatefulWidget {
+class ProjectMessagesPage extends ConsumerStatefulWidget {
   final Project project;
 
   const ProjectMessagesPage({super.key, required this.project});
 
   @override
-  State<ProjectMessagesPage> createState() => _ProjectMessagesPageState();
+  ConsumerState<ProjectMessagesPage> createState() =>
+      _ProjectMessagesPageState();
 }
 
-class _ProjectMessagesPageState extends State<ProjectMessagesPage> {
+class _ProjectMessagesPageState extends ConsumerState<ProjectMessagesPage> {
   @override
   Widget build(BuildContext context) {
+    final notifications =
+        ref.watch(notificationProvider)[widget.project.id] ?? [];
+    print('notifications $notifications');
     return Scaffold(
       appBar: AppBar(
-        title: Text('Messages for ${widget.project.projectName}'),
-        backgroundColor: Colors.lightBlue,
+        title: const Text('Notifications'),
         elevation: 0,
       ),
-      body: Center(
-        child: Text(
-          'Here are the messages for ${widget.project.projectName}',
-          style: TextStyle(fontSize: 18),
-        ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: notifications.isNotEmpty
+            ? ListView.builder(
+                itemCount: notifications.length,
+                itemBuilder: (context, index) {
+                  final notification = notifications[index];
+                  return Card(
+                    margin: const EdgeInsets.symmetric(vertical: 8.0),
+                    elevation: 2,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    child: ListTile(
+                      leading: Icon(
+                        Icons.notifications,
+                        color: Colors.purple.shade300,
+                      ),
+                      title: Text(
+                        notification.message,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      subtitle: Text(
+                        notification.isRead ? 'Read' : 'Unread',
+                        style: const TextStyle(
+                          color: Colors.grey,
+                        ),
+                      ),
+                      trailing: IconButton(
+                        icon: Icon(
+                          notification.isRead
+                              ? Icons.mark_email_read
+                              : Icons.mark_email_unread,
+                          color: notification.isRead
+                              ? Colors.green
+                              : Colors.red,
+                        ),
+                        onPressed: () async {
+                          final updatedNotification = notification.copyWith(
+                            isRead: !notification.isRead,
+                          );
+                          await ref
+                              .read(notificationProvider.notifier)
+                              .updateNotification(updatedNotification);
+                        },
+                      ),
+                    ),
+                  );
+                },
+              )
+            : Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(
+                      Icons.notifications_off,
+                      size: 80,
+                      color: Colors.grey,
+                    ),
+                    const SizedBox(height: 20),
+                    Text(
+                      'No messages for ${widget.project.projectName}',
+                      style: const TextStyle(fontSize: 18, color: Colors.grey),
+                    ),
+                  ],
+                ),
+              ),
       ),
     );
   }

@@ -342,10 +342,10 @@ class _SignUpState extends ConsumerState<SignUp> {
           Container(
             height: double.infinity,
             width: double.infinity,
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               gradient: LinearGradient(colors: [
                 Colors.white,
-                Colors.blue,
+                Colors.purple.shade300,
               ]),
             ),
             child: const Padding(
@@ -401,9 +401,9 @@ class _SignUpState extends ConsumerState<SignUp> {
                           },
                           decoration: InputDecoration(
                             labelText: AppLocalizations.of(context)!.email,
-                            labelStyle: const TextStyle(
+                            labelStyle: TextStyle(
                               fontWeight: FontWeight.bold,
-                              color: Colors.blue,
+                              color: Colors.purple.shade300,
                             ),
                           ),
                         ),
@@ -439,9 +439,9 @@ class _SignUpState extends ConsumerState<SignUp> {
                               ),
                             ),
                             labelText: AppLocalizations.of(context)!.password,
-                            labelStyle: const TextStyle(
+                            labelStyle: TextStyle(
                               fontWeight: FontWeight.bold,
-                              color: Colors.blue,
+                              color: Colors.purple.shade300,
                             ),
                           ),
                         ),
@@ -478,9 +478,9 @@ class _SignUpState extends ConsumerState<SignUp> {
                             ),
                             labelText:
                                 AppLocalizations.of(context)!.confirmpassword,
-                            labelStyle: const TextStyle(
+                            labelStyle: TextStyle(
                               fontWeight: FontWeight.bold,
-                              color: Colors.blue,
+                              color: Colors.purple.shade300,
                             ),
                           ),
                         ),
@@ -507,10 +507,10 @@ class _SignUpState extends ConsumerState<SignUp> {
                             child: Center(
                               child: Text(
                                 AppLocalizations.of(context)!.signup,
-                                style: const TextStyle(
+                                style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 20,
-                                  color: Colors.black,
+                                  color: Colors.purple.shade300,
                                 ),
                               ),
                             ),
@@ -536,10 +536,10 @@ class _SignUpState extends ConsumerState<SignUp> {
                               },
                               child: Text(
                                 AppLocalizations.of(context)!.login,
-                                style: const TextStyle(
+                                style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 15,
-                                    color: Colors.black),
+                                    color: Colors.purple.shade300),
                               ),
                             ),
                           ],

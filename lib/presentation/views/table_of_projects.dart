@@ -388,6 +388,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_projects/domain/model/project.dart';
 import 'package:flutter_projects/presentation/providers/project_provider.dart';
 import 'package:flutter_projects/presentation/widgets/generate_pdf.dart';
+import 'package:flutter_projects/utils/app_notifications/app_notification.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lottie/lottie.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -417,7 +418,7 @@ class _ProjectsTableState extends ConsumerState<ProjectsTable> {
     return Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.reports),
-        backgroundColor: Colors.lightBlue,
+        // backgroundColor: Colors.lightBlue,
       ),
       body: projects.isNotEmpty
           ? Padding(
@@ -467,8 +468,11 @@ class _ProjectsTableState extends ConsumerState<ProjectsTable> {
                             child: ElevatedButton(
                               onPressed: () {
                                 _showProjectDetails(context, project);
+                                NotificationManager.showReportNotification(
+                                    fileName:
+                                        'Report for ${project.projectName} Was Generated Successfully!');
                               },
-                              child: const Text('Generate Report'),
+                              child: const Text('Get Report'),
                             ),
                           ),
                         ],
@@ -482,7 +486,15 @@ class _ProjectsTableState extends ConsumerState<ProjectsTable> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Lottie.asset('assets/empty_projects.json'),
+                  // Lottie.asset('assets/empty_projects.json'),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 15, top: 15),
+                    child: Lottie.asset(
+                      "assets/empty_projects.json",
+                      width: 300,
+                      height: 200,
+                    ),
+                  ),
                   const SizedBox(height: 20),
                   Text(
                     AppLocalizations.of(context)!.noprojects,

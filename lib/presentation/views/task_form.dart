@@ -90,20 +90,20 @@ class TaskFields {
                 labelText: AppLocalizations.of(context)!.taskName,
                 labelStyle: const TextStyle(color: Colors.black),
                 border: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.blue[900]!),
+                  borderSide: BorderSide(color: Colors.purple.shade300),
                   borderRadius: BorderRadius.circular(8.0),
                   gapPadding: 8.0,
                 ),
                 enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.blue[900]!),
+                  borderSide: BorderSide(color: Colors.purple.shade300),
                   borderRadius: BorderRadius.circular(8.0),
                 ),
                 focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.blue[900]!),
+                  borderSide: BorderSide(color: Colors.purple.shade300),
                   borderRadius: BorderRadius.circular(8.0),
                 ),
                 filled: true,
-                fillColor: Colors.blueGrey[50],
+                fillColor: const Color.fromARGB(255, 240, 234, 238),
               ),
               style: const TextStyle(fontSize: 14),
               validator: (value) {
@@ -130,20 +130,20 @@ class TaskFields {
                 labelText: AppLocalizations.of(context)!.taskDescription,
                 labelStyle: const TextStyle(color: Colors.black),
                 border: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.blue[900]!),
+                  borderSide: BorderSide(color: Colors.purple.shade300),
                   borderRadius: BorderRadius.circular(8.0),
                   gapPadding: 8.0,
                 ),
                 enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.blue[900]!),
+                  borderSide: BorderSide(color: Colors.purple.shade300),
                   borderRadius: BorderRadius.circular(8.0),
                 ),
                 focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.blue[900]!),
+                  borderSide: BorderSide(color: Colors.purple.shade300),
                   borderRadius: BorderRadius.circular(8.0),
                 ),
                 filled: true,
-                fillColor: Colors.blueGrey[50],
+                fillColor: const Color.fromARGB(255, 240, 234, 238),
               ),
               style: const TextStyle(fontSize: 14),
               validator: (value) {
@@ -172,20 +172,20 @@ class TaskFields {
                 labelText: AppLocalizations.of(context)!.taskHours,
                 labelStyle: const TextStyle(color: Colors.black),
                 border: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.blue[900]!),
+                  borderSide: BorderSide(color: Colors.purple.shade300),
                   borderRadius: BorderRadius.circular(8.0),
                   gapPadding: 8.0,
                 ),
                 enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.blue[900]!),
+                  borderSide: BorderSide(color: Colors.purple.shade300),
                   borderRadius: BorderRadius.circular(8.0),
                 ),
                 focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.blue[900]!),
+                  borderSide: BorderSide(color: Colors.purple.shade300),
                   borderRadius: BorderRadius.circular(8.0),
                 ),
                 filled: true,
-                fillColor: Colors.blueGrey[50],
+                fillColor: const Color.fromARGB(255, 240, 234, 238),
               ),
               style: const TextStyle(fontSize: 14),
               validator: (value) {
@@ -267,20 +267,20 @@ class TaskFields {
                       labelText: AppLocalizations.of(context)!.taskMembers,
                       labelStyle: const TextStyle(color: Colors.black),
                       border: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.blue[900]!),
+                        borderSide: BorderSide(color: Colors.purple.shade300),
                         borderRadius: BorderRadius.circular(8.0),
                         gapPadding: 8.0,
                       ),
                       enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.blue[900]!),
+                        borderSide: BorderSide(color: Colors.purple.shade300),
                         borderRadius: BorderRadius.circular(8.0),
                       ),
                       focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.blue[900]!),
+                        borderSide: BorderSide(color: Colors.purple.shade300),
                         borderRadius: BorderRadius.circular(8.0),
                       ),
                       filled: true,
-                      fillColor: Colors.blueGrey[50],
+                      fillColor: const Color.fromARGB(255, 240, 234, 238),
                     ),
                     style: const TextStyle(fontSize: 14, color: Colors.black),
                     onChanged: (newValue) {
@@ -364,10 +364,10 @@ class TaskFields {
         }
       },
       trailing: const Icon(Icons.calendar_month),
-      tileColor: Colors.blueGrey[50],
+      tileColor: const Color.fromARGB(255, 240, 234, 238),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8.0),
-        side: BorderSide(color: Colors.blue[900]!),
+        side: BorderSide(color: Colors.purple.shade300),
       ),
     );
   }

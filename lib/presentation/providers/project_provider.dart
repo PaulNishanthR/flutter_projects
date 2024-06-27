@@ -190,4 +190,69 @@ class ProjectsNotifier extends StateNotifier<List<Project>> {
           "Unable to fetch completed projects in providerrrr");
     }
   }
+
+  // Future<void> updateTaskStatus(
+  //     int projectId, String taskName, UserStatus newStatus) async {
+  //   final project = state.firstWhere((project) => project.id == projectId);
+  //   final task = project.tasks.firstWhere((task) => task.taskName == taskName);
+  //   task.memberStatuses = newStatus;
+
+  //   state = [...state];
+  // }
+  Future<void> updateTaskStatus(int projectId, String taskName,
+      String memberName, UserStatus newStatus) async {
+    try {
+      // Find the project with the given projectId
+      final projectIndex =
+          state.indexWhere((project) => project.id == projectId);
+      if (projectIndex == -1) {
+        throw CustomException("Project not found");
+      }
+      final project = state[projectIndex];
+
+      // Find the task within the project's tasks list
+      final taskIndex =
+          project.tasks.indexWhere((task) => task.taskName == taskName);
+      if (taskIndex == -1) {
+        throw CustomException("Task not found");
+      }
+      final task = project.tasks[taskIndex];
+
+      // Update the memberStatuses map for the specific member
+      final updatedMemberStatuses = {...task.memberStatuses};
+      updatedMemberStatuses[memberName] = newStatus;
+
+      // Update the task list in the project
+      final updatedTasks = List<Task>.from(project.tasks);
+      updatedTasks[taskIndex] =
+          task.copyWith(memberStatuses: updatedMemberStatuses);
+
+      // Update the state with the modified project list
+      final updatedProjects = List<Project>.from(state);
+      updatedProjects[projectIndex] = project.copyWith(tasks: updatedTasks);
+      state = updatedProjects;
+    } catch (e) {
+      throw CustomException("Error updating task status: $e");
+    }
+  }
+
+  Future<void> changeStatus(List<Project> projects) async {
+    for (var project in projects) {
+      for (var task in project.tasks) {
+        for (var member in task.memberStatuses.keys) {
+          await task.loadStatusFromPrefs(member);
+        }
+      }
+    }
+  }
+
+  Future<List<Project>> getProjectsAndTasksForTeamMember(
+      String teamMember) async {
+    try {
+      return await _repository.getProjectsAndTasksForTeamMember(teamMember);
+    } catch (e) {
+      throw CustomException(
+          "Unable to fetch projects and tasks for team member");
+    }
+  }
 }

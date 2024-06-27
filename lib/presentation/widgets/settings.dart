@@ -95,7 +95,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
     Fluttertoast.showToast(
       msg: 'You selected $languageName',
       toastLength: Toast.LENGTH_SHORT,
-      gravity: ToastGravity.TOP_RIGHT,
+      gravity: ToastGravity.BOTTOM,
       backgroundColor: Colors.purple,
       textColor: Colors.white,
     );

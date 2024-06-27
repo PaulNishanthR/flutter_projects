@@ -1,3 +1,4 @@
+import 'package:flutter_projects/domain/model/notification.dart';
 import 'package:flutter_projects/domain/model/project.dart';
 import 'package:flutter_projects/domain/model/task.dart';
 
@@ -16,5 +17,10 @@ abstract class ProjectRepository {
   Future<List<Task>> getUserTasks(int projectId);
   Future<void> updateTask(int projectId, Task updatedTask);
   Future<bool> isTeamMemberAssigned(String teamMember);
-  Future<Project> getCompletedProjectsFromTable(int userId, int projectId, bool completed);
+  Future<Project> getCompletedProjectsFromTable(
+      int userId, int projectId, bool completed);
+  Future<List<Project>> getProjectsAndTasksForTeamMember(String teamMember);
+  Future<void> updateTaskStatus(
+      int projectId, String taskName, String member, UserStatus status);
+  Future<void> create(NotificationModel notification);
 }

@@ -186,7 +186,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_projects/presentation/providers/lang_provider.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-// import 'navbar.dart';
+import 'package:lottie/lottie.dart';
 
 class SplashScreen extends ConsumerWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -200,37 +200,30 @@ class SplashScreen extends ConsumerWidget {
             height: double.infinity,
             width: double.infinity,
             decoration: const BoxDecoration(
-                gradient: LinearGradient(colors: [
-              Colors.white,
-              Colors.blue,
-            ])),
+                // gradient: LinearGradient(colors: [
+                //   Colors.purple.shade300,
+                //   Colors.white,
+                // ]),
+                color: Colors.white),
             child: Column(
               children: [
-                const Padding(
-                  padding: EdgeInsets.only(top: 200.0),
-                  child: Image(
-                    image: AssetImage("assets/playstore.png"),
-                    height: 90,
-                    width: 90,
+                Padding(
+                  padding: const EdgeInsets.only(left: 15, top: 110, right: 20),
+                  child: Lottie.asset(
+                    "assets/welcome.json",
+                    width: 400,
+                    height: 300,
                   ),
                 ),
-                // const Text(
-                //   "KS ProjectHub",
-                //   style: TextStyle(
-                //     fontStyle: FontStyle.italic,
-                //     color: Colors.black,
-                //     fontSize: 32,
-                //   ),
-                // ),
                 const SizedBox(
-                  height: 100,
+                  height: 60,
                 ),
                 Text(
                   AppLocalizations.of(context)!.welcomewithoutcomma,
                   style: const TextStyle(
-                      fontSize: 30,
-                      color: Colors.black,
-                      fontStyle: FontStyle.italic),
+                    fontSize: 30,
+                    color: Colors.black,
+                  ),
                 ),
                 const SizedBox(
                   height: 30,
@@ -247,16 +240,17 @@ class SplashScreen extends ConsumerWidget {
                     height: 53,
                     width: 320,
                     decoration: BoxDecoration(
+                      color: Colors.white,
                       borderRadius: BorderRadius.circular(30),
                       border: Border.all(color: Colors.black),
                     ),
                     child: Center(
                       child: Text(
                         AppLocalizations.of(context)!.login,
-                        style: const TextStyle(
+                        style: TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
-                            color: Colors.black),
+                            color: Colors.purple.shade300),
                       ),
                     ),
                   ),
@@ -275,7 +269,7 @@ class SplashScreen extends ConsumerWidget {
                     height: 53,
                     width: 320,
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: Colors.purple.shade300,
                       borderRadius: BorderRadius.circular(30),
                       border: Border.all(color: Colors.black),
                     ),
@@ -285,7 +279,7 @@ class SplashScreen extends ConsumerWidget {
                         style: const TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
-                            color: Colors.black),
+                            color: Colors.white),
                       ),
                     ),
                   ),
@@ -313,7 +307,7 @@ class LanguageDropdown extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final selectedLanguage = ref.watch(languageProvider);
+    // final selectedLanguage = ref.watch(languageProvider);
 
     return PopupMenuButton<Locale>(
       icon: const Icon(Icons.translate),
@@ -359,10 +353,10 @@ class LanguageDropdown extends ConsumerWidget {
     Fluttertoast.showToast(
       msg: message,
       toastLength: Toast.LENGTH_SHORT,
-      gravity: ToastGravity.CENTER,
+      gravity: ToastGravity.BOTTOM,
       timeInSecForIosWeb: 1,
-      backgroundColor: Colors.yellow,
-      textColor: Colors.black,
+      backgroundColor: Colors.purple.shade300,
+      textColor: Colors.white,
       fontSize: 16.0,
     );
   }

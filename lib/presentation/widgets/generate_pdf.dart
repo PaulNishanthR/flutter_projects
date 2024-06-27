@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
+// import 'package:flutter_projects/utils/app_notifications/app_notification.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -13,7 +14,7 @@ class PDFDisplayPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'Share PDF',
+          'Share Report',
           style: TextStyle(
             fontFamily: 'Poppins',
             fontWeight: FontWeight.bold,
@@ -25,12 +26,12 @@ class PDFDisplayPage extends StatelessWidget {
             onPressed: () async {
               final bytes = await pdfFile.readAsBytes();
               final tempDir = await getTemporaryDirectory();
-              final tempFilePath = '${tempDir.path}/Completed_Project.pdf';
+              final tempFilePath = '${tempDir.path}/Project Report.pdf';
               final tempPdfFile = File(tempFilePath);
               await tempPdfFile.writeAsBytes(bytes);
               await Share.shareXFiles(
                 [XFile(tempFilePath)],
-                text: 'Share PDF',
+                text: 'Share Report',
               );
             },
           ),

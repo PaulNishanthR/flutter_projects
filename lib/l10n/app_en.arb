@@ -58,6 +58,7 @@
   "status": "Status",
   "taskMembers": "Select Members",
   "enterTaskMembers": "Please select team members",
-  "siginin": "Sign In!",
-  "welcomewithoutcomma": "Welcome"
+  "siginin": "Sign In",
+  "welcomewithoutcomma": "Welcome",
+  "ksProjectHub": "KS ProjectHub"
 }
