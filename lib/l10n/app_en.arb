@@ -17,7 +17,7 @@
   "yourProjects": "Your projects",
   "enterprojectname": "Please enter project name.",
   "enterprojectdesc": "Please enter project description.",
-  "enterprojecthours": "Please enter working hours..",
+  "enterprojecthours": "Please enter working hours.",
   "enterowner": "Please select project manager.",
   "entermembers": "Please enter no. of team members.",
   "entertaskname": "Please enter task name.",
@@ -60,5 +60,18 @@
   "enterTaskMembers": "Please select team members",
   "siginin": "Sign In",
   "welcomewithoutcomma": "Welcome",
-  "ksProjectHub": "KS ProjectHub"
+  "ksProjectHub": "KS ProjectHub",
+  "aboutOne": "Empower your team with our intuitive project management app, designed to streamline workflows and boost productivity.",
+  "aboutTwo": "Experience the convenience of managing tasks, deadlines, and team communication all in one place.",
+  "aboutThree": "Join the thousands of teams already achieving success with our project management app.",
+  "teamMemberList": "Team Members",
+  "pleaseenterstartdate": "Please select start date.",
+  "pleaseenterenddate": "Please select end date.",
+  "priority": "Task Priority",
+  "emailIsRequired": "Email is required",
+  "passwordIsRequired": "Password is required",
+  "invalidCredentials": "Invaild Login Credentials",
+  "confirmPasswordIsRequired": "Confirm password is required",
+  "passwordDidNotMatch": "Password did not match",
+  "back": "Back"
 }

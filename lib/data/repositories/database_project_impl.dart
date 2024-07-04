@@ -1,7 +1,7 @@
-import 'package:flutter_projects/domain/model/notification.dart';
-import 'package:flutter_projects/domain/model/project.dart';
+import 'package:flutter_projects/domain/model/notification/notification.dart';
+import 'package:flutter_projects/domain/model/project/project.dart';
 import 'package:flutter_projects/data/datasources/project_datasource.dart';
-import 'package:flutter_projects/domain/model/task.dart';
+import 'package:flutter_projects/domain/model/project/task.dart';
 import 'package:flutter_projects/domain/repositories/project_repository.dart';
 
 class DatabaseProjectRepository implements ProjectRepository {
@@ -63,7 +63,7 @@ class DatabaseProjectRepository implements ProjectRepository {
   }
 
   @override
-  Future<void> updateTasks(int projectId, List<Task> tasks) async {
+  Future<int> updateTasks(int projectId, List<Task> tasks) async {
     // print('Imple - ${tasks}');
     return await _dataSource.updateTasks(projectId, tasks);
   }
@@ -106,5 +106,10 @@ class DatabaseProjectRepository implements ProjectRepository {
   @override
   Future<void> create(NotificationModel notification) async {
     await _dataSource.create(notification);
+  }
+
+  @override
+  Future<int> getCountOfUnreadNotifications() async {
+    return await _dataSource.getCountOfUnreadNotifications();
   }
 }

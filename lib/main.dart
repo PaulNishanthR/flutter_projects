@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_projects/presentation/providers/lang_provider.dart';
-import 'package:flutter_projects/presentation/widgets/splash_screen.dart';
+import 'package:flutter_projects/presentation/providers/language/lang_provider.dart';
+import 'package:flutter_projects/presentation/widgets/auth_page/splash_screen.dart';
 import 'package:flutter_projects/utils/app_notifications/app_notification.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:path/path.dart';
-import 'package:sqflite/sqflite.dart';
+// import 'package:path/path.dart';
+// import 'package:sqflite/sqflite.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -13,8 +13,23 @@ void main() async {
   // final String path = join(databasePath, "datasource.db");
   // print("DB Delete");
   // deleteDatabase(path);
-  // Workmanager().initialize(callbackDispatcher);
   NotificationManager.initializeNotifications();
+  ErrorWidget.builder = (FlutterErrorDetails details) {
+    return Material(
+      child: Container(
+        color: Colors.green,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              details.exception.toString(),
+              style: const TextStyle(fontSize: 25, color: Colors.black),
+            )
+          ],
+        ),
+      ),
+    );
+  };
   runApp(const ProviderScope(child: MyApp()));
 }
 
@@ -24,6 +39,7 @@ class MyApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return MaterialApp(
+      // showPerformanceOverlay: true,
       debugShowCheckedModeBanner: false,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,

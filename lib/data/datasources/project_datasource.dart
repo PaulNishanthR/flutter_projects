@@ -1,7 +1,7 @@
 import 'dart:convert';
-import 'package:flutter_projects/domain/model/notification.dart';
-import 'package:flutter_projects/domain/model/project.dart';
-import 'package:flutter_projects/domain/model/task.dart';
+import 'package:flutter_projects/domain/model/notification/notification.dart';
+import 'package:flutter_projects/domain/model/project/project.dart';
+import 'package:flutter_projects/domain/model/project/task.dart';
 import 'package:flutter_projects/utils/constants/custom_exception.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
@@ -21,7 +21,7 @@ class ProjectDataSource {
 
   late Database _database;
 
-  final String _databaseName = "projjiip.db";
+  final String _databaseName = "ppz.db";
 
   final String _users =
       "create table users (userId INTEGER PRIMARY KEY AUTOINCREMENT, userName TEXT UNIQUE, userPassword TEXT)";
@@ -64,11 +64,11 @@ class ProjectDataSource {
   Future<int> getCountOfUnreadNotifications() async {
     await _checkAndInitDB();
     final List<Map<String, dynamic>> unreadNotifications =
-        await _database.rawQuery(
-      'SELECT COUNT(*) FROM notifications WHERE isRead = 0',
+        await _database.query(
+      'notifications',
+      where: 'isRead = 0',
     );
-
-    return Sqflite.firstIntValue(unreadNotifications) ?? 0;
+    return unreadNotifications.length;
   }
 
   Future<List<NotificationModel>> getAllNotifications() async {
@@ -86,14 +86,16 @@ class ProjectDataSource {
     });
   }
 
-  Future<int> update(NotificationModel notification) async {
+  Future<int> update(int projectId) async {
     await _checkAndInitDB();
-    print('notif updated ---- >>> $notification');
+    // print('notif updated ---- >>> $notification');
     return _database.update(
       'notifications',
-      notification.toMap(),
-      where: 'id = ?',
-      whereArgs: [notification.id],
+      {
+        'isRead': 1,
+      },
+      where: 'projectId = ?',
+      whereArgs: [projectId],
     );
   }
 
@@ -339,7 +341,7 @@ class ProjectDataSource {
   }
 
   //Method for Create New Tasks for the Project
-  Future<void> updateTasks(int projectId, List<Task> tasks) async {
+  Future<int> updateTasks(int projectId, List<Task> tasks) async {
     await _checkAndInitDB();
 
     final List<Map<String, dynamic>> projectMaps = await _database.query(
@@ -377,7 +379,7 @@ class ProjectDataSource {
           jsonEncode(tasks.map((task) => task.toJson()).toList());
       final assignedTeamMembersJson = jsonEncode(assignedTeamMembers);
       try {
-        await _database.update(
+        int id = await _database.update(
           'projectsDdd',
           {
             'tasks': updatedTasksJson,
@@ -387,6 +389,7 @@ class ProjectDataSource {
           whereArgs: [projectId],
           conflictAlgorithm: ConflictAlgorithm.replace,
         );
+        return id;
         // print("Tasks updated in database for project $projectId");
       } catch (e) {
         throw CustomException("Error updating tasks for the project");

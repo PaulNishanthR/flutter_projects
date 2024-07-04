@@ -1,6 +1,6 @@
-import 'package:flutter_projects/domain/model/notification.dart';
-import 'package:flutter_projects/domain/model/project.dart';
-import 'package:flutter_projects/domain/model/task.dart';
+import 'package:flutter_projects/domain/model/notification/notification.dart';
+import 'package:flutter_projects/domain/model/project/project.dart';
+import 'package:flutter_projects/domain/model/project/task.dart';
 
 abstract class ProjectRepository {
   Future<int?> getUserId(String email);
@@ -13,7 +13,7 @@ abstract class ProjectRepository {
   Future<List<Project>> getUserProjects(int userId);
   Future<List<Project>> getAllProjects();
   Future<void> markProjectAsCompleted(int projectId);
-  Future<void> updateTasks(int projectId, List<Task> tasks);
+  Future<int> updateTasks(int projectId, List<Task> tasks);
   Future<List<Task>> getUserTasks(int projectId);
   Future<void> updateTask(int projectId, Task updatedTask);
   Future<bool> isTeamMemberAssigned(String teamMember);
@@ -23,4 +23,5 @@ abstract class ProjectRepository {
   Future<void> updateTaskStatus(
       int projectId, String taskName, String member, UserStatus status);
   Future<void> create(NotificationModel notification);
+  Future<int> getCountOfUnreadNotifications();
 }
