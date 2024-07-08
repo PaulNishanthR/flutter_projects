@@ -9,7 +9,7 @@ class CreateProjectPage extends StatelessWidget {
 
   final List<String> teamMembers = [];
 
-  final List<String> managers = ['Saravanakumar', 'Devika', 'Amit'];
+  final List<String> managers = ['Dinesh', 'Sanjay', 'Rahul'];
   final int userId;
   CreateProjectPage({
     super.key,

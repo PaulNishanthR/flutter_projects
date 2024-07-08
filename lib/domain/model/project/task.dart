@@ -193,14 +193,4 @@ class Task {
       await loadStatusFromPrefs(member);
     }
   }
-
-  // bool canBeMarkedAsCompleted() {
-  //   return memberStatuses.values.every((status) => status == UserStatus.done);
-  // }
-
-  // void markAsCompleted() {
-  //   memberStatuses.updateAll((key, value) => UserStatus.done);
-  //   taskStatus = TaskStatus.completed;
-  //   status = true;
-  // }
 }

@@ -98,24 +98,24 @@ class Navbar extends ConsumerWidget {
                 );
               },
             ),
-            ListTile(
-              leading: const Icon(
-                Icons.group,
-                color: Colors.black,
-              ),
-              title: Text(
-                AppLocalizations.of(context)!.teamMemberList,
-                style: TextStyle(color: Colors.purple.shade300),
-              ),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const MembersListPage(),
-                  ),
-                );
-              },
-            ),
+            // ListTile(
+            //   leading: const Icon(
+            //     Icons.group,
+            //     color: Colors.black,
+            //   ),
+            //   title: Text(
+            //     AppLocalizations.of(context)!.teamMemberList,
+            //     style: TextStyle(color: Colors.purple.shade300),
+            //   ),
+            //   onTap: () {
+            //     Navigator.push(
+            //       context,
+            //       MaterialPageRoute(
+            //         builder: (context) => const MembersListPage(),
+            //       ),
+            //     );
+            //   },
+            // ),
             ListTile(
               leading: const Icon(
                 Icons.info,

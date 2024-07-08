@@ -494,6 +494,7 @@ import 'package:flutter_projects/presentation/providers/project/project_provider
 import 'package:flutter_projects/presentation/views/project/project_details.dart';
 import 'package:flutter_projects/presentation/views/sidebar/sidebar.dart';
 import 'package:flutter_projects/presentation/widgets/project/create_project.dart';
+import 'package:flutter_projects/utils/app_notifications/app_notification.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -501,12 +502,11 @@ import 'package:lottie/lottie.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
 class MyHomePage extends ConsumerStatefulWidget {
-  final String title;
+  // final String title;
   final String username;
   final dynamic userId;
 
-  const MyHomePage(
-      {Key? key, required this.title, required this.username, this.userId})
+  const MyHomePage({Key? key, required this.username, this.userId})
       : super(key: key);
 
   @override
@@ -539,7 +539,7 @@ class _MyHomePageState extends ConsumerState<MyHomePage> {
         projects.where((project) => !project.completed).toList();
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Text(AppLocalizations.of(context)!.ksProjectHub),
         centerTitle: true,
       ),
       drawer: Navbar(
@@ -583,6 +583,8 @@ class _MyHomePageState extends ConsumerState<MyHomePage> {
                         final project = projects[index];
                         if (project.completed) return const SizedBox.shrink();
 
+                        checkDueDateAndNotify(project);
+
                         return _buildProjectCard(projects[index]);
                       },
                     ),
@@ -591,6 +593,17 @@ class _MyHomePageState extends ConsumerState<MyHomePage> {
         ),
       ),
     );
+  }
+
+  void checkDueDateAndNotify(Project project) {
+    final now = DateTime.now();
+    if (project.endDate.year == now.year &&
+        project.endDate.month == now.month &&
+        project.endDate.day == now.day) {
+      NotificationManager.showDueDateNotification(
+          fileName:
+              'Today is the Due Date for Project : ${project.projectName}');
+    }
   }
 
   Widget _buildCreateNewProjectCard(BuildContext context) {
@@ -650,6 +663,9 @@ class _MyHomePageState extends ConsumerState<MyHomePage> {
     int totalTaskCount = project.tasks.length;
     double percentage =
         totalTaskCount == 0 ? 0.0 : (completedTaskCount / totalTaskCount) * 100;
+    Set<String> uniqueTeamMembers =
+        project.tasks.expand((task) => task.teamMembers!).toSet();
+    List<String> teamMembersList = uniqueTeamMembers.toList();
 
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 8),
@@ -706,7 +722,7 @@ class _MyHomePageState extends ConsumerState<MyHomePage> {
                         fontSize: 12.0,
                       ),
                     ),
-                    progressColor: Colors.red,
+                    progressColor: Colors.green.shade700,
                   ),
                 ],
               ),
@@ -729,7 +745,8 @@ class _MyHomePageState extends ConsumerState<MyHomePage> {
               const SizedBox(height: 8),
               Row(
                 children: [
-                  Text('Active tasks : $activeTaskCount/$totalTaskCount'),
+                  Text(
+                      '${AppLocalizations.of(context)!.activeTasks}: $activeTaskCount/$totalTaskCount'),
                   const SizedBox(width: 45),
                   Text(
                     '${AppLocalizations.of(context)!.enddate}: ${DateFormat('dd-MM-yyyy').format(project.endDate)}',
@@ -741,10 +758,72 @@ class _MyHomePageState extends ConsumerState<MyHomePage> {
                   ),
                 ],
               ),
+              const SizedBox(height: 8),
+              SizedBox(
+                height: 40,
+                child: Stack(
+                  children: _buildTeamMembers(teamMembersList),
+                ),
+              ),
             ],
           ),
         ),
       ),
     );
+  }
+
+  List<Widget> _buildTeamMembers(List<String> teamMembersList) {
+    int maxDisplayCount = 7;
+    List<Widget> widgets = [];
+
+    for (int i = 0; i < teamMembersList.length; i++) {
+      if (i < maxDisplayCount) {
+        widgets.add(
+          Positioned(
+            left: i * 25.0,
+            child: CircleAvatar(
+              radius: 16,
+              backgroundColor: Colors.purple,
+              child: Text(
+                teamMembersList[i].isNotEmpty
+                    ? teamMembersList[i][0].toUpperCase()
+                    : '',
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
+        );
+      } else if (i == maxDisplayCount) {
+        int remainingCount = teamMembersList.length - maxDisplayCount;
+        widgets.add(
+          Positioned(
+            left: i * 25.0,
+            child: Container(
+              width: 32,
+              height: 32,
+              decoration: BoxDecoration(
+                color: Colors.grey,
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Center(
+                child: Text(
+                  '+$remainingCount',
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+        break;
+      }
+    }
+
+    return widgets;
   }
 }

@@ -957,7 +957,7 @@ class _HomeForMemberState extends ConsumerState<HomeForMember>
               value: Locale('en'),
               child: Row(
                 children: [
-                  Icon(Icons.translate, color: Colors.blue),
+                  Icon(Icons.translate, color: Colors.black),
                   SizedBox(width: 10),
                   Text('English'),
                 ],
@@ -967,7 +967,7 @@ class _HomeForMemberState extends ConsumerState<HomeForMember>
               value: Locale('ta'),
               child: Row(
                 children: [
-                  Icon(Icons.translate, color: Colors.green),
+                  Icon(Icons.translate, color: Colors.black),
                   SizedBox(width: 10),
                   Text('தமிழ்'),
                 ],
@@ -996,32 +996,43 @@ class _HomeForMemberState extends ConsumerState<HomeForMember>
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  '${AppLocalizations.of(context)!.welcomewithoutcomma}, $userNamePrefix!',
-                  style: const TextStyle(
-                      fontSize: 24, fontWeight: FontWeight.bold),
+                Center(
+                  child: Text(
+                    '${AppLocalizations.of(context)!.welcomewithoutcomma}, $userNamePrefix!',
+                    style: const TextStyle(
+                        fontSize: 24, fontWeight: FontWeight.bold),
+                  ),
                 ),
                 const SizedBox(height: 8),
-                Text(
-                  "You're assigned to, ${assignedProjects.isNotEmpty ? assignedProjects[0].projectName.toUpperCase() : 'No Project'}",
-                  style: const TextStyle(
-                      fontSize: 18, fontWeight: FontWeight.normal),
-                ),
+                if (assignedProjects.isEmpty)
+                  Center(
+                    child: Text(AppLocalizations.of(context)!.noprojects),
+                  ),
+                if (assignedProjects.isNotEmpty)
+                  Center(
+                    child: Text(
+                      "${AppLocalizations.of(context)!.yourProjects} ${assignedProjects[0].projectName.toUpperCase()}",
+                      style: const TextStyle(
+                          fontSize: 18, fontWeight: FontWeight.normal),
+                    ),
+                  ),
                 const SizedBox(height: 8),
                 TabBar(
                   indicatorColor: Colors.black,
                   controller: _tabController,
-                  tabs: const [
+                  tabs: [
                     Tab(
                       child: Row(
                         children: [
-                          Icon(
+                          const Icon(
                             Icons.all_inbox,
                             color: Colors.black,
                           ),
-                          Text(
-                            'All',
-                            style: TextStyle(color: Colors.black),
+                          Expanded(
+                            child: Text(
+                              AppLocalizations.of(context)!.all,
+                              style: const TextStyle(color: Colors.black),
+                            ),
                           ),
                         ],
                       ),
@@ -1029,13 +1040,15 @@ class _HomeForMemberState extends ConsumerState<HomeForMember>
                     Tab(
                       child: Row(
                         children: [
-                          Icon(
+                          const Icon(
                             Icons.pending,
                             color: Colors.black,
                           ),
-                          Text(
-                            'Progress',
-                            style: TextStyle(color: Colors.black),
+                          Expanded(
+                            child: Text(
+                              AppLocalizations.of(context)!.progress,
+                              style: const TextStyle(color: Colors.black),
+                            ),
                           ),
                         ],
                       ),
@@ -1043,13 +1056,15 @@ class _HomeForMemberState extends ConsumerState<HomeForMember>
                     Tab(
                       child: Row(
                         children: [
-                          Icon(
+                          const Icon(
                             Icons.done_all,
                             color: Colors.black,
                           ),
-                          Text(
-                            'Done',
-                            style: TextStyle(color: Colors.black),
+                          Expanded(
+                            child: Text(
+                              AppLocalizations.of(context)!.done,
+                              style: const TextStyle(color: Colors.black),
+                            ),
                           ),
                         ],
                       ),
@@ -1234,10 +1249,19 @@ class _HomeForMemberState extends ConsumerState<HomeForMember>
                       Row(
                         children: [
                           Text(
-                            'Priority: ${task.taskPriority.toString().split('.').last}',
+                            '${AppLocalizations.of(context)!.priority}: ${task.taskPriority.toString().split('.').last}',
                             style: const TextStyle(
                               fontSize: 12,
                               color: Colors.black,
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Container(
+                            width: 16,
+                            height: 16,
+                            decoration: BoxDecoration(
+                              color: priorityColor,
+                              shape: BoxShape.circle,
                             ),
                           ),
                         ],

@@ -1,11 +1,12 @@
 // import 'dart:ui';
-import 'package:animated_snack_bar/animated_snack_bar.dart';
+// import 'package:animated_snack_bar/animated_snack_bar.dart';
 // import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_projects/domain/model/project/project.dart';
 import 'package:flutter_projects/domain/model/project/task.dart';
 import 'package:flutter_projects/presentation/providers/project/notification_provider.dart';
 import 'package:flutter_projects/presentation/providers/project/project_provider.dart';
+// import 'package:flutter_projects/presentation/views/home/home.dart';
 import 'package:flutter_projects/presentation/views/notifications/project_notification.dart';
 import 'package:flutter_projects/utils/app_notifications/app_notification.dart';
 import 'package:flutter_projects/utils/constants/custom_exception.dart';
@@ -107,7 +108,7 @@ class _ProjectDetailsPageState extends ConsumerState<ProjectDetailsPage> {
       'Kohli',
       'Sachin',
       'Naren',
-      'Jega',
+      'Jaga',
       'Jhaya',
       'Logesh',
       'Hari',
@@ -165,12 +166,15 @@ class _ProjectDetailsPageState extends ConsumerState<ProjectDetailsPage> {
                         const SizedBox(height: 10),
                         TextFormField(
                           controller: taskNameController,
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
                           decoration: InputDecoration(
                             labelText: AppLocalizations.of(context)!.taskName,
+                            labelStyle: const TextStyle(color: Colors.black),
                           ),
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return 'Please enter task name';
+                              return AppLocalizations.of(context)!
+                                  .entertaskname;
                             }
                             return null;
                           },
@@ -181,13 +185,16 @@ class _ProjectDetailsPageState extends ConsumerState<ProjectDetailsPage> {
                         const SizedBox(height: 10),
                         TextFormField(
                           controller: descriptionController,
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
                           decoration: InputDecoration(
                             labelText:
                                 AppLocalizations.of(context)!.description,
+                            labelStyle: const TextStyle(color: Colors.black),
                           ),
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return 'Please enter description';
+                              return AppLocalizations.of(context)!
+                                  .entertaskdesc;
                             }
                             return null;
                           },
@@ -198,12 +205,15 @@ class _ProjectDetailsPageState extends ConsumerState<ProjectDetailsPage> {
                         const SizedBox(height: 10),
                         TextFormField(
                           controller: hoursController,
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
                           decoration: InputDecoration(
                             labelText: AppLocalizations.of(context)!.taskHours,
+                            labelStyle: const TextStyle(color: Colors.black),
                           ),
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return 'Please enter task hours';
+                              return AppLocalizations.of(context)!
+                                  .entertaskhours;
                             }
                             return null;
                           },
@@ -214,8 +224,10 @@ class _ProjectDetailsPageState extends ConsumerState<ProjectDetailsPage> {
                         const SizedBox(height: 10),
                         TextFormField(
                           controller: dateController,
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
                           decoration: InputDecoration(
                             labelText: AppLocalizations.of(context)!.duedate,
+                            labelStyle: const TextStyle(color: Colors.black),
                           ),
                           onTap: () async {
                             FocusScope.of(context).requestFocus(FocusNode());
@@ -225,7 +237,8 @@ class _ProjectDetailsPageState extends ConsumerState<ProjectDetailsPage> {
                               firstDate: widget.project.startDate
                                   .add(const Duration(days: 1)),
                               lastDate: widget.project.endDate,
-                              helpText: 'Due Date For Task',
+                              helpText:
+                                  AppLocalizations.of(context)!.duedateForTask,
                             );
                             if (pickedDate != null) {
                               newTask.dueDate = pickedDate;
@@ -235,7 +248,8 @@ class _ProjectDetailsPageState extends ConsumerState<ProjectDetailsPage> {
                           },
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return 'Please enter End date';
+                              return AppLocalizations.of(context)!
+                                  .pleaseenterenddate;
                             }
                             return null;
                           },
@@ -257,7 +271,8 @@ class _ProjectDetailsPageState extends ConsumerState<ProjectDetailsPage> {
                           },
                           validator: (value) {
                             if (value == null) {
-                              return 'Please Select taskPriority';
+                              return AppLocalizations.of(context)!
+                                  .pleaseSelectPriority;
                             }
                             return null;
                           },
@@ -294,7 +309,8 @@ class _ProjectDetailsPageState extends ConsumerState<ProjectDetailsPage> {
                               Text(AppLocalizations.of(context)!.cancel),
                           validator: (values) {
                             if (values == null || values.isEmpty) {
-                              return 'Please select team members';
+                              return AppLocalizations.of(context)!
+                                  .pleaseSelectTeamMembers;
                             }
                             return null;
                           },
@@ -316,6 +332,14 @@ class _ProjectDetailsPageState extends ConsumerState<ProjectDetailsPage> {
                         ),
                         const SizedBox(height: 10),
                         ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.purple,
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 16.0, vertical: 8.0),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8.0),
+                            ),
+                          ),
                           onPressed: () async {
                             if (_formKey.currentState!.validate()) {
                               try {
@@ -334,8 +358,8 @@ class _ProjectDetailsPageState extends ConsumerState<ProjectDetailsPage> {
                                 totalHours += int.parse(newTask.hours!);
                                 if (uniqueTeamMembers.length > countMembers) {
                                   Fluttertoast.showToast(
-                                    msg:
-                                        'Selected team members count was exceeded.',
+                                    msg: AppLocalizations.of(context)!
+                                        .selectedTeamMembersCountWasExceeded,
                                     toastLength: Toast.LENGTH_SHORT,
                                     gravity: ToastGravity.BOTTOM,
                                     timeInSecForIosWeb: 1,
@@ -346,7 +370,8 @@ class _ProjectDetailsPageState extends ConsumerState<ProjectDetailsPage> {
                                 } else if (totalHours >
                                     int.parse(widget.project.workHours)) {
                                   Fluttertoast.showToast(
-                                    msg: 'Total Hours Exceeded.',
+                                    msg: AppLocalizations.of(context)!
+                                        .totalHoursExceeded,
                                     toastLength: Toast.LENGTH_SHORT,
                                     gravity: ToastGravity.BOTTOM,
                                     timeInSecForIosWeb: 1,
@@ -362,7 +387,8 @@ class _ProjectDetailsPageState extends ConsumerState<ProjectDetailsPage> {
                                   await loadTasks();
 
                                   Fluttertoast.showToast(
-                                    msg: 'Task Added Successfully',
+                                    msg: AppLocalizations.of(context)!
+                                        .taskAddedSuccessfully,
                                     toastLength: Toast.LENGTH_SHORT,
                                     gravity: ToastGravity.BOTTOM,
                                     timeInSecForIosWeb: 1,
@@ -377,8 +403,8 @@ class _ProjectDetailsPageState extends ConsumerState<ProjectDetailsPage> {
                                 }
                               } on CustomException {
                                 Fluttertoast.showToast(
-                                  msg:
-                                      'Some selected team members are assigned to other projects. Please check.',
+                                  msg: AppLocalizations.of(context)!
+                                      .someSelectedTeamMembersAreAssignedToOtherProjectsPleaseCheck,
                                   toastLength: Toast.LENGTH_SHORT,
                                   gravity: ToastGravity.BOTTOM,
                                   timeInSecForIosWeb: 1,
@@ -391,15 +417,18 @@ class _ProjectDetailsPageState extends ConsumerState<ProjectDetailsPage> {
                               }
                             }
                           },
-                          child: Text(AppLocalizations.of(context)!.add),
+                          child: Text(
+                            AppLocalizations.of(context)!.add,
+                            style: const TextStyle(color: Colors.white),
+                          ),
                         ),
-                        const SizedBox(height: 10),
-                        TextButton(
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                          child: Text(AppLocalizations.of(context)!.cancel),
-                        ),
+                        // const SizedBox(height: 10),
+                        // TextButton(
+                        //   onPressed: () {
+                        //     Navigator.of(context).pop();
+                        //   },
+                        //   child: Text(AppLocalizations.of(context)!.cancel),
+                        // ),
                       ],
                     ),
                   ),
@@ -428,7 +457,7 @@ class _ProjectDetailsPageState extends ConsumerState<ProjectDetailsPage> {
       'Kohli',
       'Sachin',
       'Naren',
-      'Jega',
+      'Jaga',
       'Jhaya',
       'Logesh',
       'Hari',
@@ -485,14 +514,15 @@ class _ProjectDetailsPageState extends ConsumerState<ProjectDetailsPage> {
                         const SizedBox(height: 10),
                         TextFormField(
                           controller: taskNameController,
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
                           decoration: InputDecoration(
                             labelText: AppLocalizations.of(context)!.taskName,
+                            labelStyle: const TextStyle(color: Colors.black),
                           ),
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return 'pleaseEnter' +
-                                  ' ' +
-                                  AppLocalizations.of(context)!.taskName;
+                              return AppLocalizations.of(context)!
+                                  .entertaskname;
                             }
                             return null;
                           },
@@ -503,15 +533,16 @@ class _ProjectDetailsPageState extends ConsumerState<ProjectDetailsPage> {
                         const SizedBox(height: 10),
                         TextFormField(
                           controller: descriptionController,
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
                           decoration: InputDecoration(
                             labelText:
                                 AppLocalizations.of(context)!.description,
+                            labelStyle: const TextStyle(color: Colors.black),
                           ),
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return 'pleaseEnter' +
-                                  ' ' +
-                                  AppLocalizations.of(context)!.description;
+                              return AppLocalizations.of(context)!
+                                  .entertaskdesc;
                             }
                             return null;
                           },
@@ -522,14 +553,15 @@ class _ProjectDetailsPageState extends ConsumerState<ProjectDetailsPage> {
                         const SizedBox(height: 10),
                         TextFormField(
                           controller: hoursController,
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
                           decoration: InputDecoration(
                             labelText: AppLocalizations.of(context)!.taskHours,
+                            labelStyle: const TextStyle(color: Colors.black),
                           ),
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return 'pleaseEnter' +
-                                  ' ' +
-                                  AppLocalizations.of(context)!.taskHours;
+                              return AppLocalizations.of(context)!
+                                  .entertaskhours;
                             }
                             return null;
                           },
@@ -542,6 +574,7 @@ class _ProjectDetailsPageState extends ConsumerState<ProjectDetailsPage> {
                           controller: dateController,
                           decoration: InputDecoration(
                             labelText: AppLocalizations.of(context)!.duedate,
+                            labelStyle: const TextStyle(color: Colors.black),
                           ),
                           onTap: () async {
                             FocusScope.of(context).requestFocus(FocusNode());
@@ -551,7 +584,8 @@ class _ProjectDetailsPageState extends ConsumerState<ProjectDetailsPage> {
                               firstDate: widget.project.startDate
                                   .add(const Duration(days: 1)),
                               lastDate: widget.project.endDate,
-                              helpText: 'Due Date For Task',
+                              helpText:
+                                  AppLocalizations.of(context)!.duedateForTask,
                             );
                             if (pickedDate != null) {
                               task.dueDate = pickedDate;
@@ -561,9 +595,8 @@ class _ProjectDetailsPageState extends ConsumerState<ProjectDetailsPage> {
                           },
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return 'pleaseEnter' +
-                                  ' ' +
-                                  AppLocalizations.of(context)!.duedate;
+                              return AppLocalizations.of(context)!
+                                  .pleaseenterenddate;
                             }
                             return null;
                           },
@@ -598,9 +631,8 @@ class _ProjectDetailsPageState extends ConsumerState<ProjectDetailsPage> {
                           initialValue: selectedTeamMembers,
                           validator: (values) {
                             if (values == null || values.isEmpty) {
-                              return 'pleaseSelect' +
-                                  ' ' +
-                                  AppLocalizations.of(context)!.teamMembers;
+                              return AppLocalizations.of(context)!
+                                  .pleaseSelectTeamMembers;
                             }
                             return null;
                           },
@@ -621,7 +653,36 @@ class _ProjectDetailsPageState extends ConsumerState<ProjectDetailsPage> {
                           }).toList(),
                         ),
                         const SizedBox(height: 10),
+                        // Row(
+                        // children: [
+                        // ElevatedButton(
+                        // style: ElevatedButton.styleFrom(
+                        //   backgroundColor: Colors.purple.shade300,
+                        //   padding: const EdgeInsets.symmetric(
+                        //       horizontal: 16.0, vertical: 8.0),
+                        //   shape: RoundedRectangleBorder(
+                        //     borderRadius: BorderRadius.circular(8.0),
+                        //   ),
+                        // ),
+
+                        //   onPressed: () {
+                        //     Navigator.of(context).pop();
+                        //   },
+                        //   child: Text(
+                        //     AppLocalizations.of(context)!.cancel,
+                        //     style: const TextStyle(color: Colors.black),
+                        //   ),
+                        // ),
+                        // const SizedBox(width: 200),
                         ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.purple,
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 16.0, vertical: 8.0),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8.0),
+                            ),
+                          ),
                           onPressed: () async {
                             if (_formKey.currentState!.validate()) {
                               try {
@@ -638,8 +699,8 @@ class _ProjectDetailsPageState extends ConsumerState<ProjectDetailsPage> {
                                     int.parse(widget.project.teamMembers);
                                 if (uniqueTeamMembers.length > countMembers) {
                                   Fluttertoast.showToast(
-                                    msg:
-                                        'Selected team members count was exceeded.',
+                                    msg: AppLocalizations.of(context)!
+                                        .selectedTeamMembersCountWasExceeded,
                                     toastLength: Toast.LENGTH_SHORT,
                                     gravity: ToastGravity.BOTTOM,
                                     timeInSecForIosWeb: 1,
@@ -650,7 +711,8 @@ class _ProjectDetailsPageState extends ConsumerState<ProjectDetailsPage> {
                                 } else if (totalHours >
                                     int.parse(widget.project.workHours)) {
                                   Fluttertoast.showToast(
-                                    msg: 'Total Hours Exceeded.',
+                                    msg: AppLocalizations.of(context)!
+                                        .totalHoursExceeded,
                                     toastLength: Toast.LENGTH_SHORT,
                                     gravity: ToastGravity.BOTTOM,
                                     timeInSecForIosWeb: 1,
@@ -668,7 +730,8 @@ class _ProjectDetailsPageState extends ConsumerState<ProjectDetailsPage> {
                                   await loadTasks();
                                   if (context.mounted) {
                                     Fluttertoast.showToast(
-                                      msg: 'Task Edited Successfully',
+                                      msg: AppLocalizations.of(context)!
+                                          .taskEditedSuccessfully,
                                       toastLength: Toast.LENGTH_SHORT,
                                       gravity: ToastGravity.BOTTOM,
                                       timeInSecForIosWeb: 1,
@@ -681,8 +744,8 @@ class _ProjectDetailsPageState extends ConsumerState<ProjectDetailsPage> {
                                 }
                               } on CustomException {
                                 Fluttertoast.showToast(
-                                  msg:
-                                      'Some selected team members are assigned to other projects. Please check.',
+                                  msg: AppLocalizations.of(context)!
+                                      .someSelectedTeamMembersAreAssignedToOtherProjectsPleaseCheck,
                                   toastLength: Toast.LENGTH_SHORT,
                                   gravity: ToastGravity.BOTTOM,
                                   timeInSecForIosWeb: 1,
@@ -695,15 +758,31 @@ class _ProjectDetailsPageState extends ConsumerState<ProjectDetailsPage> {
                               }
                             }
                           },
-                          child: Text(AppLocalizations.of(context)!.save),
+                          child: Text(
+                            AppLocalizations.of(context)!.save,
+                            style: const TextStyle(color: Colors.white),
+                          ),
                         ),
-                        const SizedBox(height: 10),
-                        TextButton(
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                          child: Text(AppLocalizations.of(context)!.cancel),
-                        ),
+                        // ],
+                        // ),
+                        // const SizedBox(height: 10),
+                        // ElevatedButton(
+                        //   style: ElevatedButton.styleFrom(
+                        //     backgroundColor: Colors.white,
+                        //     padding: const EdgeInsets.symmetric(
+                        //         horizontal: 16.0, vertical: 8.0),
+                        //     shape: RoundedRectangleBorder(
+                        //       borderRadius: BorderRadius.circular(8.0),
+                        //     ),
+                        //   ),
+                        //   onPressed: () {
+                        //     Navigator.of(context).pop();
+                        //   },
+                        //   child: Text(
+                        //     AppLocalizations.of(context)!.cancel,
+                        //     style: const TextStyle(color: Colors.black),
+                        //   ),
+                        // ),
                       ],
                     ),
                   ),
@@ -805,15 +884,21 @@ class _ProjectDetailsPageState extends ConsumerState<ProjectDetailsPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Card(
-              elevation: 4,
+            Container(
               margin: const EdgeInsets.only(bottom: 20),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-                side: BorderSide(color: Colors.purple.shade300, width: 2),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10.0),
+                color: const Color.fromARGB(255, 240, 234, 238),
+                border: Border.all(color: Colors.purple, width: 1),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.3),
+                    spreadRadius: 2,
+                    blurRadius: 5,
+                    offset: const Offset(0, 3),
+                  ),
+                ],
               ),
-              color: const Color.fromARGB(255, 240, 234, 238),
-              shadowColor: Colors.black.withOpacity(0.4),
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
@@ -901,14 +986,27 @@ class _ProjectDetailsPageState extends ConsumerState<ProjectDetailsPage> {
         statusColor = Colors.grey;
     }
 
-    return Card(
-      elevation: 4,
-      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
-        side: BorderSide(color: statusColor, width: 2),
+    return Container(
+      // elevation: 4,
+      // margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+      // shape: RoundedRectangleBorder(
+      //   borderRadius: BorderRadius.circular(10),
+      //   side: BorderSide(color: statusColor, width: 2),
+      // ),
+      margin: const EdgeInsets.only(bottom: 20),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10.0),
+        color: const Color.fromARGB(255, 240, 234, 238),
+        border: Border.all(color: statusColor, width: 1),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.3),
+            spreadRadius: 2,
+            blurRadius: 5,
+            offset: const Offset(0, 3),
+          ),
+        ],
       ),
-      color: const Color.fromARGB(255, 240, 234, 238),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -995,8 +1093,8 @@ class _ProjectDetailsPageState extends ConsumerState<ProjectDetailsPage> {
                               );
                               if (!allMembersDone) {
                                 Fluttertoast.showToast(
-                                  msg:
-                                      "All team members must mark the task as done before it can be completed.",
+                                  msg: AppLocalizations.of(context)!
+                                      .allTeamMembersMustMarkTaskAsDone,
                                   toastLength: Toast.LENGTH_SHORT,
                                   gravity: ToastGravity.BOTTOM,
                                   timeInSecForIosWeb: 3,
@@ -1059,17 +1157,28 @@ class _ProjectDetailsPageState extends ConsumerState<ProjectDetailsPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Mark the Project as Complete'),
-          content: const Text(
-              'Are you sure you want to mark this project as completed?'),
+          title: Text(AppLocalizations.of(context)!.markascomplete),
+          content:
+              Text(AppLocalizations.of(context)!.areYouSureCompleteProject),
           actions: <Widget>[
             TextButton(
               onPressed: () async {
                 if (tasks.isEmpty) {
-                  AnimatedSnackBar.material(
-                    'No tasks available. Cannot mark project as completed.',
-                    type: AnimatedSnackBarType.error,
-                  ).show(context);
+                  // AnimatedSnackBar.material(
+                  // AppLocalizations.of(context)!
+                  //     .noTasksAvailableCannotMarkProjectAsCompleted,
+                  //   type: AnimatedSnackBarType.error,
+                  // ).show(context);
+                  Fluttertoast.showToast(
+                    msg: AppLocalizations.of(context)!
+                        .noTasksAvailableCannotMarkProjectAsCompleted,
+                    toastLength: Toast.LENGTH_SHORT,
+                    gravity: ToastGravity.BOTTOM,
+                    timeInSecForIosWeb: 5,
+                    backgroundColor: Colors.purple.shade300,
+                    textColor: Colors.white,
+                    fontSize: 16.0,
+                  );
                   Navigator.of(context).pop();
                   return;
                 }
@@ -1097,33 +1206,54 @@ class _ProjectDetailsPageState extends ConsumerState<ProjectDetailsPage> {
                     });
                     if (context.mounted) {
                       Fluttertoast.showToast(
-                        msg: '${widget.project.projectName} Marked as Done',
+                        msg:
+                            '${widget.project.projectName} ${AppLocalizations.of(context)!.markedAsDone}',
                         toastLength: Toast.LENGTH_SHORT,
                         gravity: ToastGravity.BOTTOM,
                         timeInSecForIosWeb: 5,
                         backgroundColor: Colors.purple.shade300,
-                        textColor: Colors.black,
+                        textColor: Colors.white,
                         fontSize: 16.0,
                       );
                       NotificationManager.showNotification(
                           fileName:
-                              '${widget.project.projectName} Was Completed');
+                              '${widget.project.projectName} ${AppLocalizations.of(context)!.wasCompleted}');
                     }
                     if (context.mounted) {
                       Navigator.of(context).pop();
                     }
                   } else {
-                    AnimatedSnackBar.material(
-                            'All tasks must be completed before marking the project as completed',
-                            type: AnimatedSnackBarType.error)
-                        .show(context);
+                    // AnimatedSnackBar.material(
+                    //         'All tasks must be completed before marking the project as completed',
+                    //         type: AnimatedSnackBarType.error)
+                    //     .show(context);
+                    Fluttertoast.showToast(
+                      msg: AppLocalizations.of(context)!
+                          .allTasksMustBeCompletedBeforeMarkingTheProjectAsCompleted,
+                      toastLength: Toast.LENGTH_SHORT,
+                      gravity: ToastGravity.BOTTOM,
+                      timeInSecForIosWeb: 1,
+                      backgroundColor: Colors.purple.shade300,
+                      textColor: Colors.white,
+                      fontSize: 16.0,
+                    );
                   }
                 } catch (e) {
                   if (context.mounted) {
-                    AnimatedSnackBar.material(
-                            'Failed to mark project as completed',
-                            type: AnimatedSnackBarType.error)
-                        .show(context);
+                    // AnimatedSnackBar.material(
+                    //         'Failed to mark project as completed',
+                    //         type: AnimatedSnackBarType.error)
+                    //     .show(context);
+                    Fluttertoast.showToast(
+                      msg: AppLocalizations.of(context)!
+                          .failedToMarkProjectAsCompleted,
+                      toastLength: Toast.LENGTH_SHORT,
+                      gravity: ToastGravity.BOTTOM,
+                      timeInSecForIosWeb: 1,
+                      backgroundColor: Colors.purple.shade300,
+                      textColor: Colors.white,
+                      fontSize: 16.0,
+                    );
                   }
                 }
 
@@ -1131,13 +1261,13 @@ class _ProjectDetailsPageState extends ConsumerState<ProjectDetailsPage> {
                   Navigator.of(context).pop();
                 }
               },
-              child: const Text('OK'),
+              child: Text(AppLocalizations.of(context)!.ok),
             ),
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: const Text('Cancel'),
+              child: Text(AppLocalizations.of(context)!.cancel),
             ),
           ],
         );
@@ -1176,41 +1306,112 @@ class _ProjectDetailsPageState extends ConsumerState<ProjectDetailsPage> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
-                  const Text(
-                    'Edit Project',
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  Text(
+                    AppLocalizations.of(context)!.editproject,
+                    style: const TextStyle(
+                        fontSize: 24, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 16),
                   TextFormField(
                     controller: projectNameController,
-                    decoration:
-                        const InputDecoration(labelText: 'Project Name'),
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    decoration: InputDecoration(
+                      labelText: AppLocalizations.of(context)!.projectName,
+                      labelStyle: const TextStyle(color: Colors.black),
+                    ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return AppLocalizations.of(context)!.enterprojectname;
+                      }
+                      return null;
+                    },
+                    onChanged: (value) {
+                      projectNameController.text = value;
+                    },
                   ),
                   const SizedBox(height: 8),
                   TextFormField(
                     controller: descriptionController,
-                    decoration: const InputDecoration(labelText: 'Description'),
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    decoration: InputDecoration(
+                      labelText: AppLocalizations.of(context)!.description,
+                      labelStyle: const TextStyle(color: Colors.black),
+                    ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return AppLocalizations.of(context)!.enterprojectdesc;
+                      }
+                      return null;
+                    },
+                    onChanged: (value) {
+                      descriptionController.text = value;
+                    },
                   ),
+                  // const SizedBox(height: 8),
+                  // TextFormField(
+                  //   controller: ownerController,
+                  //   autovalidateMode: AutovalidateMode.onUserInteraction,
+                  //   decoration: InputDecoration(
+                  //       labelText: AppLocalizations.of(context)!.projectOwner),
+                  //   validator: (value) {
+                  //     if (value == null || value.isEmpty) {
+                  //       return AppLocalizations.of(context)!.enterowner;
+                  //     }
+                  //     return null;
+                  //   },
+                  //   onChanged: (value) {
+                  //     ownerController.text = value;
+                  //   },
+                  // ),
                   const SizedBox(height: 8),
-                  TextFormField(
-                    controller: ownerController,
-                    decoration: const InputDecoration(labelText: 'Owner'),
-                  ),
-                  const SizedBox(height: 8),
-                  _buildDateField("End Date", endDateController),
+                  _buildDateField(
+                      AppLocalizations.of(context)!.enddate, endDateController),
                   const SizedBox(height: 8),
                   TextFormField(
                     controller: workHoursController,
-                    decoration: const InputDecoration(labelText: 'Work Hours'),
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    decoration: InputDecoration(
+                      labelText: AppLocalizations.of(context)!.workHours,
+                      labelStyle: const TextStyle(color: Colors.black),
+                    ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return AppLocalizations.of(context)!.enterprojecthours;
+                      }
+                      return null;
+                    },
+                    onChanged: (value) {
+                      workHoursController.text = value;
+                    },
                   ),
                   const SizedBox(height: 8),
                   TextFormField(
                     controller: teamMembersController,
-                    decoration:
-                        const InputDecoration(labelText: 'Team Members'),
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    decoration: InputDecoration(
+                      labelText: AppLocalizations.of(context)!.teamMembers,
+                      labelStyle: const TextStyle(color: Colors.black),
+                    ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return AppLocalizations.of(context)!.entermembers;
+                      }
+                      return null;
+                    },
+                    onChanged: (value) {
+                      teamMembersController.text = value;
+                    },
                   ),
                   const SizedBox(height: 16),
                   ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.purple,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16.0, vertical: 8.0),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                    ),
                     onPressed: () async {
                       DateTime? startDate =
                           _parseDateTime(startDateController.text);
@@ -1244,7 +1445,8 @@ class _ProjectDetailsPageState extends ConsumerState<ProjectDetailsPage> {
                           if (context.mounted) {
                             Navigator.pop(context);
                             Fluttertoast.showToast(
-                              msg: 'Project Details was Edited Successfully',
+                              msg: AppLocalizations.of(context)!
+                                  .projectDetailsWasEditedSuccessfully,
                               toastLength: Toast.LENGTH_SHORT,
                               gravity: ToastGravity.BOTTOM,
                               timeInSecForIosWeb: 1,
@@ -1255,7 +1457,8 @@ class _ProjectDetailsPageState extends ConsumerState<ProjectDetailsPage> {
                           }
                         } else {
                           Fluttertoast.showToast(
-                            msg: 'Failed to update the project',
+                            msg: AppLocalizations.of(context)!
+                                .failedToUpdateTheProject,
                             toastLength: Toast.LENGTH_SHORT,
                             gravity: ToastGravity.BOTTOM,
                             timeInSecForIosWeb: 1,
@@ -1266,7 +1469,7 @@ class _ProjectDetailsPageState extends ConsumerState<ProjectDetailsPage> {
                         }
                       } else {
                         Fluttertoast.showToast(
-                          msg: 'Invalid date format',
+                          msg: AppLocalizations.of(context)!.invalidDateFormat,
                           toastLength: Toast.LENGTH_SHORT,
                           gravity: ToastGravity.BOTTOM,
                           timeInSecForIosWeb: 1,
@@ -1276,7 +1479,10 @@ class _ProjectDetailsPageState extends ConsumerState<ProjectDetailsPage> {
                         );
                       }
                     },
-                    child: const Text('Update'),
+                    child: Text(
+                      AppLocalizations.of(context)!.save,
+                      style: const TextStyle(color: Colors.white),
+                    ),
                   ),
                 ],
               ),
@@ -1292,8 +1498,8 @@ class _ProjectDetailsPageState extends ConsumerState<ProjectDetailsPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Delete Project'),
-          content: const Text('Are you sure you want to delete the project?'),
+          title: Text(AppLocalizations.of(context)!.deleteproject),
+          content: Text(AppLocalizations.of(context)!.areYouSureDeleteProject),
           actions: <Widget>[
             TextButton(
               onPressed: () async {
@@ -1302,15 +1508,25 @@ class _ProjectDetailsPageState extends ConsumerState<ProjectDetailsPage> {
                     .deleteProject(project.id!);
                 if (context.mounted) {
                   Navigator.pop(context);
+                  Fluttertoast.showToast(
+                    msg:
+                        '${widget.project.projectName} ${AppLocalizations.of(context)!.wasDeletedSuccessfully}',
+                    toastLength: Toast.LENGTH_SHORT,
+                    gravity: ToastGravity.BOTTOM,
+                    timeInSecForIosWeb: 5,
+                    backgroundColor: Colors.purple.shade300,
+                    textColor: Colors.white,
+                    fontSize: 16.0,
+                  );
                 }
               },
-              child: const Text('Delete'),
+              child: Text(AppLocalizations.of(context)!.delete),
             ),
             TextButton(
               onPressed: () {
                 Navigator.pop(context);
               },
-              child: const Text('Cancel'),
+              child: Text(AppLocalizations.of(context)!.cancel),
             ),
           ],
         );

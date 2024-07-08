@@ -123,6 +123,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_projects/domain/model/project/project.dart';
 import 'package:flutter_projects/presentation/providers/project/notification_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ProjectMessagesPage extends ConsumerStatefulWidget {
   final Project project;
@@ -252,7 +253,7 @@ class _ProjectMessagesPageState extends ConsumerState<ProjectMessagesPage> {
     print('notifications $projectNotifications');
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Notifications'),
+        title: Text(AppLocalizations.of(context)!.notifications),
         elevation: 0,
       ),
       body: Padding(

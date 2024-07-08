@@ -956,7 +956,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             context,
             MaterialPageRoute(
               builder: (_) => MyHomePage(
-                title: 'KS ProjectHub',
+                // title: 'KS ProjectHub',
                 username: username,
                 userId: userId,
               ),

@@ -585,7 +585,7 @@ class _ProjectFormState extends ConsumerState<ProjectForm> {
       initialDate: startDate,
       firstDate: DateTime.now().subtract(const Duration(days: 15)),
       lastDate: DateTime(2025),
-      helpText: 'Select Start Date',
+      helpText: AppLocalizations.of(context)!.selectStartDate,
     );
     if (picked != null && picked != startDate) {
       setState(() {
@@ -606,7 +606,7 @@ class _ProjectFormState extends ConsumerState<ProjectForm> {
       initialDate: endDate,
       firstDate: startDate,
       lastDate: DateTime(2025),
-      helpText: 'Select End Date',
+      helpText: AppLocalizations.of(context)!.selectEndDate,
     );
     if (picked != null && picked != endDate) {
       setState(() {

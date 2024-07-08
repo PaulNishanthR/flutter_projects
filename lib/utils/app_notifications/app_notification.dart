@@ -67,4 +67,25 @@ class NotificationManager {
       platformChannelSpecifics,
     );
   }
+
+  static Future<void> showDueDateNotification({
+    required String fileName,
+    String? message,
+  }) async {
+    // Android Notification Details
+    const AndroidNotificationDetails androidPlatformChannelSpecifics =
+        AndroidNotificationDetails('your_channel_id', 'Your channel name',
+            importance: Importance.high, priority: Priority.high, number: 1);
+
+    // General Notification Details
+    const NotificationDetails platformChannelSpecifics =
+        NotificationDetails(android: androidPlatformChannelSpecifics);
+
+    await flutterLocalNotificationsPlugin.show(
+      3,
+      'DUE DATE ALERT',
+      fileName,
+      platformChannelSpecifics,
+    );
+  }
 }
