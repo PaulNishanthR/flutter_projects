@@ -102,7 +102,7 @@
   "selectedTeamMembersCountWasExceeded": "Selected team members count was exceeded.",
   "totalHoursExceeded": "Total Hours Exceeded.",
   "taskEditedSuccessfully": "Task Edited Successfully",
-  "someSelectedTeamMembersAreAssignedToOtherProjectsPleaseCheck": "ome selected team members are assigned to other projects. Please check.",
+  "someSelectedTeamMembersAreAssignedToOtherProjectsPleaseCheck": "Some selected team member(s) are assigned to other projects. Please check.",
   "taskAddedSuccessfully": "Task Added Successfully",
   "allTeamMembersMustMarkTaskAsDone": "All team members must mark the task as done before it can be completed."
 }

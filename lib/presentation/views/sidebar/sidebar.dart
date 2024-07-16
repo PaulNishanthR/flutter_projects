@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_projects/domain/model/project/project.dart';
 import 'package:flutter_projects/presentation/providers/language/lang_provider.dart';
-import 'package:flutter_projects/presentation/views/sidebar/members_list.dart';
+// import 'package:flutter_projects/presentation/views/sidebar/members_list.dart';
 import 'package:flutter_projects/presentation/widgets/sidebar/about.dart';
 import 'package:flutter_projects/presentation/views/auth_pages/login.dart';
 import 'package:flutter_projects/presentation/views/project/completed_project.dart';
@@ -27,134 +27,131 @@ class Navbar extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final userNamePrefix = username.split('@').first;
     return Drawer(
-      child: Container(
-        // color: Colors.lightBlue[100],
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: <Widget>[
-            DrawerHeader(
-              decoration: const BoxDecoration(
-                  // color: Colors.lightBlue,
-                  ),
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Row(
-                      children: [
-                        Text(
-                          AppLocalizations.of(context)!.welcome,
-                          style: const TextStyle(
-                            color: Colors.black,
-                            fontSize: 33,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const Spacer(),
-                        const LanguageDropdown(),
-                      ],
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      userNamePrefix,
-                      style: const TextStyle(
-                        color: Colors.black,
-                        fontSize: 28,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      username,
-                      style: const TextStyle(
-                        color: Colors.black,
-                        fontSize: 14,
-                        fontWeight: FontWeight.normal,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                  ],
+      child: ListView(
+        padding: EdgeInsets.zero,
+        children: <Widget>[
+          DrawerHeader(
+            decoration: const BoxDecoration(
+                // color: Colors.lightBlue,
                 ),
-              ),
-            ),
-            ListTile(
-              leading: const Icon(
-                Icons.document_scanner,
-                color: Colors.black,
-              ),
-              title: Text(
-                AppLocalizations.of(context)!.reports,
-                style: TextStyle(color: Colors.purple.shade300),
-              ),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ProjectsTable(
-                      userId: userId,
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Row(
+                    children: [
+                      Text(
+                        AppLocalizations.of(context)!.welcome,
+                        style: const TextStyle(
+                          color: Colors.black,
+                          fontSize: 33,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const Spacer(),
+                      const LanguageDropdown(),
+                    ],
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    userNamePrefix,
+                    style: const TextStyle(
+                      color: Colors.black,
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                );
-              },
-            ),
-            // ListTile(
-            //   leading: const Icon(
-            //     Icons.group,
-            //     color: Colors.black,
-            //   ),
-            //   title: Text(
-            //     AppLocalizations.of(context)!.teamMemberList,
-            //     style: TextStyle(color: Colors.purple.shade300),
-            //   ),
-            //   onTap: () {
-            //     Navigator.push(
-            //       context,
-            //       MaterialPageRoute(
-            //         builder: (context) => const MembersListPage(),
-            //       ),
-            //     );
-            //   },
-            // ),
-            ListTile(
-              leading: const Icon(
-                Icons.info,
-                color: Colors.black,
-              ),
-              title: Text(
-                AppLocalizations.of(context)!.about,
-                style: TextStyle(color: Colors.purple.shade300),
-              ),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const AboutScreen(),
+                  const SizedBox(height: 4),
+                  Text(
+                    username,
+                    style: const TextStyle(
+                      color: Colors.black,
+                      fontSize: 14,
+                      fontWeight: FontWeight.normal,
+                    ),
                   ),
-                );
-              },
-            ),
-            const Divider(
-              color: Colors.grey,
-            ),
-            ListTile(
-              leading: const Icon(
-                Icons.exit_to_app,
-                color: Colors.black,
+                  const SizedBox(height: 4),
+                ],
               ),
-              title: Text(
-                AppLocalizations.of(context)!.logout,
-                style: TextStyle(color: Colors.purple.shade300),
-              ),
-              onTap: () {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => const LoginScreen()),
-                );
-              },
             ),
-          ],
-        ),
+          ),
+          ListTile(
+            leading: const Icon(
+              Icons.document_scanner,
+              color: Colors.black,
+            ),
+            title: Text(
+              AppLocalizations.of(context)!.reports,
+              style: TextStyle(color: Colors.purple.shade300),
+            ),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ProjectsTable(
+                    userId: userId,
+                  ),
+                ),
+              );
+            },
+          ),
+          // ListTile(
+          //   leading: const Icon(
+          //     Icons.group,
+          //     color: Colors.black,
+          //   ),
+          //   title: Text(
+          //     AppLocalizations.of(context)!.teamMemberList,
+          //     style: TextStyle(color: Colors.purple.shade300),
+          //   ),
+          //   onTap: () {
+          //     Navigator.push(
+          //       context,
+          //       MaterialPageRoute(
+          //         builder: (context) => const MembersListPage(),
+          //       ),
+          //     );
+          //   },
+          // ),
+          ListTile(
+            leading: const Icon(
+              Icons.info,
+              color: Colors.black,
+            ),
+            title: Text(
+              AppLocalizations.of(context)!.about,
+              style: TextStyle(color: Colors.purple.shade300),
+            ),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const AboutScreen(),
+                ),
+              );
+            },
+          ),
+          const Divider(
+            color: Colors.grey,
+          ),
+          ListTile(
+            leading: const Icon(
+              Icons.exit_to_app,
+              color: Colors.black,
+            ),
+            title: Text(
+              AppLocalizations.of(context)!.logout,
+              style: TextStyle(color: Colors.purple.shade300),
+            ),
+            onTap: () {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => const LoginScreen()),
+              );
+            },
+          ),
+        ],
       ),
     );
   }

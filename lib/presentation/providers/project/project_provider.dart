@@ -30,19 +30,20 @@ class ProjectsNotifier extends StateNotifier<List<Project>> {
     try {
       List<Project> projects = await _repository.getAllProjects();
       state = projects;
+      print('state, projects --->>> $state, $projects');
     } catch (e) {
       CustomException("Unable to fetch projects");
     }
   }
 
-  Future<bool> addProject(Project project, int userId) async {
+  Future<void> addProject(Project project, int userId) async {
     try {
       int projectId = await _repository.createProject(project, userId);
       project = project.copyWithID(projectId);
+      project.id = projectId;
       state = [...state, project];
-      return true;
     } catch (e) {
-      return false;
+      return;
     }
   }
 
@@ -96,13 +97,34 @@ class ProjectsNotifier extends StateNotifier<List<Project>> {
     }
   }
 
+  // Future<void> getProjects(int userId) async {
+  //   try {
+  //     // List<Project> userProjects = await _repository.getUserProjects(userId);
+  //     // state = userProjects;
+  //     print('lol : $userId');
+  //     final projects = await _repository.getUserProjects(userId);
+  //     state = projects.where((project) => project.userId == userId).toList();
+  //     print('Fetched projects for userID in provider --- $userId from DB: $projects');
+  //   } catch (e) {
+  //     CustomException("Unable to get the projects");
+  //   }
+  // }
+
   Future<void> getProjects(int userId) async {
     try {
       List<Project> userProjects = await _repository.getUserProjects(userId);
       state = userProjects;
+      print("Fetched projects in provider try block --->>> $state, $userProjects");
     } catch (e) {
       CustomException("Unable to get the projects");
     }
+  }
+
+  void updateProject(Project updatedProject) {
+    state = [
+      ...state.where((project) => project.id != updatedProject.id),
+      updatedProject
+    ];
   }
 
   Future<bool> markProjectAsCompleted(int projectId) async {
@@ -176,6 +198,16 @@ class ProjectsNotifier extends StateNotifier<List<Project>> {
     } catch (e) {
       throw CustomException(
           "Unable to fetch completed projects in providerrrr");
+    }
+  }
+
+  Future<void> getUnCompletedProjectsFromDB(
+      int userId, int projectId, bool completed) async {
+    try {
+      await _repository.getCompletedProjectsFromTable(userId, projectId, false);
+    } catch (e) {
+      throw CustomException(
+          "Unable to fetch un completed projects in providerrrr");
     }
   }
 

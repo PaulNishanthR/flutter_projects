@@ -112,4 +112,11 @@ class DatabaseProjectRepository implements ProjectRepository {
   Future<int> getCountOfUnreadNotifications() async {
     return await _dataSource.getCountOfUnreadNotifications();
   }
+
+  @override
+  Future<Project> getUnCompletedProjectsFromTable(
+      int userId, int projectId, bool completed) async {
+    return await _dataSource.getUnCompletedProjectsFromTable(
+        userId, projectId, completed);
+  }
 }

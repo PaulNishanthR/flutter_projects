@@ -522,6 +522,7 @@ class _MyHomePageState extends ConsumerState<MyHomePage> {
 
   Future<void> loadProjects() async {
     await ref.read(projectsProvider.notifier).getProjects(widget.userId);
+    print("load projects in home page --->>> ");
   }
 
   List<Project> projects = [];

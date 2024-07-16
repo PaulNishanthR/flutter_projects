@@ -111,7 +111,7 @@ class Task {
               (key, value) => MapEntry(
                   key,
                   UserStatus.values.firstWhere(
-                      (e) => e.toString() == 'UserStatus.' + value))) ??
+                      (e) => e.toString() == 'UserStatus.$value'))) ??
           {},
     );
   }

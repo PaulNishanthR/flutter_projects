@@ -385,10 +385,28 @@ class _ProjectDetailsPageState extends ConsumerState<ProjectDetailsPage> {
                                       .updateProjectTasks(widget.project.id!,
                                           [...tasks, newTask]);
                                   await loadTasks();
+                                  if (context.mounted) {
+                                    Fluttertoast.showToast(
+                                      msg: AppLocalizations.of(context)!
+                                          .taskAddedSuccessfully,
+                                      toastLength: Toast.LENGTH_SHORT,
+                                      gravity: ToastGravity.BOTTOM,
+                                      timeInSecForIosWeb: 1,
+                                      backgroundColor: Colors.purple.shade300,
+                                      textColor: Colors.white,
+                                      fontSize: 16.0,
+                                    );
+                                  }
 
+                                  if (context.mounted) {
+                                    Navigator.pop(context);
+                                  }
+                                }
+                              } on CustomException {
+                                if (context.mounted) {
                                   Fluttertoast.showToast(
                                     msg: AppLocalizations.of(context)!
-                                        .taskAddedSuccessfully,
+                                        .someSelectedTeamMembersAreAssignedToOtherProjectsPleaseCheck,
                                     toastLength: Toast.LENGTH_SHORT,
                                     gravity: ToastGravity.BOTTOM,
                                     timeInSecForIosWeb: 1,
@@ -396,22 +414,7 @@ class _ProjectDetailsPageState extends ConsumerState<ProjectDetailsPage> {
                                     textColor: Colors.white,
                                     fontSize: 16.0,
                                   );
-
-                                  if (context.mounted) {
-                                    Navigator.pop(context);
-                                  }
                                 }
-                              } on CustomException {
-                                Fluttertoast.showToast(
-                                  msg: AppLocalizations.of(context)!
-                                      .someSelectedTeamMembersAreAssignedToOtherProjectsPleaseCheck,
-                                  toastLength: Toast.LENGTH_SHORT,
-                                  gravity: ToastGravity.BOTTOM,
-                                  timeInSecForIosWeb: 1,
-                                  backgroundColor: Colors.purple.shade300,
-                                  textColor: Colors.white,
-                                  fontSize: 16.0,
-                                );
                               } catch (e) {
                                 // print("Error adding task: $e");
                               }
@@ -743,16 +746,18 @@ class _ProjectDetailsPageState extends ConsumerState<ProjectDetailsPage> {
                                   }
                                 }
                               } on CustomException {
-                                Fluttertoast.showToast(
-                                  msg: AppLocalizations.of(context)!
-                                      .someSelectedTeamMembersAreAssignedToOtherProjectsPleaseCheck,
-                                  toastLength: Toast.LENGTH_SHORT,
-                                  gravity: ToastGravity.BOTTOM,
-                                  timeInSecForIosWeb: 1,
-                                  backgroundColor: Colors.purple.shade300,
-                                  textColor: Colors.white,
-                                  fontSize: 16.0,
-                                );
+                                if (context.mounted) {
+                                  Fluttertoast.showToast(
+                                    msg: AppLocalizations.of(context)!
+                                        .someSelectedTeamMembersAreAssignedToOtherProjectsPleaseCheck,
+                                    toastLength: Toast.LENGTH_SHORT,
+                                    gravity: ToastGravity.BOTTOM,
+                                    timeInSecForIosWeb: 1,
+                                    backgroundColor: Colors.purple.shade300,
+                                    textColor: Colors.white,
+                                    fontSize: 16.0,
+                                  );
+                                }
                               } catch (e) {
                                 // print("Error editing task: $e");
                               }
@@ -1456,16 +1461,18 @@ class _ProjectDetailsPageState extends ConsumerState<ProjectDetailsPage> {
                             );
                           }
                         } else {
-                          Fluttertoast.showToast(
-                            msg: AppLocalizations.of(context)!
-                                .failedToUpdateTheProject,
-                            toastLength: Toast.LENGTH_SHORT,
-                            gravity: ToastGravity.BOTTOM,
-                            timeInSecForIosWeb: 1,
-                            backgroundColor: Colors.purple.shade300,
-                            textColor: Colors.white,
-                            fontSize: 16.0,
-                          );
+                          if (context.mounted) {
+                            Fluttertoast.showToast(
+                              msg: AppLocalizations.of(context)!
+                                  .failedToUpdateTheProject,
+                              toastLength: Toast.LENGTH_SHORT,
+                              gravity: ToastGravity.BOTTOM,
+                              timeInSecForIosWeb: 1,
+                              backgroundColor: Colors.purple.shade300,
+                              textColor: Colors.white,
+                              fontSize: 16.0,
+                            );
+                          }
                         }
                       } else {
                         Fluttertoast.showToast(

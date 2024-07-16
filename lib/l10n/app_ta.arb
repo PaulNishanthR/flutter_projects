@@ -102,7 +102,7 @@
   "selectedTeamMembersCountWasExceeded": "தேர்ந்தெடுக்கப்பட்ட குழு உறுப்பினர்களின் எண்ணிக்கை மீறப்பட்டது.",
   "totalHoursExceeded": "மொத்த நேரம் மீறப்பட்டது.",
   "taskEditedSuccessfully": "வேலை வெற்றிகரமாக திருத்தப்பட்டது",
-  "someSelectedTeamMembersAreAssignedToOtherProjectsPleaseCheck": "சில தேர்ந்தெடுக்கப்பட்ட குழு உறுப்பினர்கள் பிற திட்டங்களுக்கு ஒதுக்கப்பட்டுள்ளனர். தயவுசெய்து சரிபார்க்கவும்.",
+  "someSelectedTeamMembersAreAssignedToOtherProjectsPleaseCheck": "சில தேர்ந்தெடுக்கப்பட்ட குழு உறுப்பினர்(கள்) பிற திட்டங்களுக்கு ஒதுக்கப்பட்டுள்ளனர். தயவுசெய்து சரிபார்க்கவும்.",
   "taskAddedSuccessfully": "பணி வெற்றிகரமாக சேர்க்கப்பட்டது",
   "allTeamMembersMustMarkTaskAsDone": "அனைத்து குழு உறுப்பினர்களும் பணி முடிந்ததாக குறிக்க வேண்டும், பிறகு தான் பணியை முடிக்க முடியும்."
 }

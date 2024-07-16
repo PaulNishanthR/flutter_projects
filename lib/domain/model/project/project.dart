@@ -4,7 +4,7 @@ import 'package:intl/intl.dart';
 
 class Project {
   int? id;
-  final int userId;
+   int userId;
   final String projectName;
   final String description;
   final String owner;
@@ -15,21 +15,22 @@ class Project {
   List<Task> tasks;
   bool completed;
   List<String>? assignedTeamMembers;
+  String? interval;
 
-  Project({
-    this.id,
-    required this.userId,
-    required this.projectName,
-    required this.description,
-    required this.owner,
-    required this.startDate,
-    required this.endDate,
-    required this.workHours,
-    required this.teamMembers,
-    required this.tasks,
-    this.completed = false,
-    this.assignedTeamMembers,
-  });
+  Project(
+      {this.id,
+      required this.userId,
+      required this.projectName,
+      required this.description,
+      required this.owner,
+      required this.startDate,
+      required this.endDate,
+      required this.workHours,
+      required this.teamMembers,
+      required this.tasks,
+      this.completed = false,
+      this.assignedTeamMembers,
+      this.interval});
 
   List<String> getAssignedTeamMembersList() {
     return assignedTeamMembers!.map((member) => member.trim()).toList();
@@ -47,22 +48,23 @@ class Project {
       // 'tasks': jsonEncode(tasks),
       'tasks': jsonEncode(tasks.map((task) => task.toJson()).toList()),
       'assignedTeamMembers': jsonEncode(assignedTeamMembers),
+      'interval': 'ongoing',
     };
   }
 
-  Project copyWith({
-    int? id,
-    int? userId,
-    String? projectName,
-    String? description,
-    String? owner,
-    DateTime? startDate,
-    DateTime? endDate,
-    String? workHours,
-    String? teamMembers,
-    List<Task>? tasks,
-    bool? completed,
-  }) {
+  Project copyWith(
+      {int? id,
+      int? userId,
+      String? projectName,
+      String? description,
+      String? owner,
+      DateTime? startDate,
+      DateTime? endDate,
+      String? workHours,
+      String? teamMembers,
+      List<Task>? tasks,
+      bool? completed,
+      String? interval}) {
     return Project(
       id: id ?? this.id,
       userId: userId ?? this.userId,
@@ -75,23 +77,24 @@ class Project {
       teamMembers: teamMembers ?? this.teamMembers,
       tasks: tasks ?? this.tasks,
       completed: completed ?? this.completed,
+      interval: interval ?? this.interval,
     );
   }
 
   Project copyWithID(int newId) {
     return Project(
-      id: newId,
-      userId: userId,
-      projectName: projectName,
-      description: description,
-      owner: owner,
-      startDate: startDate,
-      endDate: endDate,
-      workHours: workHours,
-      teamMembers: teamMembers,
-      tasks: tasks,
-      completed: completed,
-    );
+        id: newId,
+        userId: userId,
+        projectName: projectName,
+        description: description,
+        owner: owner,
+        startDate: startDate,
+        endDate: endDate,
+        workHours: workHours,
+        teamMembers: teamMembers,
+        tasks: tasks,
+        completed: completed,
+        interval: interval);
   }
 
   factory Project.fromJson(Map<String, dynamic> json) {
@@ -118,6 +121,7 @@ class Project {
       userId: json['userId'],
       assignedTeamMembers: assignedMembersList,
       completed: json['completed'] == 1,
+      interval: json['interval'],
     );
   }
 
@@ -141,6 +145,7 @@ class Project {
       tasks: tasks,
       assignedTeamMembers:
           List<String>.from(jsonDecode(map['assignedTeamMembers'])),
+      interval: map['interval'],
     );
   }
 
@@ -164,6 +169,7 @@ class Project {
       teamMembers: _parseTeamMembers(json['teamMembers']),
       tasks: tasks,
       completed: json['completed'] ?? false,
+      interval: json['interval'],
     );
   }
 

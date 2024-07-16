@@ -1179,7 +1179,7 @@ class _HomeForMemberState extends ConsumerState<HomeForMember>
                   break;
               }
 
-              final TaskStatus =
+              final taskStatus =
                   task.memberStatuses[widget.memberName] ?? UserStatus.todo;
 
               return Container(
@@ -1269,7 +1269,7 @@ class _HomeForMemberState extends ConsumerState<HomeForMember>
                       const SizedBox(height: 8),
                       DropdownButton<UserStatus>(
                         // value: task.memberStatuses[widget.memberName],
-                        value: TaskStatus,
+                        value: taskStatus,
                         items: UserStatus.values.map((UserStatus status) {
                           return DropdownMenuItem<UserStatus>(
                             value: status,

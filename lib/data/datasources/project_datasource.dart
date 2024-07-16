@@ -21,13 +21,13 @@ class ProjectDataSource {
 
   late Database _database;
 
-  final String _databaseName = "ppz.db";
+  final String _databaseName = "ppxxzz.db";
 
   final String _users =
       "create table users (userId INTEGER PRIMARY KEY AUTOINCREMENT, userName TEXT UNIQUE, userPassword TEXT)";
 
   final String _projectsDdd =
-      "create table projectsDdd (projectId INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, description TEXT NOT NULL, owner TEXT NOT NULL, workHours INTEGER NOT NULL, startDate TEXT, endDate TEXT, teamMembers INTEGER NOT NULL, tasks TEXT, userId INTEGER NOT NULL, assignedTeamMembers TEXT, completed INTEGER DEFAULT 0, FOREIGN KEY (userId) REFERENCES users (userId))";
+      "create table projectsDdd (projectId INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, description TEXT NOT NULL, owner TEXT NOT NULL, workHours INTEGER NOT NULL, startDate TEXT, endDate TEXT, teamMembers INTEGER NOT NULL, tasks TEXT, userId INTEGER NOT NULL, assignedTeamMembers TEXT, completed INTEGER DEFAULT 0, interval TEXT, FOREIGN KEY (userId) REFERENCES users (userId))";
 
   final String _notifications =
       "CREATE TABLE notifications (id INTEGER PRIMARY KEY AUTOINCREMENT, projectId INTEGER, message TEXT, isRead INTEGER, FOREIGN KEY (projectId) REFERENCES projectsDdd (projectId))";
@@ -215,6 +215,7 @@ class ProjectDataSource {
             jsonDecode(maps[i]['assignedTeamMembers']);
         assignedTeamMembers = List<String>.from(decodedAssignedTeamMembers);
       }
+      print('mapppppp - $maps');
       return Project(
         id: maps[i]['projectId'],
         projectName: maps[i]['name'],
@@ -269,7 +270,7 @@ class ProjectDataSource {
       where: 'userId = ?',
       whereArgs: [userId],
     );
-    // print("Fetched projects for userID $userId from DB: $maps");
+    print("Fetched projects for userID $userId from DB: $maps");
     return List.generate(maps.length, (i) {
       List<Task> tasks = [];
       if (maps[i]['tasks'] != null) {
@@ -285,7 +286,7 @@ class ProjectDataSource {
             jsonDecode(maps[i]['assignedTeamMembers']);
         assignedTeamMembers = List<String>.from(decodedAssignedTeamMembers);
       }
-
+      print('maps inside return --->>> $maps');
       return Project(
         id: maps[i]['projectId'],
         projectName: maps[i]['name'],
@@ -298,6 +299,7 @@ class ProjectDataSource {
         tasks: tasks,
         userId: maps[i]['userId'],
         assignedTeamMembers: assignedTeamMembers,
+        interval: maps[i]['interval'] ?? '',
       );
     });
   }
@@ -330,7 +332,7 @@ class ProjectDataSource {
     try {
       await _database.update(
         'projectsDdd',
-        {'completed': 1},
+        {'completed': 1, 'interval': 'done'},
         where: 'projectId = ?',
         whereArgs: [projectId],
         conflictAlgorithm: ConflictAlgorithm.replace,
@@ -457,6 +459,51 @@ class ProjectDataSource {
       whereArgs: ['%"$teamMember"%', currentProjectId],
     );
     return maps.isNotEmpty;
+  }
+
+  //Method for Get Un Completed Projects from projects table
+  Future<Project> getUnCompletedProjectsFromTable(
+      int userId, int projectId, bool completed) async {
+    await _checkAndInitDB();
+    final List<Map<String, dynamic>> maps = await _database.query(
+      'projectsDdd',
+      where: 'userId = ? AND projectId = ? AND completed = 0',
+      whereArgs: [userId, projectId],
+    );
+
+    if (maps.isNotEmpty) {
+      final map = maps.first;
+      List<Task> tasks = [];
+      if (map['tasks'] != null) {
+        var decodedTasks = jsonDecode(map['tasks']);
+        tasks = List<Task>.from(
+            decodedTasks.map((taskJson) => Task.fromJson(taskJson)));
+      }
+
+      List<String> assignedTeamMembers = [];
+      if (map['assignedTeamMembers'] != null &&
+          map['assignedTeamMembers'].isNotEmpty) {
+        var decodedAssignedTeamMembers = jsonDecode(map['assignedTeamMembers']);
+        assignedTeamMembers = List<String>.from(decodedAssignedTeamMembers);
+      }
+      // print('Get Completed Tasks form dbbbb---->>>$map');
+      return Project(
+        id: map['projectId'],
+        projectName: map['name'],
+        description: map['description'],
+        owner: map['owner'],
+        startDate: DateTime.parse(map['startDate']),
+        endDate: DateTime.parse(map['endDate']),
+        workHours: map['workHours'].toString(),
+        teamMembers: map['teamMembers'].toString(),
+        tasks: tasks,
+        userId: map['userId'],
+        assignedTeamMembers: assignedTeamMembers,
+        completed: map['completed'] == 0,
+      );
+    } else {
+      throw Exception("Project not found");
+    }
   }
 
   //Method for Get Completed Projects from projects table

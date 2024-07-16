@@ -24,4 +24,6 @@ abstract class ProjectRepository {
       int projectId, String taskName, String member, UserStatus status);
   Future<void> create(NotificationModel notification);
   Future<int> getCountOfUnreadNotifications();
+  Future<Project> getUnCompletedProjectsFromTable(
+      int userId, int projectId, bool completed);
 }

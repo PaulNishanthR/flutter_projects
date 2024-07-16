@@ -973,7 +973,7 @@ class _ProjectFormState extends ConsumerState<ProjectForm> {
       await ref
           .read(projectsProvider.notifier)
           .addProject(newProject, widget.userId);
-      widget.addProject(newProject);
+      // widget.addProject(newProject);
 
       setState(() {
         isSubmitting = false;
